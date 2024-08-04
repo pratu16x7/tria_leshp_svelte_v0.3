@@ -1,13 +1,13 @@
 <script>
-	export let firstLine;
-  </script>
-  
-  <div class="template">
-	<p>{firstLine}</p>
-  </div>
+  export let firstLine;
+</script>
 
-  <style>
-	.template {
-		height: 500px;
-	}
-  </style>
+<div class="template">
+  <p>{firstLine}</p>
+</div>
+
+<style>
+  .template {
+    height: 500px;
+  }
+</style>

@@ -1,8 +1,7 @@
 <script>
-	export let firstLine;
-  </script>
-  
-  <div>
-	<p>{firstLine}</p>
-  </div>
-  
+  export let firstLine;
+</script>
+
+<div>
+  <p>{firstLine}</p>
+</div>
