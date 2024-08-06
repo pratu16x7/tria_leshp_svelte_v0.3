@@ -3,7 +3,7 @@
   import FunctionPreview from '../lib/FunctionPreview.svelte';
   import TempCurrentSpoolItem from '../lib/components/TempCurrentSpoolItem.svelte';
   import TemplateForArrayDSA from '../lib/TemplateForArrayDSA.svelte';
-  import sampleProgram from '../data/sample_program.js';
+  import { sampleProgram } from '../data/sample_program.js';
 
   let program = sampleProgram;
   $: lines = program.split('\n');

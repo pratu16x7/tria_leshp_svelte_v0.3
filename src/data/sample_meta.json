@@ -1,0 +1,33 @@
+{
+  "players_ie_vars": {
+    "s": {
+      "type": "array",
+      "role": "foreground or input",
+      "input": true,
+      "foreground": true
+    },
+
+    "i": {
+      "type": "int",
+      "role": "counter"
+    },
+
+    "j": {
+      "type": "int",
+      "role": "counter"
+    },
+
+    "res": {
+      "type": "array",
+      "role": "output"
+    },
+
+    "digits": {
+      "type": "string",
+      "role": "constant"
+    }
+  },
+
+  "max_indent_level": 3,
+  "problem_type?": "array"
+}

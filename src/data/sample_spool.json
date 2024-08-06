@@ -1,5 +1,28 @@
 [
-	{
-		"": ""
-	}
+  {
+    "scope": {
+      "players_and_their_values": {
+        "s": { "value": [6, 1, 8, 4] },
+        "i": {},
+        "j": {},
+        "res": {},
+        "digits": {}
+      },
+      "derived_or_intermediates_and_trees": {}
+    },
+    "all_interactions_expressions?": {
+      "expr_id1": { "the_expression_tree": {} }
+    },
+    "levels_stack": [
+      {
+        "type": {},
+        "condition_or_input": {},
+        "anymore_unnecessary_info": {}
+      },
+      {}
+    ],
+
+    "stmt": "",
+    "story_at_this_point_or_message": ""
+  }
 ]
