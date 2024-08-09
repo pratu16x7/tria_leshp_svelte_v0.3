@@ -5,7 +5,7 @@
   import ProgramInputs from '../lib/components/ProgramInputs.svelte';
   import TemplateForArrayDSA from '../lib/TemplateForArrayDSA.svelte';
   import { sampleProgram2 } from '../data/sample_program.js';
-  import { getAST } from '../lib/utils/ast';
+  import { getAST, executeAST } from '../lib/utils/ast';
 
   let program = sampleProgram2;
   $: lines = program.split('\n');
@@ -16,10 +16,13 @@
 
   let ast = getAST(program);
 
+  let context = executeAST(ast);
+
   $: spool = ast.body;
   $: currentSpoolItem = spool[index] || '';
 
   $: console.log('Debug AST', ast);
+  $: console.log('Debug context', context);
 </script>
 
 <h1>Leshp</h1>
@@ -37,7 +40,11 @@
       <ProgramInputs firstLine={currentLine} />
     </div>
     <div class="box border">
-      <h3>current spool</h3>
+      <h3>Context</h3>
+      <ProgramInputs firstLine={JSON.stringify(context)} />
+    </div>
+    <div class="box border">
+      <h3>Spool Item</h3>
       <ProgramInputs firstLine={JSON.stringify(currentSpoolItem)} />
     </div>
     <div class="box border">
