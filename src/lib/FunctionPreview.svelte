@@ -3,6 +3,7 @@
 </script>
 
 <div>
+  <!-- wow bind works child to parent ... (go to +page.svelte) -->
   <textarea bind:value={program} />
 </div>
 

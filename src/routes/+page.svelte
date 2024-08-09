@@ -4,19 +4,28 @@
   import TempCurrentSpoolItem from '../lib/components/TempCurrentSpoolItem.svelte';
   import ProgramInputs from '../lib/components/ProgramInputs.svelte';
   import TemplateForArrayDSA from '../lib/TemplateForArrayDSA.svelte';
-  import { sampleProgram } from '../data/sample_program.js';
+  import { sampleProgram2 } from '../data/sample_program.js';
   import { getAST } from '../lib/utils/ast';
 
-  let program = sampleProgram;
+  let program = sampleProgram2;
   $: lines = program.split('\n');
-  $: firstLine = lines[0] || '';
-  $: ast = getAST(program);
-  console.log(ast);
+
+  $: index = 0;
+
+  $: currentLine = lines[index] || '';
+
+  let ast = getAST(program);
+
+  $: spool = ast.body;
+  $: currentSpoolItem = spool[index] || '';
+
+  $: console.log('Debug AST', ast);
 </script>
 
 <h1>Leshp</h1>
 
-<Counter />
+<!-- wow bind works parent to child ... (go to Function preview) -->
+<Counter bind:count={index} />
 
 <div class="container">
   <div class="top-row">
@@ -24,14 +33,20 @@
       <FunctionPreview bind:program />
     </div>
     <div class="box border">
-      <ProgramInputs {firstLine} />
+      <h3>Program Inputs</h3>
+      <ProgramInputs firstLine={currentLine} />
     </div>
     <div class="box border">
-      <TempCurrentSpoolItem {firstLine} {ast} />
+      <h3>current spool</h3>
+      <ProgramInputs firstLine={JSON.stringify(currentSpoolItem)} />
+    </div>
+    <div class="box border">
+      <h3>Spool</h3>
+      <TempCurrentSpoolItem ast={spool} />
     </div>
   </div>
   <div class="border">
-    <TemplateForArrayDSA {firstLine} />
+    <TemplateForArrayDSA firstLine={currentLine} />
   </div>
 </div>
 
