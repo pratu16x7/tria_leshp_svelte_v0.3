@@ -1,6 +1,11 @@
-export const sampleProgram2 = `function example() {
+export const sampleProgram3 = `function example() {
   console.log('Hello, world!');
 }`;
+
+export const sampleProgram2 = `var a = 1;
+var b = 2;
+var c = a + b;
+console.log(c);`;
 
 export const sampleProgram = `function uncompress(s) {
     let res = "";
