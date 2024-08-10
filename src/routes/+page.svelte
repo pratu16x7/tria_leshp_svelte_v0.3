@@ -5,7 +5,7 @@
   import ProgramInputs from '../lib/components/ProgramInputs.svelte';
   import TemplateForArrayDSA from '../lib/TemplateForArrayDSA.svelte';
   import { sampleProgram2 } from '../data/sample_program.js';
-  import { getAST, executeAST } from '../lib/utils/ast';
+  import { getAST, unspoolExecute } from '../lib/utils/ast';
 
   let program = sampleProgram2;
   $: index = 0;
@@ -15,7 +15,7 @@
   $: ast = getAST(program);
   $: astNode = ast.body;
   let spool = [{}];
-  $: spoolUpdated = executeAST(ast, spool);
+  $: spoolUpdated = unspoolExecute(ast, spool);
 
   $: currentAstNodeItem = astNode[index] || '';
   $: currentLine = lines[index] || '';
