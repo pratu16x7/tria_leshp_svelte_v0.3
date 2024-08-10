@@ -5,8 +5,9 @@ export function getAST(program: string) {
   return ast;
 }
 
-export function executeAST(ast, context = {}) {
+export function executeAST(ast, spool = [{}]) {
   function evaluate(node) {
+    let context = structuredClone(spool[spool.length - 1]);
     switch (node.type) {
       case 'VariableDeclaration':
         for (let declaration of node.declarations) {
@@ -48,13 +49,14 @@ export function executeAST(ast, context = {}) {
       default:
         throw new Error('Unsupported node type: ' + node.type);
     }
+    spool.push(context);
   }
 
   for (let node of ast.body) {
     evaluate(node);
-    console.log('Context:', context);
+    console.log('Context:', spool);
     // document.getElementById('output').textContent += 'Context: ' + JSON.stringify(context) + '\n';
   }
 
-  return context;
+  return spool;
 }

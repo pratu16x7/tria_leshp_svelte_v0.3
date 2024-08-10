@@ -8,21 +8,20 @@
   import { getAST, executeAST } from '../lib/utils/ast';
 
   let program = sampleProgram2;
-  $: lines = program.split('\n');
-
   $: index = 0;
 
+  $: lines = program.split('\n');
+
+  $: ast = getAST(program);
+  $: astNode = ast.body;
+  let spool = [{}];
+  $: spoolUpdated = executeAST(ast, spool);
+
+  $: currentAstNodeItem = astNode[index] || '';
   $: currentLine = lines[index] || '';
 
-  let ast = getAST(program);
-
-  let context = executeAST(ast);
-
-  $: spool = ast.body;
-  $: currentSpoolItem = spool[index] || '';
-
-  $: console.log('Debug AST', ast);
-  $: console.log('Debug context', context);
+  // $: console.log('Debug AST', ast);
+  // $: console.log('Debug context', context);
 </script>
 
 <h1>Leshp</h1>
@@ -40,16 +39,16 @@
       <ProgramInputs firstLine={currentLine} />
     </div>
     <div class="box border">
-      <h3>Context</h3>
-      <ProgramInputs firstLine={JSON.stringify(context)} />
-    </div>
-    <div class="box border">
-      <h3>Spool Item</h3>
-      <ProgramInputs firstLine={JSON.stringify(currentSpoolItem)} />
+      <h3>spool Item</h3>
+      <ProgramInputs firstLine={JSON.stringify(spoolUpdated[index + 1])} />
     </div>
     <div class="box border">
       <h3>Spool</h3>
       <TempCurrentSpoolItem ast={spool} />
+    </div>
+    <div class="box border">
+      <h3>astNode Item</h3>
+      <ProgramInputs firstLine={JSON.stringify(currentAstNodeItem)} />
     </div>
   </div>
   <div class="border">
