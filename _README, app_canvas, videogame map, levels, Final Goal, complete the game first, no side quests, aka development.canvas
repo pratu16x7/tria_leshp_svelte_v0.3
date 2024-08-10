@@ -2,6 +2,7 @@
 	"nodes":[
 		{"id":"f529ab627df63813","type":"group","x":-1752,"y":3198,"width":10776,"height":1116,"label":"Lumber"},
 		{"id":"5dec0b1fb5521ed2","type":"group","x":-1748,"y":2278,"width":10820,"height":411,"color":"1","label":"Tasklists, commits"},
+		{"id":"70bcdbce48c707e7","x":849,"y":3846,"width":1065,"height":584,"type":"group","label":"Untitled group"},
 		{"id":"2ddfb2e9e25bcb8b","type":"group","x":1646,"y":84,"width":428,"height":843,"color":"6","label":"Template/components inside"},
 		{"id":"9bec5ad71eb38e89","type":"group","x":-1,"y":417,"width":319,"height":212,"color":"4","label":"Build States Spool"},
 		{"id":"0036edc273576391","type":"group","x":159,"y":-278,"width":346,"height":168,"label":"Untitled group"},
@@ -51,9 +52,13 @@
 		{"id":"c7fe99fec3019156","type":"text","text":"# The AST, and making the STATE Spool - Reacting to different levels on the State spool \n\n\n- [ ] _\n- [ ] _\n- [ ] _","x":1708,"y":2324,"width":404,"height":685},
 		{"id":"49217f5b3cf3c5f8","type":"link","url":"http://localhost:5173","x":-566,"y":-1688,"width":1840,"height":1340},
 		{"id":"616dc19f70394894","x":1396,"y":3323,"width":250,"height":60,"type":"text","text":"use chatgpt like your junior developer to do the tedious work"},
-		{"id":"edc1ec3365f46cc2","x":904,"y":3656,"width":227,"height":602,"type":"text","text":"THE EXECTUION AST FLOW FOR:\n```js\nvar a = 1;\nvar b = 2;\nvar c = a + b;\nconsole.log(c);\n```\n\nBased on my written code is:\n\nVariableDeclaration 0\nLiteral 1\n\nVariableDeclaration 0\nLiteral 1\n\nVariableDeclaration 0\nBinaryExpression 1\nIdentifier 2\nIdentifier 2\n\nExpressionStatement 0\nCallExpression 1\nNot handled"},
-		{"id":"91ff588deb2582bf","x":1114,"y":3930,"width":250,"height":212,"type":"text","text":"```json\n[\n\t{},\n\t{\"a\":1},\n\t{\"a\":1,\"b\":2},\n\t{\"a\":1,\"b\":2,\"c\":3}, \n\t{\"a\":1,\"b\":2,\"c\":3}\n]\n```"},
-		{"id":"11af4f7454a30f0f","x":848,"y":4256,"width":250,"height":172,"type":"text","text":"**This will now be the spool**\n- with added info from the node"}
+		{"id":"edc1ec3365f46cc2","x":869,"y":3866,"width":227,"height":472,"type":"text","text":"\nBased on my written code is:\n\nVariableDeclaration 0\nLiteral 1\n\nVariableDeclaration 0\nLiteral 1\n\nVariableDeclaration 0\nBinaryExpression 1\nIdentifier 2\nIdentifier 2\n\nExpressionStatement 0\nCallExpression 1\nNot handled"},
+		{"id":"11af4f7454a30f0f","x":1016,"y":4238,"width":250,"height":172,"type":"text","text":"**This will now be the spool**\n- with added info from the node"},
+		{"id":"91ff588deb2582bf","x":1043,"y":3942,"width":250,"height":212,"type":"text","text":"```json\n[\n\t{},\n\t{\"a\":1},\n\t{\"a\":1,\"b\":2},\n\t{\"a\":1,\"b\":2,\"c\":3}, \n\t{\"a\":1,\"b\":2,\"c\":3}\n]\n```"},
+		{"id":"3b739c8a534e84b5","x":1274,"y":3932,"width":620,"height":235,"type":"text","text":"```js\n{\"context\":{},\"nodeType\":\"\",\"level\":0}\n\n{\"context\":{\"a\":1},\"nodeType\":\"VariableDeclaration\",\"level\":0}\n\n{\"context\":{\"a\":1,\"b\":2},\"nodeType\":\"VariableDeclaration\",\"level\":0}\n\n{\"context\":{\"a\":1,\"b\":2,\"c\":3},\"nodeType\":\"VariableDeclaration\",\"level\":0}\n\n{\"context\":{\"a\":1,\"b\":2,\"c\":3},\"nodeType\":\"CallExpression\",\"level\":1}\n\n```"},
+		{"id":"6ca0886d5f5c0a68","x":1670,"y":4135,"width":183,"height":74,"type":"text","text":"okay why is this 1\nforget it, first do case by case maybe you'll find"},
+		{"id":"0fc5fd8f5f8b221d","x":649,"y":3948,"width":164,"height":238,"type":"text","text":"THE EXECTUION AST FLOW FOR:\n```js\nvar a = 1;\nvar b = 2;\nvar c = a + b;\nconsole.log(c);\n```\n"},
+		{"id":"caa8bb6201cb1651","x":2035,"y":3828,"width":626,"height":655,"type":"text","text":"# Combining both, we get\n```js\n{\"context\":{},\"nodeType\":\"\",\"level\":0}\n\n{\"context\":{},\"nodeType\":\"Literal\",\"level\":1}\n\n{\"context\":{\"a\":1},\"nodeType\":\"VariableDeclaration\",\"level\":0}\n\n{\"context\":{\"a\":1},\"nodeType\":\"Literal\",\"level\":1}\n\n{\"context\":{\"a\":1,\"b\":2},\"nodeType\":\"VariableDeclaration\",\"level\":0}\n\n{\"context\":{\"a\":1,\"b\":2},\"nodeType\":\"Identifier\",\"level\":2}\n\n{\"context\":{\"a\":1,\"b\":2},\"nodeType\":\"Identifier\",\"level\":2}\n\n{\"context\":{\"a\":1,\"b\":2},\"nodeType\":\"BinaryExpression\",\"level\":1}\n\n{\"context\":{\"a\":1,\"b\":2,\"c\":3},\"nodeType\":\"VariableDeclaration\",\"level\":0}\n\n{\"context\":{\"a\":1,\"b\":2,\"c\":3},\"nodeType\":\"ExpressionStatement\",\"level\":0}\n\n{\"context\":{\"a\":1,\"b\":2,\"c\":3},\"nodeType\":\"CallExpression\",\"level\":1}\n```"}
 	],
 	"edges":[
 		{"id":"255da08db7109bc6","fromNode":"ca7e1c6a47c55d11","fromSide":"right","toNode":"c9a0e2ff97d09ae0","toSide":"left","label":"item"},
@@ -70,6 +75,7 @@
 		{"id":"fa0d787da3faa146","fromNode":"25210689c192bef1","fromSide":"right","toNode":"6229b0e4640c7bcd","toSide":"left","color":"6"},
 		{"id":"235892357764ffd9","fromNode":"8543f3c461e5eed4","fromSide":"right","toNode":"007e54a52fdd314a","toSide":"left","color":"6"},
 		{"id":"05ecf3c6d3540212","fromNode":"8543f3c461e5eed4","fromSide":"right","toNode":"c9a0e2ff97d09ae0","toSide":"left"},
-		{"id":"6f9d280f84b70a60","fromNode":"8543f3c461e5eed4","fromSide":"right","toNode":"25210689c192bef1","toSide":"left"}
+		{"id":"6f9d280f84b70a60","fromNode":"8543f3c461e5eed4","fromSide":"right","toNode":"25210689c192bef1","toSide":"left"},
+		{"id":"868a707066244f14","fromNode":"70bcdbce48c707e7","fromSide":"right","toNode":"caa8bb6201cb1651","toSide":"left"}
 	]
 }

@@ -5,7 +5,7 @@
   import ProgramInputs from '../lib/components/ProgramInputs.svelte';
   import TemplateForArrayDSA from '../lib/TemplateForArrayDSA.svelte';
   import { sampleProgram2 } from '../data/sample_program.js';
-  import { getAST, unspoolExecute } from '../lib/utils/ast';
+  import { getAST, unspoolExecute, spoolItemBase } from '../lib/utils/ast';
 
   let program = sampleProgram2;
   $: index = 0;
@@ -14,7 +14,7 @@
 
   $: ast = getAST(program);
   $: astNode = ast.body;
-  let spool = [{ context: {} }];
+  let spool = [spoolItemBase];
   $: spoolUpdated = unspoolExecute(ast, spool);
 
   $: currentAstNodeItem = astNode[index] || '';
@@ -44,7 +44,10 @@
     </div>
     <div class="box border">
       <h3>Spool</h3>
-      <TempCurrentSpoolItem ast={spool} />
+      {#each spool as spoolItem}
+        <p>{JSON.stringify(spoolItem)}</p>
+      {/each}
+      <!-- <TempCurrentSpoolItem ast={spool} /> -->
     </div>
     <div class="box border">
       <h3>astNode Item</h3>
