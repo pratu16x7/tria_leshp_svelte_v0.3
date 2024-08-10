@@ -14,7 +14,7 @@
 
   $: ast = getAST(program);
   $: astNode = ast.body;
-  let spool = [{}];
+  let spool = [{ context: {} }];
   $: spoolUpdated = unspoolExecute(ast, spool);
 
   $: currentAstNodeItem = astNode[index] || '';

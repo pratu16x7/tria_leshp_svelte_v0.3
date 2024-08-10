@@ -5,9 +5,9 @@ export function getAST(program: string) {
   return ast;
 }
 
-export function unspoolExecute(ast, spool = [{}]) {
+export function unspoolExecute(ast, spool = [{ context: {} }]) {
   function evaluate(node, execLevel = 0) {
-    let context = structuredClone(spool[spool.length - 1]);
+    let context = structuredClone(spool[spool.length - 1]['context']);
     console.log(node.type, execLevel);
     switch (node.type) {
       case 'VariableDeclaration':
@@ -20,6 +20,7 @@ export function unspoolExecute(ast, spool = [{}]) {
       case 'BinaryExpression':
         const left = evaluate(node.left, execLevel + 1);
         const right = evaluate(node.right, execLevel + 1);
+
         switch (node.operator) {
           case '+':
             return left + right;
@@ -42,7 +43,14 @@ export function unspoolExecute(ast, spool = [{}]) {
       default:
         throw new Error('Unsupported node type: ' + node.type);
     }
-    spool.push(context);
+    // // instead of pushing context here at the end of every top level node of ast.body
+    // // push it at every case above
+    // // and note the level just in case
+    // // then you can basically add your sparkles case by case
+    spool.push({ context: context });
+    // // wait but that's ... every case is inside the fucntion
+    // // where do we update the context then?
+    // // before return statement?
   }
 
   for (let node of ast.body) {
