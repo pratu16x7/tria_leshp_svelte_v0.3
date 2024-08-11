@@ -29,5 +29,9 @@
     "typescript-eslint": "^8.0.0-alpha.20",
     "vite": "^5.0.3"
   },
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "@codemirror/lang-javascript": "^6.2.2",
+    "codemirror": "^6.0.1"
+  }
 }
