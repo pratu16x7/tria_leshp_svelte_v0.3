@@ -1,3 +1,57 @@
+// <!--https://github.com/touchifyapp/svelte-codemirror-editor-->
+// <script lang="ts">
+//   import CodeMirror from 'svelte-codemirror-editor';
+//   import { javascript } from '@codemirror/lang-javascript';
+
+//   // let value = '';
+//   export let program: string;
+// </script>
+
+// <div>
+//   <!-- wow bind works child to parent ... (go to +page.svelte) -->
+//   <!-- <textarea bind:value={program} /> -->
+//   <CodeMirror
+//     bind:value={program}
+//     lang={javascript()}
+//     readonly={true}
+//     styles={{
+//       '&': {}
+//     }}
+//   />
+// </div>
+
+// <style>
+//   /* CodeMirror {
+//     width: 300px;
+//     height: 150px;
+//   } */
+// </style>
+
+// // vit.config.ts
+// optimizeDeps: {
+//   exclude: ['svelte-codemirror-editor', 'codemirror', '@codemirror/language-javascript' /* ... */]
+// }
+
+
+
+
+
+// <script lang="ts">
+//   export let program: string;
+// </script>
+
+// <div>
+//   <textarea bind:value={program} />
+// </div>
+
+// <style>
+//   textarea {
+//     width: 300px;
+//     height: 150px;
+//   }
+// </style>
+
+
 
 export function unspoolExecute(ast, spool = [{}], level = 0) {
 	function evaluate(node, execLevel = 0) {
