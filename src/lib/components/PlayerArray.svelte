@@ -4,7 +4,7 @@
   export let active = true; // Active state control
 </script>
 
-<div class="container" style="--opacity: {active ? '1' : '0.5'}">
+<div class="container" style="--opacity: {active ? '1' : '0.2'}">
   <span class="var-name">{name}</span>
   <div class="array-box">
     {#each array as element}
