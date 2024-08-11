@@ -45,13 +45,13 @@
     <div class="box border">
       <h3>Spool</h3>
       {#each spool as spoolItem}
-        <p>{JSON.stringify(spoolItem)}</p>
+        <p>{JSON.stringify(Object.values(spoolItem))}</p>
       {/each}
       <!-- <TempCurrentSpoolItem ast={spool} /> -->
     </div>
     <div class="box border">
       <h3>astNode Item</h3>
-      <ProgramInputs firstLine={JSON.stringify(currentAstNodeItem)} />
+      <ProgramInputs firstLine={JSON.stringify(ast)} />
     </div>
   </div>
   <div class="border">
