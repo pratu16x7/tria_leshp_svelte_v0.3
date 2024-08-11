@@ -16,20 +16,19 @@ export const spoolItemBase = {
 
 export function unspoolExecute(ast, spool = [spoolItemBase]) {
   function evaluate(node, execLevel = 0) {
-    // let context = ;
-    // let newPlayers = {};
-    // let interactions = {};
-    // let literalValue = {};
+    let context = structuredClone(spool[spool.length - 1]['context']);
+    let nodeType = node.type;
+
     let spoolItem = {
-      nodeType: node.type,
+      nodeType,
       execLevel,
-      context: structuredClone(spool[spool.length - 1]['context']),
+      context,
       newPlayers: {},
       interactions: {},
       literalValue: []
     };
 
-    switch (node.type) {
+    switch (nodeType) {
       case 'VariableDeclaration':
         // Is a new player (var) added to the scope
         for (let declaration of node.declarations) {
@@ -52,6 +51,7 @@ export function unspoolExecute(ast, spool = [spoolItemBase]) {
         const left = evaluate(node.left, execLevel + 1);
         const right = evaluate(node.right, execLevel + 1);
         spoolItem['interactions'] = { left, right, fn: node.operator };
+        spool.push(spoolItem);
 
         switch (node.operator) {
           case '+':
@@ -75,6 +75,7 @@ export function unspoolExecute(ast, spool = [spoolItemBase]) {
             throw new Error('Unsupported operator: ' + node.operator);
         }
       case 'Identifier':
+        spoolItem['interactions'] = { player: node.name };
         // is a player (var) from the scope
         spool.push(spoolItem);
         return spoolItem['context'][node.name];
