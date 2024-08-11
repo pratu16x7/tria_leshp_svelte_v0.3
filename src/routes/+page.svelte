@@ -3,7 +3,7 @@
   import FunctionPreview from '../lib/FunctionPreview.svelte';
   import TempCurrentSpoolItem from '../lib/components/TempCurrentSpoolItem.svelte';
   import ProgramInputs from '../lib/components/ProgramInputs.svelte';
-  import TemplateForArrayDSA from '../lib/TemplateForArrayDSA.svelte';
+  import TemplateForBaseAlgo from '../lib/TemplateForBaseAlgo.svelte';
   import { sampleProgram2 } from '../data/sample_program.js';
   import { getAST, unspoolExecute, spoolItemBase } from '../lib/utils/ast';
 
@@ -16,6 +16,7 @@
   $: astNode = ast.body;
   let spool = [spoolItemBase];
   $: spoolUpdated = unspoolExecute(ast, spool);
+  $: ({ context, newPlayers, interactions, execLevel, nodeType } = spoolUpdated[index]);
 
   $: currentAstNodeItem = astNode[index] || '';
   $: currentLine = lines[index] || '';
@@ -51,11 +52,15 @@
     </div>
     <div class="box border">
       <h3>astNode Item</h3>
-      <ProgramInputs firstLine={JSON.stringify(ast)} />
+      <ProgramInputs firstLine={JSON.stringify(currentAstNodeItem)} />
     </div>
   </div>
   <div class="border">
-    <TemplateForArrayDSA firstLine={currentLine} />
+    <TemplateForBaseAlgo firstLine={currentLine}>
+      {#each Object.entries(context) as [player, value]}
+        <p>{player}, {value}</p>
+      {/each}
+    </TemplateForBaseAlgo>
   </div>
 </div>
 
