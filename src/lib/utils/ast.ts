@@ -14,6 +14,14 @@ export const spoolItemBase = {
   literalValue: []
 };
 
+// https://stackoverflow.com/a/7390612/6495043
+function toType(obj) {
+  return {}.toString
+    .call(obj)
+    .match(/\s([a-zA-Z]+)/)[1]
+    .toLowerCase();
+}
+
 export function unspoolExecute(ast, spool = [spoolItemBase]) {
   function evaluate(node, execLevel = 0) {
     let context = structuredClone(spool[spool.length - 1]['context']);
@@ -34,7 +42,12 @@ export function unspoolExecute(ast, spool = [spoolItemBase]) {
         for (let declaration of node.declarations) {
           let varName = declaration.id.name;
           let varValue = evaluate(declaration.init, execLevel + 1);
-          spoolItem['context'][varName] = varValue;
+          spoolItem['context'][varName] = {
+            name: varName,
+            value: varValue,
+            type: toType(varValue)
+          };
+          // spoolItem['context'][varName] = varValue;
           spoolItem['newPlayers'][varName] = varValue;
         }
         break;
@@ -78,7 +91,9 @@ export function unspoolExecute(ast, spool = [spoolItemBase]) {
         spoolItem['interactions'] = { player: node.name };
         // is a player (var) from the scope
         spool.push(spoolItem);
-        return spoolItem['context'][node.name];
+        // Where the real eval magic happens: get the context var VALUE not var name
+        return spoolItem['context'][node.name]['value'];
+      // return spoolItem['context'][node.name];
       case 'ExpressionStatement':
         // Ya know this is a tricky one
         spool.push(spoolItem);
