@@ -2,9 +2,11 @@ export const sampleProgram3 = `function example() {
   console.log('Hello, world!');
 }`;
 
-export const sampleProgram2 = `var a = 1;
-var b = 2;
-var c = a + b;
+export const sampleProgram2 = `let a = 1;
+let b = 2;
+let list = [10, 20, 30];
+list.push(40);
+let c = a + b;
 console.log(c);`;
 
 export const sampleProgram = `function uncompress(s) {

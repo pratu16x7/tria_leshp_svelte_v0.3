@@ -1,8 +1,7 @@
 <script>
   export let ast;
-  let json = JSON.stringify(ast);
 </script>
 
 <div>
-  <p>{json}</p>
+  <p>{ast}</p>
 </div>

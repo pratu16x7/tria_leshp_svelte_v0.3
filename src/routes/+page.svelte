@@ -2,7 +2,6 @@
   import Counter from '../lib/components/Counter.svelte';
   import FunctionPreview from '../lib/FunctionPreview.svelte';
   import TempCurrentSpoolItem from '../lib/components/TempCurrentSpoolItem.svelte';
-  import ProgramInputs from '../lib/components/ProgramInputs.svelte';
   import TemplateForBaseAlgo from '../lib/TemplateForBaseAlgo.svelte';
   import { sampleProgram2 } from '../data/sample_program.js';
   import { getAST, unspoolExecute, spoolItemBase } from '../lib/utils/ast';
@@ -36,12 +35,8 @@
       <FunctionPreview bind:program />
     </div>
     <div class="box border">
-      <h3>Program Inputs</h3>
-      <ProgramInputs firstLine={currentLine} />
-    </div>
-    <div class="box border">
       <h3>spool Item</h3>
-      <ProgramInputs firstLine={JSON.stringify(spoolUpdated[index + 1])} />
+      <TempCurrentSpoolItem ast={JSON.stringify(spoolUpdated[index + 1])} />
     </div>
     <div class="box border">
       <h3>Spool</h3>
@@ -52,7 +47,7 @@
     </div>
     <div class="box border">
       <h3>astNode Item</h3>
-      <ProgramInputs firstLine={JSON.stringify(currentAstNodeItem)} />
+      <TempCurrentSpoolItem ast={JSON.stringify(ast)} />
     </div>
   </div>
   <div class="border">
