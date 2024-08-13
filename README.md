@@ -1,6 +1,8 @@
-# create-svelte
+# Tria Svelte_v0.3
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+AST Explorer, Parser and Algorithm Visualizer in Svelte
+
+![](https://www.youtube.com/watch?v=iQnvFfWgHU4&feature=youtu.be)
 
 ## Creating a project
 
