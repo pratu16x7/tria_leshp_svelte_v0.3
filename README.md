@@ -2,7 +2,8 @@
 
 AST Explorer, Parser and Algorithm Visualizer in Svelte
 
-![](https://www.youtube.com/watch?v=iQnvFfWgHU4&feature=youtu.be)
+
+[![Trialgo](http://img.youtube.com/vi/iQnvFfWgHU4/0.jpg)](http://www.youtube.com/watch?v=iQnvFfWgHU4 "Trialgo Run 1")
 
 ## Creating a project
 
