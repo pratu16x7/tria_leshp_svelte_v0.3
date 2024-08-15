@@ -46,12 +46,11 @@ export function unspoolExecute(ast, spool = [spoolItemBase], meta = metaBase) {
         for (let declaration of node.declarations) {
           let varName = declaration.id.name;
           let varValue = evaluate(declaration.init, execLevel + 1);
-          let newPlayer = {
+          let newPlayerMeta = {
             name: varName,
-            value: varValue,
             type: toType(varValue)
           };
-          meta['players'][varName] = newPlayer;
+          meta['players'][varName] = newPlayerMeta;
           spoolItem['context'][varName] = varValue;
           // spoolItem['context'][varName] = varValue;
           spoolItem['newPlayers'][varName] = varValue;
