@@ -5,6 +5,10 @@ export function getAST(program: string) {
   return ast;
 }
 
+export const metaBase = {
+  players: {}
+};
+
 export const spoolItemBase = {
   nodeType: '',
   execLevel: 0,
@@ -22,7 +26,7 @@ function toType(obj) {
     .toLowerCase();
 }
 
-export function unspoolExecute(ast, spool = [spoolItemBase]) {
+export function unspoolExecute(ast, spool = [spoolItemBase], meta = metaBase) {
   function evaluate(node, execLevel = 0) {
     let context = structuredClone(spool[spool.length - 1]['context']);
     let nodeType = node.type;
@@ -42,11 +46,13 @@ export function unspoolExecute(ast, spool = [spoolItemBase]) {
         for (let declaration of node.declarations) {
           let varName = declaration.id.name;
           let varValue = evaluate(declaration.init, execLevel + 1);
-          spoolItem['context'][varName] = {
+          let newPlayer = {
             name: varName,
             value: varValue,
             type: toType(varValue)
           };
+          meta['players'][varName] = newPlayer;
+          spoolItem['context'][varName] = varValue;
           // spoolItem['context'][varName] = varValue;
           spoolItem['newPlayers'][varName] = varValue;
         }
@@ -92,7 +98,7 @@ export function unspoolExecute(ast, spool = [spoolItemBase]) {
         // is a player (var) from the scope
         spool.push(spoolItem);
         // Where the real eval magic happens: get the context var VALUE not var name
-        return spoolItem['context'][node.name]['value'];
+        return spoolItem['context'][node.name];
       // return spoolItem['context'][node.name];
       case 'ExpressionStatement':
         // Ya know this is a tricky one

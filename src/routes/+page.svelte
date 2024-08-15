@@ -6,7 +6,7 @@
   import { sampleProgram2 } from '../data/sample_program.js';
   import PlayerNumeric from '../lib/components/PlayerNumeric.svelte';
   import PlayerArray from '../lib/components/PlayerArray.svelte';
-  import { getAST, unspoolExecute, spoolItemBase } from '../lib/utils/ast';
+  import { getAST, unspoolExecute, spoolItemBase, metaBase } from '../lib/utils/ast';
 
   let program = sampleProgram2;
   $: index = 0;
@@ -15,8 +15,9 @@
 
   $: ast = getAST(program);
   $: astNode = ast.body;
+  let meta = metaBase;
   let spool = [spoolItemBase];
-  $: spoolUpdated = unspoolExecute(ast, spool);
+  $: spoolUpdated = unspoolExecute(ast, spool, meta);
   $: ({ context, newPlayers, interactions, execLevel, nodeType } = spoolUpdated[index]);
 
   $: currentAstNodeItem = astNode[index] || '';
