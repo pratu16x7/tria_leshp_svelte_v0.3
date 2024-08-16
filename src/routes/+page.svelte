@@ -17,7 +17,8 @@
   $: astNode = ast.body;
   let meta = metaBase;
   let spool = [spoolItemBase];
-  $: spoolUpdated = unspoolExecute(ast, spool, meta);
+  let fullSpool = [spoolItemBase];
+  $: spoolUpdated = unspoolExecute(ast, spool, fullSpool, meta);
   $: ({ context, newPlayers, interactions, execLevel, nodeType } = spoolUpdated[index]);
 
   $: currentAstNodeItem = astNode[index] || '';
@@ -50,7 +51,7 @@
     </div>
     <div class="box border">
       <h3>astNode Item</h3>
-      <TempCurrentSpoolItem ast={JSON.stringify(ast)} />
+      <TempCurrentSpoolItem ast={JSON.stringify(meta)} />
     </div>
   </div>
   <div class="border">

@@ -6,7 +6,8 @@ export function getAST(program: string) {
 }
 
 export const metaBase = {
-  players: {}
+  players: {},
+  relations: {}
 };
 
 export const spoolItemBase = {
@@ -26,7 +27,12 @@ function toType(obj) {
     .toLowerCase();
 }
 
-export function unspoolExecute(ast, spool = [spoolItemBase], meta = metaBase) {
+export function unspoolExecute(
+  ast,
+  spool = [spoolItemBase],
+  fullSpool = [spoolItemBase],
+  meta = metaBase
+) {
   function evaluate(node, execLevel = 0) {
     let context = structuredClone(spool[spool.length - 1]['context']);
     let nodeType = node.type;
@@ -42,6 +48,7 @@ export function unspoolExecute(ast, spool = [spoolItemBase], meta = metaBase) {
 
     switch (nodeType) {
       case 'VariableDeclaration':
+        // LVL 0
         // Is a new player (var) added to the scope
         for (let declaration of node.declarations) {
           let varName = declaration.id.name;
@@ -55,21 +62,23 @@ export function unspoolExecute(ast, spool = [spoolItemBase], meta = metaBase) {
           // spoolItem['context'][varName] = varValue;
           spoolItem['newPlayers'][varName] = varValue;
         }
+        spool.push(spoolItem);
+
         break;
       case 'Literal':
         // is just a, well, literal value
         spoolItem['literalValue'].push(node.value);
-        spool.push(spoolItem);
+        fullSpool.push(spoolItem);
         return node.value;
       case 'ArrayExpression':
-        spool.push(spoolItem);
+        fullSpool.push(spoolItem);
         return node.elements.map((element) => evaluate(element));
       case 'BinaryExpression':
         // is one of the math operations, with a left, right and operator
         const left = evaluate(node.left, execLevel + 1);
         const right = evaluate(node.right, execLevel + 1);
         spoolItem['interactions'] = { left, right, fn: node.operator };
-        spool.push(spoolItem);
+        fullSpool.push(spoolItem);
 
         switch (node.operator) {
           case '+':
@@ -95,12 +104,13 @@ export function unspoolExecute(ast, spool = [spoolItemBase], meta = metaBase) {
       case 'Identifier':
         spoolItem['interactions'] = { player: node.name };
         // is a player (var) from the scope
-        spool.push(spoolItem);
+        fullSpool.push(spoolItem);
         // Where the real eval magic happens: get the context var VALUE not var name
         return spoolItem['context'][node.name];
       // return spoolItem['context'][node.name];
       case 'ExpressionStatement':
-        // Ya know this is a tricky one
+        // LVL 0
+        // fullSpool.push(spoolItem);
         spool.push(spoolItem);
         return evaluate(node.expression, execLevel + 1);
       case 'CallExpression':
@@ -110,6 +120,7 @@ export function unspoolExecute(ast, spool = [spoolItemBase], meta = metaBase) {
         if (callee.type === 'MemberExpression') {
           // get console.log() out of the way
           if (callee.object.name === 'console' && callee.property.name === 'log') {
+            fullSpool.push(spoolItem);
             break;
           }
 
@@ -122,25 +133,30 @@ export function unspoolExecute(ast, spool = [spoolItemBase], meta = metaBase) {
             throw new Error('Unsupported method: ' + property);
           }
         }
+        fullSpool.push(spoolItem);
         break;
       case 'MemberExpression':
         const obj = evaluate(node.object);
         const prop = node.computed ? evaluate(node.property) : node.property.name;
         return obj[prop];
       default:
-        spool.push(spoolItem);
+        fullSpool.push(spoolItem);
         throw new Error('Unsupported node type: ' + node.type);
     }
     // // instead of pushing context here at the end of every top level node of ast.body
     // // push it at every case above
     // // and note the level just in case
     // // then you can basically add your sparkles case by case
-    spool.push(spoolItem);
+    // fullSpool.push(spoolItem);
+
+    // spool.push(spoolItem);
     // // wait but that's ... every case is inside the fucntion
     // // where do we update the context then?
     // // before return statement?
     // // yep at least before return (and throw) statements,
     // // the rest can have a common one at the bottom after all
+
+    // // Come on, time to be explicitly explicit for every case
   }
 
   for (let node of ast.body) {
