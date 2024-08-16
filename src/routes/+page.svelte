@@ -19,7 +19,7 @@
   let spool = [spoolItemBase];
   let fullSpool = [spoolItemBase];
   $: spoolUpdated = unspoolExecute(ast, spool, fullSpool, meta);
-  $: ({ context, newPlayers, interactions, execLevel, nodeType } = spoolUpdated[index + 1]);
+  $: ({ context, newPlayers, interactions, execLevel, nodeType, cursor } = spoolUpdated[index + 1]);
 
   $: currentAstNodeItem = astNode[index] || '';
   $: currentLine = lines[index] || '';
@@ -36,7 +36,7 @@
 <div class="container">
   <div class="top-row">
     <div class="box border">
-      <FunctionPreview bind:program />
+      <FunctionPreview bind:program {cursor} />
     </div>
     <div class="box border">
       <h3>spool Item</h3>

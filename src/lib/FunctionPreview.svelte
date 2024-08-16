@@ -8,6 +8,8 @@
 
   export let program: string;
 
+  export let cursor;
+
   let editorContainer: Element;
   const highlight_effect = StateEffect.define<Range<Decoration>[]>();
 
@@ -46,7 +48,7 @@
 
     cursor.next();
 
-    console.log(program, cursor.value);
+    // console.log(program, cursor.value);
 
     // editorView.updateListener = (update) => {
     //   if (update.changes) {
@@ -64,10 +66,13 @@
       parent: editorContainer
     });
 
+    console.log('========cursor', cursor);
+
     editorView.dispatch({
       changes: { from: 0, to: editorView.state.doc.length, insert: program },
       // effects: highlight_effect.of([highlight_decoration.range(cursor.value.from, cursor.value.to)])
-      effects: highlight_effect.of([highlight_decoration.range(10, 20)])
+      // effects: highlight_effect.of([highlight_decoration.range(10, 30)]),
+      effects: highlight_effect.of([highlight_decoration.range(cursor.start, cursor.end)])
     });
   }
 </script>

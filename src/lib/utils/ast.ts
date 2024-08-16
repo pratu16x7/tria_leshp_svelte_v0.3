@@ -16,7 +16,8 @@ export const spoolItemBase = {
   context: {},
   newPlayers: {},
   interactions: {},
-  literalValue: []
+  literalValue: [],
+  cursor: {}
 };
 
 // https://stackoverflow.com/a/7390612/6495043
@@ -36,6 +37,7 @@ export function unspoolExecute(
   function evaluate(node, execLevel = 0) {
     let context = structuredClone(spool[spool.length - 1]['context']);
     let nodeType = node.type;
+    let cursor = { start: node.start, end: node.end };
 
     let spoolItem = {
       nodeType,
@@ -43,7 +45,8 @@ export function unspoolExecute(
       context,
       newPlayers: {},
       interactions: {},
-      literalValue: []
+      literalValue: [],
+      cursor
     };
 
     switch (nodeType) {
