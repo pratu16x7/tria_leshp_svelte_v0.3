@@ -12,6 +12,16 @@
   $: index = 0;
 
   $: lines = program.split('\n');
+  // not removing coz don't yet know how to get ... active part from ... the program text ...
+  // oh wait you just need to get the spliced string with the positions
+  //
+  // oh ... oh wait ...
+  // Didn't need the highlight for real,
+  // higthlight is purely codemirror aesthetic that I'll change late anyway in the UI I'm sure
+  //
+  // To know the active part beeing seen by ast
+  // I could have just spliced the ya know, program STRING
+  // Ya know, that what we pass to acorn in the first place
 
   $: ast = getAST(program);
   $: astNode = ast.body;
