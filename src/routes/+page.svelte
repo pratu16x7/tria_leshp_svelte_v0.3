@@ -19,7 +19,7 @@
   let spool = [spoolItemBase];
   let fullSpool = [spoolItemBase];
   $: spoolUpdated = unspoolExecute(ast, spool, fullSpool, meta);
-  $: ({ context, newPlayers, interactions, execLevel, nodeType } = spoolUpdated[index]);
+  $: ({ context, newPlayers, interactions, execLevel, nodeType } = spoolUpdated[index + 1]);
 
   $: currentAstNodeItem = astNode[index] || '';
   $: currentLine = lines[index] || '';
@@ -57,12 +57,12 @@
   <div class="border">
     <TemplateForBaseAlgo firstLine={currentLine}>
       {#each Object.entries(context) as [player, value]}
-        {#if value['type'] === 'number'}
-          <PlayerNumeric name={player} number={value['value']} color="green" />
-        {:else if value['type'] === 'array'}
-          <PlayerArray name={player} array={value['value']} />
+        {#if meta['players'][player]['type'] === 'number'}
+          <PlayerNumeric name={player} number={value} color="green" />
+        {:else if meta['players'][player]['type'] === 'array'}
+          <PlayerArray name={player} array={value} />
         {:else}
-          <p>{player}, {value['value']}</p>
+          <p>{player}, {value}</p>
         {/if}
       {/each}
     </TemplateForBaseAlgo>
