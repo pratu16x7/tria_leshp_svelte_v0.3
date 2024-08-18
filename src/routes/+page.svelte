@@ -1,8 +1,9 @@
 <script>
   import Counter from '../lib/components/Counter.svelte';
   import FunctionPreview from '../lib/FunctionPreview.svelte';
+  import SpoolItem from '../lib/components/SpoolItem.svelte';
   import TempCurrentSpoolItem from '../lib/components/TempCurrentSpoolItem.svelte';
-  import TemplateForBaseAlgo from '../lib/TemplateForBaseAlgo.svelte';
+  import State from '../lib/components/State.svelte';
   import { testPrograms, algorithms } from '../data/sample_program.js';
   import PlayerNumeric from '../lib/components/players/Number.svelte';
   import PlayerArray from '../lib/components/players/SymbolArray.svelte';
@@ -45,23 +46,14 @@
 <div class="container">
   <div class="top-row">
     <div class="box border">
-      <TemplateForBaseAlgo firstLine={''}>
-        {#each Object.entries(context) as [player, value]}
-          {#if meta['players'][player]['type'] === 'number'}
-            <PlayerNumeric name={player} number={value} color="green" />
-          {:else if meta['players'][player]['type'] === 'array' || meta['players'][player]['type'] === 'string'}
-            <PlayerArray name={player} array={value} />
-          {:else}
-            <p>{player}, {value}</p>
-          {/if}
-        {/each}
-      </TemplateForBaseAlgo>
+      <State {context} {meta} />
       <FunctionPreview bind:program {cursor} />
     </div>
     <div class="box border">
       <h3>Spool</h3>
+      <p>{JSON.stringify(meta)}</p>
       {#each spool as spoolItem, i}
-        <p class:color-active={i === index + 1}>{JSON.stringify(Object.values(spoolItem))}</p>
+        <SpoolItem {...spoolItem} active={i === index} {meta} />
       {/each}
       <!-- <TempCurrentSpoolItem ast={spool} /> -->
     </div>
@@ -101,8 +93,5 @@
     flex: 1;
     overflow: scroll;
     height: 600px;
-  }
-  .color-active {
-    color: orange;
   }
 </style>
