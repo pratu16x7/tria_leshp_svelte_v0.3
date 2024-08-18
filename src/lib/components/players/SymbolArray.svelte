@@ -1,3 +1,11 @@
+<!-- TODO list
+- [ ] empty state symbol
+- [ ] length prop
+- [ ] pointers support
+- [ ] substring support (color, block ... whatever)
+- [ ] ...
+-->
+
 <script lang="ts">
   import Number from './Number.svelte';
 

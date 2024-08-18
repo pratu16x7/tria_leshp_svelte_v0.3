@@ -2,8 +2,8 @@
   import PlayerNumeric from './players/Number.svelte';
   import PlayerArray from './players/SymbolArray.svelte';
 
-  export let context = {};
-  export let meta = {};
+  export let context;
+  export let meta;
 </script>
 
 <div class="template">

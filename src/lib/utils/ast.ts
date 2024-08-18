@@ -50,6 +50,7 @@ export function unspoolExecute(
     };
 
     switch (nodeType) {
+      // case 'VariableDeclaration':
       case 'VariableDeclaration':
         // LVL 0
         // Is a new player (var) added to the scope
@@ -69,14 +70,20 @@ export function unspoolExecute(
         fullSpool.push(spoolItem);
 
         break;
+
+      // case 'Literal':
       case 'Literal':
         // is just a, well, literal value
         spoolItem['literalValue'].push(node.value);
         fullSpool.push(spoolItem);
         return node.value;
+
+      // case 'ArrayExpression':
       case 'ArrayExpression':
         fullSpool.push(spoolItem);
         return node.elements.map((element) => evaluate(element));
+
+      // case 'UnaryExpression':
       case 'UnaryExpression':
         const arg = evaluate(node.argument, execLevel + 1);
         spoolItem['interactions'] = { arg, fn: node.operator };
@@ -87,6 +94,8 @@ export function unspoolExecute(
           default:
             throw new Error('Unsupported unary operator: ' + node.operator);
         }
+
+      // case 'BinaryExpression':
       case 'BinaryExpression':
         // is one of the math operations, with a left, right and operator
         const left = evaluate(node.left, execLevel + 1);
@@ -123,6 +132,8 @@ export function unspoolExecute(
           default:
             throw new Error('Unsupported operator: ' + node.operator);
         }
+
+      // case 'Identifier':
       case 'Identifier':
         spoolItem['interactions'] = { player: node.name };
         // is a player (var) from the scope
@@ -130,11 +141,15 @@ export function unspoolExecute(
         // Where the real eval magic happens: get the context var VALUE not var name
         return spoolItem['context'][node.name];
       // return spoolItem['context'][node.name];
+
+      // case 'ExpressionStatement':
       case 'ExpressionStatement':
         // LVL 0
         spool.push(spoolItem);
         fullSpool.push(spoolItem);
         return evaluate(node.expression, execLevel + 1);
+
+      // case 'WhileStatement':
       case 'WhileStatement':
         while (evaluate(node.test, execLevel + 1)) {
           evaluate(node.body, execLevel + 1);
@@ -142,6 +157,8 @@ export function unspoolExecute(
         fullSpool.push(spoolItem);
         spool.push(spoolItem);
         break;
+
+      // case 'IfStatement':
       case 'IfStatement':
         if (evaluate(node.test, execLevel + 1)) {
           evaluate(node.consequent, execLevel + 1);
@@ -158,6 +175,8 @@ export function unspoolExecute(
         fullSpool.push(spoolItem);
         spool.push(spoolItem);
         break;
+
+      // The AssignmentExpression
       case 'AssignmentExpression':
         const leftValue = evaluate(node.left, execLevel + 1);
         const rightValue = evaluate(node.right, execLevel + 1);
@@ -200,6 +219,7 @@ export function unspoolExecute(
         }
         fullSpool.push(spoolItem);
         break;
+
       case 'CallExpression':
         const callee = node.callee;
         const args = node.arguments.map((arg) => evaluate(arg));
@@ -222,10 +242,12 @@ export function unspoolExecute(
         }
         fullSpool.push(spoolItem);
         break;
+
       case 'MemberExpression':
         const obj = evaluate(node.object);
         const prop = node.computed ? evaluate(node.property) : node.property.name;
         return obj[prop];
+
       default:
         fullSpool.push(spoolItem);
         throw new Error('Unsupported node type: ' + node.type);
