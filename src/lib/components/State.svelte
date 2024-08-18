@@ -9,11 +9,11 @@
 <div class="template">
   {#each Object.entries(context) as [player, value]}
     {#if meta['players'][player]['type'] === 'number'}
-      <PlayerNumeric name={player} number={value} color="green" />
+      <PlayerNumeric name={player} number={value['value']} color="green" />
     {:else if meta['players'][player]['type'] === 'array' || meta['players'][player]['type'] === 'string'}
-      <PlayerArray name={player} array={value} />
+      <PlayerArray name={player} array={value['value']} />
     {:else}
-      <p>{player}, {value}</p>
+      <p>{player}, {value['value']}</p>
     {/if}
   {/each}
 </div>

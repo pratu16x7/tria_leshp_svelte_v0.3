@@ -30,7 +30,7 @@
   let spool = [spoolItemBase];
   let fullSpool = [spoolItemBase];
   $: spoolUpdated = unspoolExecute(ast, spool, fullSpool, meta);
-  $: ({ context, newPlayers, interactions, execLevel, nodeType, cursor } = spoolUpdated[index + 1]);
+  $: ({ context, interactions, execLevel, nodeType, cursor } = spoolUpdated[index + 1]);
 
   $: currentAstNodeItem = astNode[index] || '';
 

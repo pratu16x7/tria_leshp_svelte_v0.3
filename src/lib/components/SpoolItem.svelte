@@ -4,7 +4,6 @@
   export let nodeType;
   export let execLevel;
   export let context;
-  export let newPlayers;
   export let interactions;
   export let literalValue;
   export let meta;
@@ -26,11 +25,9 @@
   <h3>{nodeType} : {execLevel}</h3>
 
   <State {context} {meta} />
-  <State context={newPlayers} {meta} />
   <p>{JSON.stringify(literalValue)} __ {JSON.stringify(interactions)}</p>
 
   <p>{JSON.stringify(context)}</p>
-  <p>{JSON.stringify(newPlayers)}</p>
 </div>
 
 <style>

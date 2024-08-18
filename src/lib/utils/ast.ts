@@ -14,7 +14,6 @@ export const spoolItemBase = {
   nodeType: '',
   execLevel: 0,
   context: {},
-  newPlayers: {},
   interactions: {},
   literalValue: [],
   cursor: {},
@@ -45,11 +44,13 @@ export function unspoolExecute(
       nodeType,
       execLevel,
       context,
-      newPlayers: {},
       interactions: {},
       literalValue: [],
       cursor
     };
+
+    let newPlayer = {};
+    let newPlayerMeta = {};
 
     switch (nodeType) {
       // case 'VariableDeclaration':
@@ -59,14 +60,16 @@ export function unspoolExecute(
         for (let declaration of node.declarations) {
           let varName = declaration.id.name;
           let varValue = evaluate(declaration.init, execLevel + 1);
-          let newPlayerMeta = {
+          newPlayerMeta = {
             name: varName,
             type: toType(varValue)
           };
+          newPlayer = {
+            value: varValue
+          };
           meta['players'][varName] = newPlayerMeta;
-          spoolItem['context'][varName] = varValue;
-          // spoolItem['context'][varName] = varValue;
-          spoolItem['newPlayers'][varName] = varValue;
+          spoolItem['context'][varName] = newPlayer;
+          // spoolItem['newPlayers'][varName] = varValue;
         }
         spoolItem['index'] = fullSpool.length;
         fullSpool.push(spoolItem);
@@ -146,8 +149,7 @@ export function unspoolExecute(
         spoolItem['index'] = fullSpool.length;
         fullSpool.push(spoolItem);
         // Where the real eval magic happens: get the context var VALUE not var name
-        return spoolItem['context'][node.name];
-      // return spoolItem['context'][node.name];
+        return spoolItem['context'][node.name]['value'];
 
       // case 'ExpressionStatement':
       case 'ExpressionStatement':
@@ -214,7 +216,7 @@ export function unspoolExecute(
             throw new Error('Unsupported operator: ' + node.operator);
         }
 
-        context[node.left.name] = result;
+        context[node.left.name]['value'] = result;
         spoolItem['interactions'] = { target: node.left.name, value: result };
         spoolItem['index'] = fullSpool.length;
         fullSpool.push(spoolItem);
@@ -223,9 +225,9 @@ export function unspoolExecute(
       case 'UpdateExpression':
         const varName = node.argument.name;
         if (node.operator === '++') {
-          context[varName] += 1;
+          context[varName]['value'] += 1;
         } else if (node.operator === '--') {
-          context[varName] -= 1;
+          context[varName]['value'] -= 1;
         }
         spoolItem['index'] = fullSpool.length;
         fullSpool.push(spoolItem);
