@@ -46,7 +46,8 @@ const digits = "0123456789";
 const num = parseInt(s.substring(i, j));
 res += s[j].repeat(num);
 i = j + 1;
-j++`
+j++;
+console.log("foo")`
   },
   uncompressAsFunction: {
     text: `function uncompress(s) {

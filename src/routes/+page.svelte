@@ -3,12 +3,13 @@
   import FunctionPreview from '../lib/FunctionPreview.svelte';
   import TempCurrentSpoolItem from '../lib/components/TempCurrentSpoolItem.svelte';
   import TemplateForBaseAlgo from '../lib/TemplateForBaseAlgo.svelte';
-  import { testPrograms } from '../data/sample_program.js';
+  import { testPrograms, algorithms } from '../data/sample_program.js';
   import PlayerNumeric from '../lib/components/players/Number.svelte';
   import PlayerArray from '../lib/components/players/SymbolArray.svelte';
   import { getAST, unspoolExecute, spoolItemBase, metaBase } from '../lib/utils/ast';
 
-  let program = testPrograms['variableAssignment']['text'];
+  // let program = testPrograms['arrayAndPush']['text'];
+  let program = algorithms['uncompress']['text'];
   $: index = 0;
 
   // not removing coz don't yet know how to get ... active part from ... the program text ...
@@ -44,16 +45,23 @@
 <div class="container">
   <div class="top-row">
     <div class="box border">
+      <TemplateForBaseAlgo firstLine={''}>
+        {#each Object.entries(context) as [player, value]}
+          {#if meta['players'][player]['type'] === 'number'}
+            <PlayerNumeric name={player} number={value} color="green" />
+          {:else if meta['players'][player]['type'] === 'array' || meta['players'][player]['type'] === 'string'}
+            <PlayerArray name={player} array={value} />
+          {:else}
+            <p>{player}, {value}</p>
+          {/if}
+        {/each}
+      </TemplateForBaseAlgo>
       <FunctionPreview bind:program {cursor} />
     </div>
     <div class="box border">
-      <h3>spool Item</h3>
-      <TempCurrentSpoolItem ast={JSON.stringify(spoolUpdated[index + 1])} />
-    </div>
-    <div class="box border">
       <h3>Spool</h3>
-      {#each spool as spoolItem}
-        <p>{JSON.stringify(Object.values(spoolItem))}</p>
+      {#each spool as spoolItem, i}
+        <p class:color-active={i === index + 1}>{JSON.stringify(Object.values(spoolItem))}</p>
       {/each}
       <!-- <TempCurrentSpoolItem ast={spool} /> -->
     </div>
@@ -63,23 +71,10 @@
         <p>{JSON.stringify(Object.values(spoolItem))}</p>
       {/each}
     </div>
-    <div class="box border">
-      <h3>astNode Item</h3>
-      <TempCurrentSpoolItem ast={JSON.stringify(meta)} />
-    </div>
   </div>
   <div class="border">
-    <TemplateForBaseAlgo firstLine={''}>
-      {#each Object.entries(context) as [player, value]}
-        {#if meta['players'][player]['type'] === 'number'}
-          <PlayerNumeric name={player} number={value} color="green" />
-        {:else if meta['players'][player]['type'] === 'array' || meta['players'][player]['type'] === 'string'}
-          <PlayerArray name={player} array={value} />
-        {:else}
-          <p>{player}, {value}</p>
-        {/if}
-      {/each}
-    </TemplateForBaseAlgo>
+    <h3>astNode Item</h3>
+    <TempCurrentSpoolItem ast={JSON.stringify(meta)} />
   </div>
 </div>
 
@@ -93,7 +88,6 @@
     display: flex;
     justify-content: space-between;
     width: 100%;
-    height: 200px;
   }
   .border {
     border: 1px solid lightgrey;
@@ -105,5 +99,10 @@
     /* margin: 1em; */
     padding: 1em;
     flex: 1;
+    overflow: scroll;
+    height: 600px;
+  }
+  .color-active {
+    color: orange;
   }
 </style>
