@@ -7,13 +7,13 @@
 </script>
 
 <div class="template">
-  {#each Object.entries(context) as [player, value]}
+  {#each Object.entries(context) as [player, state]}
     {#if meta['players'][player]['type'] === 'number'}
-      <PlayerNumeric name={player} number={value['value']} color="green" />
+      <PlayerNumeric name={player} number={state['value']} color="green" active={state['isNew']} />
     {:else if meta['players'][player]['type'] === 'array' || meta['players'][player]['type'] === 'string'}
-      <PlayerArray name={player} array={value['value']} />
+      <PlayerArray name={player} array={state['value']} active={state['isNew']} />
     {:else}
-      <p>{player}, {value['value']}</p>
+      <p>{player}, {state['value']}</p>
     {/if}
   {/each}
 </div>

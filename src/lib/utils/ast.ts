@@ -52,6 +52,10 @@ export function unspoolExecute(
     let newPlayer = {};
     let newPlayerMeta = {};
 
+    Object.values(spoolItem['context']).map((playerState) => {
+      playerState['isNew'] = false;
+    });
+
     switch (nodeType) {
       // case 'VariableDeclaration':
       case 'VariableDeclaration':
@@ -65,7 +69,8 @@ export function unspoolExecute(
             type: toType(varValue)
           };
           newPlayer = {
-            value: varValue
+            value: varValue,
+            isNew: true
           };
           meta['players'][varName] = newPlayerMeta;
           spoolItem['context'][varName] = newPlayer;
