@@ -44,7 +44,8 @@ let i = 0;
 let j = 1;
 const digits = "0123456789";
 const num = parseInt(s.substring(i, j));
-res += s[j].repeat(num);
+// res += s[j].repeat(num);
+res += s[j];
 i = j + 1;
 j++;
 console.log("foo")`

@@ -159,11 +159,38 @@ export function unspoolExecute(
         spool.push(spoolItem);
         break;
       case 'AssignmentExpression':
-        const assignmentValue = evaluate(node.right, execLevel + 1);
-        context[node.left.name] = assignmentValue;
-        spoolItem['interactions'] = { target: node.left.name, value: assignmentValue };
+        const leftValue = evaluate(node.left, execLevel + 1);
+        const rightValue = evaluate(node.right, execLevel + 1);
+        let result;
+
+        switch (node.operator) {
+          case '=':
+            result = rightValue;
+            break;
+          case '+=':
+            result = leftValue + rightValue;
+            break;
+          case '-=':
+            result = leftValue - rightValue;
+            break;
+          case '*=':
+            result = leftValue * rightValue;
+            break;
+          case '/=':
+            result = leftValue / rightValue;
+            break;
+          // Add other compound operators as needed
+          default:
+            throw new Error('Unsupported operator: ' + node.operator);
+        }
+
+        console.log('leftValue, rightValue, result', leftValue, rightValue, result);
+
+        context[node.left.name] = result;
+        spoolItem['interactions'] = { target: node.left.name, value: result };
         fullSpool.push(spoolItem);
-        return assignmentValue;
+        return result;
+
       case 'UpdateExpression':
         const varName = node.argument.name;
         if (node.operator === '++') {
