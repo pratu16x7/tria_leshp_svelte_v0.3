@@ -35,7 +35,7 @@ export function unspoolExecute(
   meta = metaBase
 ) {
   function evaluate(node, execLevel = 0) {
-    let context = structuredClone(spool[spool.length - 1]['context']);
+    let context = structuredClone(fullSpool[fullSpool.length - 1]['context']);
     let nodeType = node.type;
     let cursor = { start: node.start, end: node.end };
 
@@ -66,6 +66,7 @@ export function unspoolExecute(
           spoolItem['newPlayers'][varName] = varValue;
         }
         spool.push(spoolItem);
+        fullSpool.push(spoolItem);
 
         break;
       case 'Literal':
@@ -131,14 +132,15 @@ export function unspoolExecute(
       // return spoolItem['context'][node.name];
       case 'ExpressionStatement':
         // LVL 0
-        // fullSpool.push(spoolItem);
         spool.push(spoolItem);
+        fullSpool.push(spoolItem);
         return evaluate(node.expression, execLevel + 1);
       case 'WhileStatement':
         while (evaluate(node.test, execLevel + 1)) {
           evaluate(node.body, execLevel + 1);
         }
         fullSpool.push(spoolItem);
+        spool.push(spoolItem);
         break;
       case 'IfStatement':
         if (evaluate(node.test, execLevel + 1)) {
@@ -147,12 +149,14 @@ export function unspoolExecute(
           evaluate(node.alternate, execLevel + 1);
         }
         fullSpool.push(spoolItem);
+        spool.push(spoolItem);
         break;
       case 'BlockStatement':
         for (let statement of node.body) {
           evaluate(statement, execLevel + 1);
         }
         fullSpool.push(spoolItem);
+        spool.push(spoolItem);
         break;
       case 'AssignmentExpression':
         const assignmentValue = evaluate(node.right, execLevel + 1);
@@ -167,6 +171,7 @@ export function unspoolExecute(
         } else if (node.operator === '--') {
           context[varName] -= 1;
         }
+        fullSpool.push(spoolItem);
         break;
       case 'CallExpression':
         const callee = node.callee;

@@ -1,22 +1,55 @@
-export const sampleProgram3 = `function example() {
-  console.log('Hello, world!');
-}`;
+export const testPrograms = {
+  variableDeclaration: {
+    text: `let a = 1;
+let b = 2;
+let c = a + b;`
+  },
 
-export const sampleProgram2 = `let a = 1;
+  variableAssignment: {
+    text: `let a = 1;
+a = 2;
+let c = a * 2;`
+  },
+
+  arrayAndPush: {
+    text: `let a = 1;
 let b = 2;
 let list = [10, 20, 30];
 list.push(40);
 let c = a + b;
-console.log(c);`;
+console.log(c);`
+  },
 
-export const sampleProgram4 = `let res = "";
+  ifElse: {},
+
+  whileLoop: {}, // test uncompress raw code
+
+  functionCall: {
+    text: `function example() {
+  console.log('Hello, world!');
+}`
+  } // test uncompress as function code
+  //   functionCall: {},
+  //   functionCall: {},
+  //   functionCall: {},
+  //   functionCall: {},
+  //   functionCall: {},
+};
+
+export const algorithms = {
+  uncompress: {
+    text: `let res = "";
 let s = "2t3o11g2s";
 let i = 0;
 let j = 1;
 const digits = "0123456789";
-const num = parseInt(s.substring(i, j));`;
-
-export const sampleProgram = `function uncompress(s) {
+const num = parseInt(s.substring(i, j));
+res += s[j].repeat(num);
+i = j + 1;
+j++`
+  },
+  uncompressAsFunction: {
+    text: `function uncompress(s) {
     let res = "";
     let i = 0;
     let j = 0;
@@ -37,4 +70,6 @@ export const sampleProgram = `function uncompress(s) {
 
 // Example usage
 const compressedString = "3a4b2c";
-console.log(uncompress(compressedString));  // Outputs: aaabbbbcc`;
+console.log(uncompress(compressedString));  // Outputs: aaabbbbcc`
+  }
+};

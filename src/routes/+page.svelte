@@ -3,15 +3,14 @@
   import FunctionPreview from '../lib/FunctionPreview.svelte';
   import TempCurrentSpoolItem from '../lib/components/TempCurrentSpoolItem.svelte';
   import TemplateForBaseAlgo from '../lib/TemplateForBaseAlgo.svelte';
-  import { sampleProgram2 } from '../data/sample_program.js';
+  import { testPrograms } from '../data/sample_program.js';
   import PlayerNumeric from '../lib/components/players/Number.svelte';
   import PlayerArray from '../lib/components/players/SymbolArray.svelte';
   import { getAST, unspoolExecute, spoolItemBase, metaBase } from '../lib/utils/ast';
 
-  let program = sampleProgram2;
+  let program = testPrograms['variableAssignment']['text'];
   $: index = 0;
 
-  $: lines = program.split('\n');
   // not removing coz don't yet know how to get ... active part from ... the program text ...
   // oh wait you just need to get the spliced string with the positions
   //
@@ -32,7 +31,6 @@
   $: ({ context, newPlayers, interactions, execLevel, nodeType, cursor } = spoolUpdated[index + 1]);
 
   $: currentAstNodeItem = astNode[index] || '';
-  $: currentLine = lines[index] || '';
 
   // $: console.log('Debug AST', ast);
   // $: console.log('Debug context', context);
@@ -60,12 +58,18 @@
       <!-- <TempCurrentSpoolItem ast={spool} /> -->
     </div>
     <div class="box border">
+      <h3>Remaining spool Item</h3>
+      {#each fullSpool as spoolItem}
+        <p>{JSON.stringify(Object.values(spoolItem))}</p>
+      {/each}
+    </div>
+    <div class="box border">
       <h3>astNode Item</h3>
       <TempCurrentSpoolItem ast={JSON.stringify(meta)} />
     </div>
   </div>
   <div class="border">
-    <TemplateForBaseAlgo firstLine={currentLine}>
+    <TemplateForBaseAlgo firstLine={''}>
       {#each Object.entries(context) as [player, value]}
         {#if meta['players'][player]['type'] === 'number'}
           <PlayerNumeric name={player} number={value} color="green" />
