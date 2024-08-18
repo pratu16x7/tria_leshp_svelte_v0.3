@@ -28,15 +28,22 @@ function toType(obj) {
     .toLowerCase();
 }
 
+function clearPlayerState(spoolItem) {
+  // console.log('spoolItem =======', spoolItem);
+  Object.values(spoolItem['context']).map((playerState) => {
+    playerState['isUpdated'] = false;
+  });
+}
+
 export function unspoolExecute(
   ast,
   spool = [spoolItemBase],
   fullSpool = [spoolItemBase],
   meta = metaBase
 ) {
+  let prevFullSpoolItem = structuredClone(fullSpool[fullSpool.length - 1]);
   function evaluate(node, execLevel = 0) {
-    let prevFullSpoolItem = fullSpool[fullSpool.length - 1];
-    let context = structuredClone(prevFullSpoolItem['context']);
+    let context = prevFullSpoolItem['context'];
     let nodeType = node.type;
     let cursor = { start: node.start, end: node.end };
 
@@ -52,10 +59,6 @@ export function unspoolExecute(
     let newPlayer = {};
     let newPlayerMeta = {};
 
-    Object.values(spoolItem['context']).map((playerState) => {
-      playerState['isNew'] = false;
-    });
-
     switch (nodeType) {
       // case 'VariableDeclaration':
       case 'VariableDeclaration':
@@ -70,7 +73,7 @@ export function unspoolExecute(
           };
           newPlayer = {
             value: varValue,
-            isNew: true
+            isUpdated: true // persists, working
           };
           meta['players'][varName] = newPlayerMeta;
           spoolItem['context'][varName] = newPlayer;
@@ -79,6 +82,8 @@ export function unspoolExecute(
         spoolItem['index'] = fullSpool.length;
         fullSpool.push(spoolItem);
         spool.push(spoolItem);
+        prevFullSpoolItem = structuredClone(spoolItem);
+        clearPlayerState(prevFullSpoolItem);
         break;
 
       // case 'Literal':
@@ -86,12 +91,16 @@ export function unspoolExecute(
         // is just a, well, literal value
         spoolItem['literalValue'].push(node.value);
         spoolItem['index'] = fullSpool.length;
+        prevFullSpoolItem = structuredClone(spoolItem);
+        // clearPlayerState(prevFullSpoolItem);
         fullSpool.push(spoolItem);
         return node.value;
 
       // case 'ArrayExpression':
       case 'ArrayExpression':
         spoolItem['index'] = fullSpool.length;
+        prevFullSpoolItem = structuredClone(spoolItem);
+        // clearPlayerState(prevFullSpoolItem);
         fullSpool.push(spoolItem);
         return node.elements.map((element) => evaluate(element));
 
@@ -100,7 +109,11 @@ export function unspoolExecute(
         const arg = evaluate(node.argument, execLevel + 1);
         spoolItem['interactions'] = { arg, fn: node.operator };
         spoolItem['index'] = fullSpool.length;
+
+        prevFullSpoolItem = structuredClone(spoolItem);
+        // clearPlayerState(prevFullSpoolItem);
         fullSpool.push(spoolItem);
+
         switch (node.operator) {
           case '!':
             return !arg;
@@ -115,6 +128,8 @@ export function unspoolExecute(
         const right = evaluate(node.right, execLevel + 1);
         spoolItem['interactions'] = { left, right, fn: node.operator };
         spoolItem['index'] = fullSpool.length;
+        prevFullSpoolItem = structuredClone(spoolItem);
+        // clearPlayerState(prevFullSpoolItem);
         fullSpool.push(spoolItem);
 
         switch (node.operator) {
@@ -152,6 +167,9 @@ export function unspoolExecute(
         spoolItem['interactions'] = { player: node.name };
         // is a player (var) from the scope
         spoolItem['index'] = fullSpool.length;
+        spoolItem['context'][node.name]['isUpdated'] = true; // participating player
+        prevFullSpoolItem = structuredClone(spoolItem);
+        // clearPlayerState(prevFullSpoolItem);
         fullSpool.push(spoolItem);
         // Where the real eval magic happens: get the context var VALUE not var name
         return spoolItem['context'][node.name]['value'];
@@ -162,6 +180,8 @@ export function unspoolExecute(
         spoolItem['index'] = fullSpool.length;
         fullSpool.push(spoolItem);
         spool.push(spoolItem);
+        prevFullSpoolItem = structuredClone(spoolItem);
+        clearPlayerState(prevFullSpoolItem);
         return evaluate(node.expression, execLevel + 1);
 
       // case 'WhileStatement':
@@ -172,6 +192,8 @@ export function unspoolExecute(
         spoolItem['index'] = fullSpool.length;
         fullSpool.push(spoolItem);
         spool.push(spoolItem);
+        prevFullSpoolItem = structuredClone(spoolItem);
+        clearPlayerState(prevFullSpoolItem);
         break;
 
       // case 'IfStatement':
@@ -184,6 +206,8 @@ export function unspoolExecute(
         spoolItem['index'] = fullSpool.length;
         fullSpool.push(spoolItem);
         spool.push(spoolItem);
+        prevFullSpoolItem = structuredClone(spoolItem);
+        clearPlayerState(prevFullSpoolItem);
         break;
       case 'BlockStatement':
         for (let statement of node.body) {
@@ -192,6 +216,8 @@ export function unspoolExecute(
         spoolItem['index'] = fullSpool.length;
         fullSpool.push(spoolItem);
         spool.push(spoolItem);
+        prevFullSpoolItem = structuredClone(spoolItem);
+        clearPlayerState(prevFullSpoolItem);
         break;
 
       // The AssignmentExpression
@@ -221,20 +247,26 @@ export function unspoolExecute(
             throw new Error('Unsupported operator: ' + node.operator);
         }
 
-        context[node.left.name]['value'] = result;
+        spoolItem['context'][node.left.name]['value'] = result;
+        spoolItem['context'][node.left.name]['isUpdated'] = true; // active (updated) player
         spoolItem['interactions'] = { target: node.left.name, value: result };
         spoolItem['index'] = fullSpool.length;
+        prevFullSpoolItem = structuredClone(spoolItem);
+        // clearPlayerState(prevFullSpoolItem);
         fullSpool.push(spoolItem);
         return result;
 
       case 'UpdateExpression':
         const varName = node.argument.name;
+        context[varName]['isUpdated'] = true; // active (updated) player
         if (node.operator === '++') {
           context[varName]['value'] += 1;
         } else if (node.operator === '--') {
           context[varName]['value'] -= 1;
         }
         spoolItem['index'] = fullSpool.length;
+        prevFullSpoolItem = structuredClone(spoolItem);
+        // clearPlayerState(prevFullSpoolItem);
         fullSpool.push(spoolItem);
         break;
 
@@ -245,6 +277,8 @@ export function unspoolExecute(
         if (callee.type === 'MemberExpression') {
           // get console.log() out of the way
           if (callee.object.name === 'console' && callee.property.name === 'log') {
+            // prevFullSpoolItem = structuredClone(spoolItem);
+            // clearPlayerState(prevFullSpoolItem);
             fullSpool.push(spoolItem);
             break;
           }
@@ -259,6 +293,8 @@ export function unspoolExecute(
           }
         }
         spoolItem['index'] = fullSpool.length;
+        prevFullSpoolItem = structuredClone(spoolItem);
+        // clearPlayerState(prevFullSpoolItem);
         fullSpool.push(spoolItem);
         break;
 
@@ -269,6 +305,8 @@ export function unspoolExecute(
 
       default:
         spoolItem['index'] = fullSpool.length;
+        prevFullSpoolItem = structuredClone(spoolItem);
+        // clearPlayerState(prevFullSpoolItem);
         fullSpool.push(spoolItem);
         throw new Error('Unsupported node type: ' + node.type);
     }
