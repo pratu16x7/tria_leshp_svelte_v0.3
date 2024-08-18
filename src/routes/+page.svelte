@@ -4,8 +4,8 @@
   import TempCurrentSpoolItem from '../lib/components/TempCurrentSpoolItem.svelte';
   import TemplateForBaseAlgo from '../lib/TemplateForBaseAlgo.svelte';
   import { sampleProgram2 } from '../data/sample_program.js';
-  import PlayerNumeric from '../lib/components/PlayerNumeric.svelte';
-  import PlayerArray from '../lib/components/PlayerArray.svelte';
+  import PlayerNumeric from '../lib/components/players/Number.svelte';
+  import PlayerArray from '../lib/components/players/SymbolArray.svelte';
   import { getAST, unspoolExecute, spoolItemBase, metaBase } from '../lib/utils/ast';
 
   let program = sampleProgram2;
@@ -69,7 +69,7 @@
       {#each Object.entries(context) as [player, value]}
         {#if meta['players'][player]['type'] === 'number'}
           <PlayerNumeric name={player} number={value} color="green" />
-        {:else if meta['players'][player]['type'] === 'array'}
+        {:else if meta['players'][player]['type'] === 'array' || meta['players'][player]['type'] === 'string'}
           <PlayerArray name={player} array={value} />
         {:else}
           <p>{player}, {value}</p>

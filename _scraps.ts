@@ -1,4 +1,32 @@
 
+      // case 'IfStatement':
+      //   const testResult = evaluate(node.test);
+      //   if (testResult) {
+      //     node.consequent.body.forEach(evaluate);
+      //   } else if (node.alternate) {
+      //     node.alternate.body.forEach(evaluate);
+      //   }
+      //   break;
+      // case 'WhileStatement':
+      //   // oh lookie here, an actual loop
+      //   while (evaluate(node.test)) {
+      //     node.body.body.forEach(evaluate);
+      //     console.log('Context (inside while loop):', context);
+      //     // document.getElementById('output').textContent +=
+      //     //   'Context (inside while loop): ' + JSON.stringify(context) + '\n';
+      //   }
+      //   break;
+      // case 'UpdateExpression':
+      //   const varName = node.argument.name;
+      //   if (node.operator === '++') {
+      //     context[varName] += 1;
+      //   } else if (node.operator === '--') {
+      //     context[varName] -= 1;
+      //   }
+      //   break;
+
+
+
 // explanation for highliting https://stackoverflow.com/a/72793520/6495043
 // forum example I copied: https://discuss.codemirror.net/t/codemirror-6-highlighting-specific-substring/6615
 const highlight_effect = StateEffect.define<Range<Decoration>[]>();

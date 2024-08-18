@@ -76,6 +76,16 @@ export function unspoolExecute(
       case 'ArrayExpression':
         fullSpool.push(spoolItem);
         return node.elements.map((element) => evaluate(element));
+      case 'UnaryExpression':
+        const arg = evaluate(node.argument, execLevel + 1);
+        spoolItem['interactions'] = { arg, fn: node.operator };
+        fullSpool.push(spoolItem);
+        switch (node.operator) {
+          case '!':
+            return !arg;
+          default:
+            throw new Error('Unsupported unary operator: ' + node.operator);
+        }
       case 'BinaryExpression':
         // is one of the math operations, with a left, right and operator
         const left = evaluate(node.left, execLevel + 1);
@@ -93,14 +103,22 @@ export function unspoolExecute(
           case '/':
             return left / right;
           // modulo and others
-          // case '<': return left < right;
-          // case '>': return left > right;
-          // case '<=': return left <= right;
-          // case '>=': return left >= right;
-          // case '==': return left == right;
-          // case '===': return left === right;
-          // case '!=': return left != right;
-          // case '!==': return left !== right;
+          case '<':
+            return left < right;
+          case '>':
+            return left > right;
+          case '<=':
+            return left <= right;
+          case '>=':
+            return left >= right;
+          case '==':
+            return left == right;
+          case '===':
+            return left === right;
+          case '!=':
+            return left != right;
+          case '!==':
+            return left !== right;
           default:
             throw new Error('Unsupported operator: ' + node.operator);
         }
@@ -116,6 +134,40 @@ export function unspoolExecute(
         // fullSpool.push(spoolItem);
         spool.push(spoolItem);
         return evaluate(node.expression, execLevel + 1);
+      case 'WhileStatement':
+        while (evaluate(node.test, execLevel + 1)) {
+          evaluate(node.body, execLevel + 1);
+        }
+        fullSpool.push(spoolItem);
+        break;
+      case 'IfStatement':
+        if (evaluate(node.test, execLevel + 1)) {
+          evaluate(node.consequent, execLevel + 1);
+        } else if (node.alternate) {
+          evaluate(node.alternate, execLevel + 1);
+        }
+        fullSpool.push(spoolItem);
+        break;
+      case 'BlockStatement':
+        for (let statement of node.body) {
+          evaluate(statement, execLevel + 1);
+        }
+        fullSpool.push(spoolItem);
+        break;
+      case 'AssignmentExpression':
+        const assignmentValue = evaluate(node.right, execLevel + 1);
+        context[node.left.name] = assignmentValue;
+        spoolItem['interactions'] = { target: node.left.name, value: assignmentValue };
+        fullSpool.push(spoolItem);
+        return assignmentValue;
+      case 'UpdateExpression':
+        const varName = node.argument.name;
+        if (node.operator === '++') {
+          context[varName] += 1;
+        } else if (node.operator === '--') {
+          context[varName] -= 1;
+        }
+        break;
       case 'CallExpression':
         const callee = node.callee;
         const args = node.arguments.map((arg) => evaluate(arg));
@@ -146,20 +198,6 @@ export function unspoolExecute(
         fullSpool.push(spoolItem);
         throw new Error('Unsupported node type: ' + node.type);
     }
-    // // instead of pushing context here at the end of every top level node of ast.body
-    // // push it at every case above
-    // // and note the level just in case
-    // // then you can basically add your sparkles case by case
-    // fullSpool.push(spoolItem);
-
-    // spool.push(spoolItem);
-    // // wait but that's ... every case is inside the fucntion
-    // // where do we update the context then?
-    // // before return statement?
-    // // yep at least before return (and throw) statements,
-    // // the rest can have a common one at the bottom after all
-
-    // // Come on, time to be explicitly explicit for every case
   }
 
   for (let node of ast.body) {

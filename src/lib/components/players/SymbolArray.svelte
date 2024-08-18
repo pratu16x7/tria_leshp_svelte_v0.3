@@ -1,6 +1,8 @@
-<script>
+<script lang="ts">
+  import Number from './Number.svelte';
+
   export let name = ''; // Variable name
-  export let array = []; // Array of numbers
+  export let array: Number[] | string; // Array of numbers
   export let active = true; // Active state control
 </script>
 

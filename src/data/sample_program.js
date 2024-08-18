@@ -9,6 +9,13 @@ list.push(40);
 let c = a + b;
 console.log(c);`;
 
+export const sampleProgram4 = `let res = "";
+let s = "2t3o11g2s";
+let i = 0;
+let j = 1;
+const digits = "0123456789";
+const num = parseInt(s.substring(i, j));`;
+
 export const sampleProgram = `function uncompress(s) {
     let res = "";
     let i = 0;
