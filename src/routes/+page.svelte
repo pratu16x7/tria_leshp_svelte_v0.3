@@ -53,14 +53,17 @@
       <h3>Spool</h3>
       <p>{JSON.stringify(meta)}</p>
       {#each spool as spoolItem, i}
-        <SpoolItem {...spoolItem} active={i === index} {meta} />
+        <SpoolItem {...spoolItem} active={i === index + 1} {meta} />
       {/each}
       <!-- <TempCurrentSpoolItem ast={spool} /> -->
     </div>
     <div class="box border">
-      <h3>Remaining spool Item</h3>
-      {#each fullSpool as spoolItem}
-        <p>{JSON.stringify(Object.values(spoolItem))}</p>
+      <h3>Full Spool</h3>
+      {#each fullSpool as spoolItem, i}
+        <p>{i}------{spoolUpdated[index + 1]['index']}</p>
+        <p class:active={i === spoolUpdated[index + 1]['index']}>
+          {JSON.stringify(Object.values(spoolItem))}
+        </p>
       {/each}
     </div>
   </div>
@@ -93,5 +96,8 @@
     flex: 1;
     overflow: scroll;
     height: 600px;
+  }
+  .active {
+    color: orange;
   }
 </style>

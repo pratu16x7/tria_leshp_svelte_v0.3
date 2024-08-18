@@ -17,7 +17,8 @@ export const spoolItemBase = {
   newPlayers: {},
   interactions: {},
   literalValue: [],
-  cursor: {}
+  cursor: {},
+  index: 0
 };
 
 // https://stackoverflow.com/a/7390612/6495043
@@ -35,7 +36,8 @@ export function unspoolExecute(
   meta = metaBase
 ) {
   function evaluate(node, execLevel = 0) {
-    let context = structuredClone(fullSpool[fullSpool.length - 1]['context']);
+    let prevFullSpoolItem = fullSpool[fullSpool.length - 1];
+    let context = structuredClone(prevFullSpoolItem['context']);
     let nodeType = node.type;
     let cursor = { start: node.start, end: node.end };
 
@@ -66,20 +68,22 @@ export function unspoolExecute(
           // spoolItem['context'][varName] = varValue;
           spoolItem['newPlayers'][varName] = varValue;
         }
-        spool.push(spoolItem);
+        spoolItem['index'] = fullSpool.length;
         fullSpool.push(spoolItem);
-
+        spool.push(spoolItem);
         break;
 
       // case 'Literal':
       case 'Literal':
         // is just a, well, literal value
         spoolItem['literalValue'].push(node.value);
+        spoolItem['index'] = fullSpool.length;
         fullSpool.push(spoolItem);
         return node.value;
 
       // case 'ArrayExpression':
       case 'ArrayExpression':
+        spoolItem['index'] = fullSpool.length;
         fullSpool.push(spoolItem);
         return node.elements.map((element) => evaluate(element));
 
@@ -87,6 +91,7 @@ export function unspoolExecute(
       case 'UnaryExpression':
         const arg = evaluate(node.argument, execLevel + 1);
         spoolItem['interactions'] = { arg, fn: node.operator };
+        spoolItem['index'] = fullSpool.length;
         fullSpool.push(spoolItem);
         switch (node.operator) {
           case '!':
@@ -101,6 +106,7 @@ export function unspoolExecute(
         const left = evaluate(node.left, execLevel + 1);
         const right = evaluate(node.right, execLevel + 1);
         spoolItem['interactions'] = { left, right, fn: node.operator };
+        spoolItem['index'] = fullSpool.length;
         fullSpool.push(spoolItem);
 
         switch (node.operator) {
@@ -137,6 +143,7 @@ export function unspoolExecute(
       case 'Identifier':
         spoolItem['interactions'] = { player: node.name };
         // is a player (var) from the scope
+        spoolItem['index'] = fullSpool.length;
         fullSpool.push(spoolItem);
         // Where the real eval magic happens: get the context var VALUE not var name
         return spoolItem['context'][node.name];
@@ -145,8 +152,9 @@ export function unspoolExecute(
       // case 'ExpressionStatement':
       case 'ExpressionStatement':
         // LVL 0
-        spool.push(spoolItem);
+        spoolItem['index'] = fullSpool.length;
         fullSpool.push(spoolItem);
+        spool.push(spoolItem);
         return evaluate(node.expression, execLevel + 1);
 
       // case 'WhileStatement':
@@ -154,6 +162,7 @@ export function unspoolExecute(
         while (evaluate(node.test, execLevel + 1)) {
           evaluate(node.body, execLevel + 1);
         }
+        spoolItem['index'] = fullSpool.length;
         fullSpool.push(spoolItem);
         spool.push(spoolItem);
         break;
@@ -165,6 +174,7 @@ export function unspoolExecute(
         } else if (node.alternate) {
           evaluate(node.alternate, execLevel + 1);
         }
+        spoolItem['index'] = fullSpool.length;
         fullSpool.push(spoolItem);
         spool.push(spoolItem);
         break;
@@ -172,6 +182,7 @@ export function unspoolExecute(
         for (let statement of node.body) {
           evaluate(statement, execLevel + 1);
         }
+        spoolItem['index'] = fullSpool.length;
         fullSpool.push(spoolItem);
         spool.push(spoolItem);
         break;
@@ -203,10 +214,9 @@ export function unspoolExecute(
             throw new Error('Unsupported operator: ' + node.operator);
         }
 
-        console.log('leftValue, rightValue, result', leftValue, rightValue, result);
-
         context[node.left.name] = result;
         spoolItem['interactions'] = { target: node.left.name, value: result };
+        spoolItem['index'] = fullSpool.length;
         fullSpool.push(spoolItem);
         return result;
 
@@ -217,6 +227,7 @@ export function unspoolExecute(
         } else if (node.operator === '--') {
           context[varName] -= 1;
         }
+        spoolItem['index'] = fullSpool.length;
         fullSpool.push(spoolItem);
         break;
 
@@ -240,6 +251,7 @@ export function unspoolExecute(
             throw new Error('Unsupported method: ' + property);
           }
         }
+        spoolItem['index'] = fullSpool.length;
         fullSpool.push(spoolItem);
         break;
 
@@ -249,6 +261,7 @@ export function unspoolExecute(
         return obj[prop];
 
       default:
+        spoolItem['index'] = fullSpool.length;
         fullSpool.push(spoolItem);
         throw new Error('Unsupported node type: ' + node.type);
     }
