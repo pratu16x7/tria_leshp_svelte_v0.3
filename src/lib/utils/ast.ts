@@ -184,13 +184,16 @@ export function unspoolExecute(
       // case 'ExpressionStatement':
       case 'ExpressionStatement':
         // LVL 0
+        let exp_result = evaluate(node.expression, execLevel + 1);
         spoolItem['index'] = fullSpool.length;
         fullSpool.push(spoolItem);
         spool.push(spoolItem);
         prevFullSpoolItem = structuredClone(spoolItem);
         clearPlayerState(prevFullSpoolItem);
         spoolItem['topLevel'] = true;
-        return evaluate(node.expression, execLevel + 1);
+
+        // come in last like a good person (eg. VariableDeclaration)
+        return exp_result;
 
       // case 'WhileStatement':
       case 'WhileStatement':
