@@ -18,7 +18,8 @@ export const spoolItemBase = {
   literalValue: [],
   cursor: { start: 0, end: 0 },
   index: 0,
-  programPart: ''
+  programPart: '',
+  topLevel: false
 };
 
 // https://stackoverflow.com/a/7390612/6495043
@@ -57,7 +58,8 @@ export function unspoolExecute(
       interactions: {},
       literalValue: [],
       cursor,
-      programPart
+      programPart,
+      topLevel: false
     };
 
     let newPlayer = {};
@@ -88,6 +90,7 @@ export function unspoolExecute(
         spool.push(spoolItem);
         prevFullSpoolItem = structuredClone(spoolItem);
         clearPlayerState(prevFullSpoolItem);
+        spoolItem['topLevel'] = true;
         break;
 
       // case 'Literal':
@@ -186,6 +189,7 @@ export function unspoolExecute(
         spool.push(spoolItem);
         prevFullSpoolItem = structuredClone(spoolItem);
         clearPlayerState(prevFullSpoolItem);
+        spoolItem['topLevel'] = true;
         return evaluate(node.expression, execLevel + 1);
 
       // case 'WhileStatement':
@@ -198,6 +202,7 @@ export function unspoolExecute(
         spool.push(spoolItem);
         prevFullSpoolItem = structuredClone(spoolItem);
         clearPlayerState(prevFullSpoolItem);
+        spoolItem['topLevel'] = true;
         break;
 
       // case 'IfStatement':
@@ -212,6 +217,7 @@ export function unspoolExecute(
         spool.push(spoolItem);
         prevFullSpoolItem = structuredClone(spoolItem);
         clearPlayerState(prevFullSpoolItem);
+        spoolItem['topLevel'] = true;
         break;
       case 'BlockStatement':
         for (let statement of node.body) {
@@ -222,6 +228,7 @@ export function unspoolExecute(
         spool.push(spoolItem);
         prevFullSpoolItem = structuredClone(spoolItem);
         clearPlayerState(prevFullSpoolItem);
+        spoolItem['topLevel'] = true;
         break;
 
       // The AssignmentExpression

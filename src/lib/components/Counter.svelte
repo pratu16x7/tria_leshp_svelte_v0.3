@@ -2,6 +2,7 @@
   import { spring } from 'svelte/motion';
 
   export let count = 0;
+  export let line = '';
 
   const displayed_count = spring();
   $: displayed_count.set(count);
@@ -32,6 +33,8 @@
       <path d="M0,0.5 L1,0.5 M0.5,0 L0.5,1" />
     </svg>
   </button>
+
+  <h1>{line}</h1>
 </div>
 
 <style>
