@@ -9,6 +9,7 @@
   export let meta;
   export let programPart;
   export let topLevel;
+  export let modeBlock;
   // export let cursor;  // Already used in program code editor to highlight
   export let active;
 </script>
@@ -26,7 +27,7 @@
 <div class="border" class:active class:top-level={topLevel}>
   <h4>{nodeType} : {execLevel} : {programPart}</h4>
   <State {context} {meta} />
-  <p>{JSON.stringify(literalValue)} __ {JSON.stringify(interactions)}</p>
+  <p>{JSON.stringify(modeBlock)} __ {JSON.stringify(interactions)}</p>
   <!-- <p>{JSON.stringify(context)}</p> -->
 </div>
 
