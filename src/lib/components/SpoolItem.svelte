@@ -7,6 +7,7 @@
   export let interactions;
   export let literalValue;
   export let meta;
+  export let programPart;
   // export let cursor;  // Already used in program code editor to highlight
   export let active;
 </script>
@@ -22,7 +23,7 @@
   }; -->
 
 <div class="border" class:active>
-  <h3>{nodeType} : {execLevel}</h3>
+  <h3>{nodeType} : {execLevel} : {programPart}</h3>
 
   <State {context} {meta} />
   <p>{JSON.stringify(literalValue)} __ {JSON.stringify(interactions)}</p>

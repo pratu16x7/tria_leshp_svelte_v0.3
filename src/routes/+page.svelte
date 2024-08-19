@@ -29,8 +29,10 @@
   let meta = metaBase;
   let spool = [spoolItemBase];
   let fullSpool = [spoolItemBase];
-  $: spoolUpdated = unspoolExecute(ast, spool, fullSpool, meta);
-  $: ({ context, interactions, execLevel, nodeType, cursor } = spoolUpdated[index + 1]);
+  $: spoolUpdated = unspoolExecute(ast, program, spool, fullSpool, meta);
+  $: ({ context, interactions, execLevel, nodeType, cursor, programPart } =
+    spoolUpdated[index + 1]);
+  // $: currLine = program.slice(cursor.start, cursor.end);
 
   $: currentAstNodeItem = astNode[index] || '';
 
@@ -42,7 +44,7 @@
 
 <!-- wow bind works parent to child ... (go to Function preview) -->
 <Counter bind:count={index} />
-
+<h1>{programPart}</h1>
 <div class="container">
   <div class="top-row">
     <div class="box border">

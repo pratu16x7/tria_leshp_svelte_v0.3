@@ -16,8 +16,9 @@ export const spoolItemBase = {
   context: {},
   interactions: {},
   literalValue: [],
-  cursor: {},
-  index: 0
+  cursor: { start: 0, end: 0 },
+  index: 0,
+  programPart: ''
 };
 
 // https://stackoverflow.com/a/7390612/6495043
@@ -37,6 +38,7 @@ function clearPlayerState(spoolItem) {
 
 export function unspoolExecute(
   ast,
+  program,
   spool = [spoolItemBase],
   fullSpool = [spoolItemBase],
   meta = metaBase
@@ -46,6 +48,7 @@ export function unspoolExecute(
     let context = prevFullSpoolItem['context'];
     let nodeType = node.type;
     let cursor = { start: node.start, end: node.end };
+    let programPart = program.slice(cursor.start, cursor.end);
 
     let spoolItem = {
       nodeType,
@@ -53,7 +56,8 @@ export function unspoolExecute(
       context,
       interactions: {},
       literalValue: [],
-      cursor
+      cursor,
+      programPart
     };
 
     let newPlayer = {};
