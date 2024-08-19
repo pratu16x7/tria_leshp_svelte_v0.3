@@ -135,6 +135,11 @@ export function unspoolExecute(
       // case 'BinaryExpression':
       case 'BinaryExpression':
         // is one of the math operations, with a left, right and operator
+        if (modeEval) {
+          modeBlock = { test: programPart };
+
+          spoolItem['modeBlock'] = modeBlock;
+        }
 
         spoolItem['index'] = fullSpool.length;
         prevFullSpoolItem = structuredClone(spoolItem);
@@ -148,36 +153,51 @@ export function unspoolExecute(
         const left = evaluate(node.left, nextExecLevel, modeBlock);
         const right = evaluate(node.right, nextExecLevel, modeBlock);
         spoolItem['interactions'] = { left, right, fn: node.operator };
+        let binaryExpResult;
 
         switch (node.operator) {
           case '+':
-            return left + right;
+            binaryExpResult = left + right;
+            break;
           case '-':
-            return left - right;
+            binaryExpResult = left - right;
+            break;
           case '*':
-            return left * right;
+            binaryExpResult = left * right;
+            break;
           case '/':
-            return left / right;
+            binaryExpResult = left / right;
+            break;
           // modulo and others
           case '<':
-            return left < right;
+            binaryExpResult = left < right;
+            break;
           case '>':
-            return left > right;
+            binaryExpResult = left > right;
+            break;
           case '<=':
-            return left <= right;
+            binaryExpResult = left <= right;
+            break;
           case '>=':
-            return left >= right;
+            binaryExpResult = left >= right;
+            break;
           case '==':
-            return left == right;
+            binaryExpResult = left == right;
+            break;
           case '===':
-            return left === right;
+            binaryExpResult = left === right;
+            break;
           case '!=':
-            return left != right;
+            binaryExpResult = left != right;
+            break;
           case '!==':
-            return left !== right;
+            binaryExpResult = left !== right;
+            break;
           default:
             throw new Error('Unsupported operator: ' + node.operator);
         }
+
+        return binaryExpResult;
 
       // case 'Identifier':
       case 'Identifier':
@@ -228,10 +248,9 @@ export function unspoolExecute(
         // clearPlayerState(prevFullSpoolItem);
         spoolItem['topLevel'] = true;
 
-        let testSpoolItem = fullSpool[fullSpool.length - 1];
-        modeBlock = { test: testSpoolItem['programPart'] };
-
         let testEval = evaluate(node.test, nextExecLevel, modeBlock, true);
+        let testSpoolItem = fullSpool[fullSpool.length - 1];
+        modeBlock = testSpoolItem['modeBlock'];
         spoolItem['modeBlock'] = modeBlock;
         testSpoolItem['modeBlock'] = modeBlock;
 
