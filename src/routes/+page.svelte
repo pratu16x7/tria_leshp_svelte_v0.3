@@ -7,8 +7,8 @@
   import { testPrograms, algorithms } from '../data/sample_program.js';
   import { getAST, unspoolExecute, spoolItemBase, metaBase } from '../lib/utils/ast';
 
-  // let program = testPrograms['arrayAndPush']['text'];
-  let program = algorithms['uncompress']['text'];
+  let program = testPrograms['arrayAndPush']['text'];
+  // let program = algorithms['uncompress']['text'];
   $: index = 0;
 
   // not removing coz don't yet know how to get ... active part from ... the program text ...
@@ -59,13 +59,12 @@
         <SpoolItem {...spoolItem} active={i === spoolUpdated[index + 1]['index']} {meta} />
       {/each}
     </div>
-    <div class="box border">
+    <!-- <div class="box border">
       <h3>Spool</h3>
       {#each spool as spoolItem, i}
         <SpoolItem {...spoolItem} active={i === index + 1} {meta} />
       {/each}
-      <!-- <TempCurrentSpoolItem ast={spool} /> -->
-    </div>
+    </div> -->
   </div>
   <div class="border">
     <h3>Meta and astNode Item</h3>

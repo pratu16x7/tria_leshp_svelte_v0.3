@@ -26,7 +26,7 @@
 <div class="border" class:active class:top-level={topLevel}>
   <h4>{nodeType} : {execLevel} : {programPart}</h4>
   <State {context} {meta} />
-  <!-- <p>{JSON.stringify(literalValue)} __ {JSON.stringify(interactions)}</p> -->
+  <p>{JSON.stringify(literalValue)} __ {JSON.stringify(interactions)}</p>
   <!-- <p>{JSON.stringify(context)}</p> -->
 </div>
 

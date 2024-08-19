@@ -301,6 +301,7 @@ export function unspoolExecute(
           const property = callee.property.name;
 
           if (typeof object[property] === 'function') {
+            spoolItem['interactions'] = { args: [object, property, args] }; // array.push doesn't come here seems
             return object[property](...args);
           } else {
             throw new Error('Unsupported method: ' + property);
@@ -313,9 +314,11 @@ export function unspoolExecute(
         break;
 
       case 'MemberExpression':
-        const obj = evaluate(node.object);
-        const prop = node.computed ? evaluate(node.property) : node.property.name;
-        return obj[prop];
+        const object = evaluate(node.object);
+        const property = node.computed ? evaluate(node.property) : node.property.name;
+
+        spoolItem['interactions'] = { args2: [object, property] }; // array.push doesn't come here seems
+        return object[property];
 
       default:
         spoolItem['index'] = fullSpool.length;
