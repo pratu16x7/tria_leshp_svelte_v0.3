@@ -20,7 +20,29 @@ let c = a + b;
 console.log(c);`
   },
 
-  ifElse: {},
+  if: {
+    text: `let j = 1;
+let num = 5;
+if (j > 0) {
+  num = 10;
+  j = 2;
+} else {
+  num = 7;
+}
+console.log("foo")`
+  },
+
+  else: {
+    text: `let j = 1;
+let num = 5;
+if (j > 2) {
+  num = 10;
+  j = 2;
+} else {
+  num = 7;
+}
+console.log("foo")`
+  },
 
   whileLoop: {}, // test uncompress raw code
 
@@ -38,13 +60,12 @@ console.log(c);`
 
 export const algorithms = {
   uncompress: {
-    text: `let res = "";
-let s = "2t3o11g2s";
+    text: `let s = "2t3o11g2s";
+let res = "";
 let i = 0;
 let j = 1;
 const digits = "0123456789";
-let num = 0;
-num = parseInt(s.substring(i, j));
+let num = parseInt(s.substring(i, j));
 // res += s[j].repeat(num);
 res += s[j];
 i = j + 1;

@@ -45,7 +45,7 @@ export function unspoolExecute(
   meta = metaBase
 ) {
   let prevFullSpoolItem = structuredClone(fullSpool[fullSpool.length - 1]);
-  function evaluate(node, execLevel = 0) {
+  function evaluate(node, execLevel = 0, modeEval = false) {
     let context = prevFullSpoolItem['context'];
     let nodeType = node.type;
     let cursor = { start: node.start, end: node.end };
@@ -131,13 +131,19 @@ export function unspoolExecute(
       // case 'BinaryExpression':
       case 'BinaryExpression':
         // is one of the math operations, with a left, right and operator
-        const left = evaluate(node.left, execLevel + 1);
-        const right = evaluate(node.right, execLevel + 1);
-        spoolItem['interactions'] = { left, right, fn: node.operator };
+
         spoolItem['index'] = fullSpool.length;
         prevFullSpoolItem = structuredClone(spoolItem);
         // clearPlayerState(prevFullSpoolItem);
         fullSpool.push(spoolItem);
+        if (modeEval) {
+          spool.push(spoolItem);
+          clearPlayerState(prevFullSpoolItem);
+        }
+
+        const left = evaluate(node.left, execLevel + 1);
+        const right = evaluate(node.right, execLevel + 1);
+        spoolItem['interactions'] = { left, right, fn: node.operator };
 
         switch (node.operator) {
           case '+':
@@ -210,28 +216,33 @@ export function unspoolExecute(
 
       // case 'IfStatement':
       case 'IfStatement':
-        if (evaluate(node.test, execLevel + 1)) {
-          evaluate(node.consequent, execLevel + 1);
-        } else if (node.alternate) {
-          evaluate(node.alternate, execLevel + 1);
-        }
         spoolItem['index'] = fullSpool.length;
         fullSpool.push(spoolItem);
-        spool.push(spoolItem);
+        // spool.push(spoolItem);  // Naa don't wanna give any attention to the whole block, unless necessary, only to its statements
         prevFullSpoolItem = structuredClone(spoolItem);
-        clearPlayerState(prevFullSpoolItem);
+        // clearPlayerState(prevFullSpoolItem);
         spoolItem['topLevel'] = true;
+
+        let testEval = evaluate(node.test, execLevel + 1, true);
+        spoolItem['interactions'] = { test: node.test };
+        if (testEval) {
+          evaluate(node.consequent, execLevel + 1); // usually a block stmt
+        } else if (node.alternate) {
+          evaluate(node.alternate, execLevel + 1); // usually a block stmt
+        }
+
         break;
       case 'BlockStatement':
+        spoolItem['index'] = fullSpool.length;
+        fullSpool.push(spoolItem);
+        // spool.push(spoolItem);  // Naa don't wanna give any attention to the block, unless necessary, only to its statements
+        prevFullSpoolItem = structuredClone(spoolItem);
+        // clearPlayerState(prevFullSpoolItem);
+        spoolItem['topLevel'] = true;
+
         for (let statement of node.body) {
           evaluate(statement, execLevel + 1);
         }
-        spoolItem['index'] = fullSpool.length;
-        fullSpool.push(spoolItem);
-        spool.push(spoolItem);
-        prevFullSpoolItem = structuredClone(spoolItem);
-        clearPlayerState(prevFullSpoolItem);
-        spoolItem['topLevel'] = true;
         break;
 
       // The AssignmentExpression

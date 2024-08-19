@@ -7,7 +7,7 @@
   import { testPrograms, algorithms } from '../data/sample_program.js';
   import { getAST, unspoolExecute, spoolItemBase, metaBase } from '../lib/utils/ast';
 
-  let program = testPrograms['arrayAndPush']['text'];
+  let program = testPrograms['if']['text'];
   // let program = algorithms['uncompress']['text'];
   $: index = 0;
 
