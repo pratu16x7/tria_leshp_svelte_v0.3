@@ -61,9 +61,10 @@
       <h3>Full Spool</h3>
       {#each fullSpool as spoolItem, i}
         <p>{i}------{spoolUpdated[index + 1]['index']}</p>
-        <p class:active={i === spoolUpdated[index + 1]['index']}>
+        <!-- <p class:active={i === spoolUpdated[index + 1]['index']}>
           {JSON.stringify(Object.values(spoolItem))}
-        </p>
+        </p> -->
+        <SpoolItem {...spoolItem} active={i === spoolUpdated[index + 1]['index']} {meta} />
       {/each}
     </div>
   </div>
@@ -95,7 +96,7 @@
     padding: 1em;
     flex: 1;
     overflow: scroll;
-    height: 600px;
+    height: 800px; /* with page zoom at 67%*/
   }
   .active {
     color: orange;
