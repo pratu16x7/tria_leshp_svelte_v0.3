@@ -28,8 +28,8 @@
   let spool = [spoolItemBase];
   let fullSpool = [spoolItemBase];
   $: spoolUpdated = unspoolExecute(ast, program, spool, fullSpool, meta);
-  $: ({ context, interactions, execLevel, nodeType, cursor, programPart } =
-    spoolUpdated[index + 1]);
+  $: currSpoolItem = spoolUpdated[index + 1];
+  $: ({ context, interactions, execLevel, nodeType, cursor, programPart } = currSpoolItem);
   // $: currLine = program.slice(cursor.start, cursor.end);
 
   $: currentAstNodeItem = astNode[index] || '';
@@ -47,7 +47,7 @@
   <div class="top-row">
     <div class="box border">
       <FunctionPreview bind:program {cursor} />
-      <State {context} {meta} />
+      <SpoolItem {...currSpoolItem} active={false} {meta} />
     </div>
     <div class="box border">
       <h3>Full Spool</h3>

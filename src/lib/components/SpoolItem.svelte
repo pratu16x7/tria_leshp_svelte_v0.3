@@ -5,7 +5,6 @@
   export let execLevel;
   export let context;
   export let interactions;
-  export let literalValue;
   export let meta;
   export let programPart;
   export let topLevel;
