@@ -14,6 +14,7 @@ export const metaBase = {
 };
 
 export const modeBlocksEmpty = { blocksSoFar: [] };
+export const bequeathEvalEmpty = { parent: undefined };
 
 export const spoolItemBase = {
   nodeType: '',
@@ -51,8 +52,13 @@ export function unspoolExecute(
   meta = metaBase
 ) {
   let prevFullSpoolItem = structuredClone(fullSpool[fullSpool.length - 1]);
-  function evaluate(node, execLevel = 0, modeBlocks = modeBlocksEmpty, modeEval = false) {
-    // modeEval is used to show you want to focus on the expression which is otherwise not top level
+  function evaluate(
+    node,
+    execLevel = 0,
+    modeBlocks = modeBlocksEmpty,
+    bequeathEval = bequeathEvalEmpty
+  ) {
+    // bequeathEval is used to show you want to focus on the expression which is otherwise not top level
     let context = prevFullSpoolItem['context'];
     modeBlocks = structuredClone(modeBlocks);
     let nodeType = node.type;
@@ -144,10 +150,14 @@ export function unspoolExecute(
         // is one of the math operations, with a left, right and operator
 
         // TODO: what if this is not the final test
-        if (modeEval) {
+        if (bequeathEval.parent) {
           // TODO: Get the parent type who ordered this test
           //
-          modeBlocks.blocksSoFar.push({ name: programPart, type: 'test', parent: '' });
+          modeBlocks.blocksSoFar.push({
+            name: programPart,
+            type: 'test',
+            parent: bequeathEval.parent
+          });
           // modeBlocks = { blocksSoFar: [{ test: programPart }] };
 
           spoolItem['modeBlocks'] = modeBlocks;
@@ -158,7 +168,7 @@ export function unspoolExecute(
         // clearPlayerState(prevFullSpoolItem);
         fullSpool.push(spoolItem);
 
-        if (modeEval) {
+        if (bequeathEval) {
           spool.push(spoolItem);
           clearPlayerState(prevFullSpoolItem);
         }
@@ -261,7 +271,7 @@ export function unspoolExecute(
         // clearPlayerState(prevFullSpoolItem);
         spoolItem['topLevel'] = true;
 
-        let testEval = evaluate(node.test, nextExecLevel, modeBlocks, true);
+        let testEval = evaluate(node.test, nextExecLevel, modeBlocks, { parent: 'IfStatement' });
         let thisTestSpoolItem = fullSpool[fullSpool.length - 1];
 
         // pass the modeblocks received here from this point on.
@@ -271,12 +281,6 @@ export function unspoolExecute(
         // modeBlocks['blocksSoFar'].concat(blocksSoFar);
 
         modeBlocks = thisTestSpoolItem['modeBlocks'];
-        let blocksSoFarIf = modeBlocks.blocksSoFar;
-        let lastBlockIf = blocksSoFarIf[blocksSoFarIf.length - 1];
-        console.log(modeBlocks);
-        if (lastBlockIf.parent.length === 0) {
-          lastBlockIf.parent = 'IfStatement';
-        }
         spoolItem['modeBlocks'] = modeBlocks;
         thisTestSpoolItem['modeBlocks'] = modeBlocks;
 
