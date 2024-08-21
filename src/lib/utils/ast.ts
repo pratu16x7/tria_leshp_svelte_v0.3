@@ -249,17 +249,38 @@ export function unspoolExecute(
         return exp_result;
 
       // case 'WhileStatement':
+      // Similar to handling structure of the 'IfStatement' block
       case 'WhileStatement':
-        // of course, a literal while loop
-        while (evaluate(node.test, nextExecLevel, modeBlocks)) {
-          evaluate(node.body, nextExecLevel, modeBlocks);
-        }
         spoolItem['index'] = fullSpool.length;
         fullSpool.push(spoolItem);
-        spool.push(spoolItem);
+        // spool.push(spoolItem);   // Naa don't wanna give any attention to the whole block, unless necessary, only to its statements
         prevFullSpoolItem = structuredClone(spoolItem);
-        clearPlayerState(prevFullSpoolItem);
+        // clearPlayerState(prevFullSpoolItem);
         spoolItem['topLevel'] = true;
+
+        function whileTest() {
+          let testEval = evaluate(node.test, nextExecLevel, modeBlocks, {
+            parent: 'WhileStatement'
+          });
+          let WhileTestSpoolItem = fullSpool[fullSpool.length - 1];
+
+          // pass the modeblocks received here from this point on.
+
+          // I think we don't need to this here as we already append to previous in the if statetment
+          // let blocksSoFar = WhileTestSpoolItem['modeBlocks']['blocksSoFar'];
+          // modeBlocks['blocksSoFar'].concat(blocksSoFar);
+
+          modeBlocks = WhileTestSpoolItem['modeBlocks'];
+          spoolItem['modeBlocks'] = modeBlocks;
+          WhileTestSpoolItem['modeBlocks'] = modeBlocks;
+          return testEval;
+        }
+        // of course, a literal while loop
+        // while (evaluate(node.test, nextExecLevel, modeBlocks)) {
+        while (whileTest()) {
+          console.log('==========Here loop');
+          evaluate(node.body, nextExecLevel, modeBlocks);
+        }
         break;
 
       // case 'IfStatement':
@@ -271,21 +292,21 @@ export function unspoolExecute(
         // clearPlayerState(prevFullSpoolItem);
         spoolItem['topLevel'] = true;
 
-        let testEval = evaluate(node.test, nextExecLevel, modeBlocks, { parent: 'IfStatement' });
-        let thisTestSpoolItem = fullSpool[fullSpool.length - 1];
+        let ifTestEval = evaluate(node.test, nextExecLevel, modeBlocks, { parent: 'IfStatement' });
+        let ifTestSpoolItem = fullSpool[fullSpool.length - 1];
 
         // pass the modeblocks received here from this point on.
 
         // I think we don't need to this here as we already append to previous in the if statetment
-        // let blocksSoFar = thisTestSpoolItem['modeBlocks']['blocksSoFar'];
+        // let blocksSoFar = ifTestSpoolItem['modeBlocks']['blocksSoFar'];
         // modeBlocks['blocksSoFar'].concat(blocksSoFar);
 
-        modeBlocks = thisTestSpoolItem['modeBlocks'];
+        modeBlocks = ifTestSpoolItem['modeBlocks'];
         spoolItem['modeBlocks'] = modeBlocks;
-        thisTestSpoolItem['modeBlocks'] = modeBlocks;
+        ifTestSpoolItem['modeBlocks'] = modeBlocks;
 
         // of course, a literal If else
-        if (testEval) {
+        if (ifTestEval) {
           evaluate(node.consequent, nextExecLevel, modeBlocks); // usually a block stmt
         } else if (node.alternate) {
           evaluate(node.alternate, nextExecLevel, modeBlocks); // usually a block stmt

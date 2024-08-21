@@ -44,7 +44,7 @@ console.log("foo")`
   whileLoop: {
     text: `let j = 0;
 let num = 5;
-while (j < 4) {
+while (j < 3) {
   num += 10;
   j += 1;
 }
