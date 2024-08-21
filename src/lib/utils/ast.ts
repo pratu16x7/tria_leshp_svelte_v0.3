@@ -47,6 +47,7 @@ export function unspoolExecute(
 ) {
   let prevFullSpoolItem = structuredClone(fullSpool[fullSpool.length - 1]);
   function evaluate(node, execLevel = 0, modeBlock = {}, modeEval = false) {
+    // modeEval is used to show you want to focus on the expression which is otherwise not top level
     let context = prevFullSpoolItem['context'];
     let nodeType = node.type;
     let cursor = { start: node.start, end: node.end };

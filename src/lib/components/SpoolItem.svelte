@@ -10,7 +10,8 @@
   export let topLevel;
   export let modeBlock;
   // export let cursor;  // Already used in program code editor to highlight
-  export let active;
+  export let active = false;
+  export let templateType;
 </script>
 
 <!-- export const spoolItemBase = {
@@ -23,12 +24,20 @@
 	cursor: {}
   }; -->
 
-<div class="border" class:active class:top-level={topLevel}>
-  <h4>{nodeType} : {execLevel} : {programPart}</h4>
-  <State {context} {meta} />
-  <p>{JSON.stringify(modeBlock)} __ {JSON.stringify(interactions)}</p>
-  <!-- <p>{JSON.stringify(context)}</p> -->
-</div>
+{#if templateType === 'animation'}
+  <div class="border" class:top-level={topLevel}>
+    <h4>{execLevel} : {programPart}</h4>
+    <State {context} {meta} />
+    <p>{JSON.stringify(modeBlock)}</p>
+  </div>
+{:else if templateType === 'spool'}
+  <div class="border" class:active class:top-level={topLevel}>
+    <h4>{nodeType} : {execLevel} : {programPart}</h4>
+    <State {context} {meta} />
+    <p>{JSON.stringify(modeBlock)} __ {JSON.stringify(interactions)}</p>
+    <!-- <p>{JSON.stringify(context)}</p> -->
+  </div>
+{/if}
 
 <style>
   .border {

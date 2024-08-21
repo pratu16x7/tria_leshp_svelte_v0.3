@@ -35,12 +35,17 @@
   <div class="top-row">
     <div class="box border">
       <FunctionPreview bind:program {cursor} />
-      <SpoolItem {...currSpoolItem} active={false} {meta} />
+      <SpoolItem {...currSpoolItem} topLevel={false} {meta} templateType="animation" />
     </div>
     <div class="box border">
       <h3>Full Spool</h3>
       {#each fullSpool as spoolItem, i}
-        <SpoolItem {...spoolItem} active={i === spoolUpdated[index + 1]['index']} {meta} />
+        <SpoolItem
+          {...spoolItem}
+          active={i === spoolUpdated[index + 1]['index']}
+          {meta}
+          templateType="spool"
+        />
       {/each}
     </div>
   </div>
