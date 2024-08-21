@@ -25,9 +25,6 @@ console.log(c);`
 let num = 5;
 if (j > 0) {
   num = 10;
-  j = 2;
-} else {
-  num = 7;
 }
 console.log("foo")`
   },
@@ -44,7 +41,15 @@ if (j > 2) {
 console.log("foo")`
   },
 
-  whileLoop: {}, // test uncompress raw code
+  whileLoop: {
+    text: `let j = 0;
+let num = 5;
+while (j < 4) {
+  num += 10;
+  j += 1;
+}
+console.log("foo")`
+  }, // test uncompress raw code
 
   functionCall: {
     text: `function example() {
