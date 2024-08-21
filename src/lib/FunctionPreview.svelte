@@ -66,7 +66,7 @@
       parent: editorContainer
     });
 
-    console.log('========cursor', cursor);
+    // console.log('========cursor', cursor);
 
     editorView.dispatch({
       changes: { from: 0, to: editorView.state.doc.length, insert: program },
