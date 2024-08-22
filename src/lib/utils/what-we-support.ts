@@ -58,38 +58,38 @@ export const astNodeTypesMeta = {
   Literal: {},
 
   // case 'Identifier': // is a player (var) from the scope // ['interactions'] = { player: node.name };
-  Identifier: {},
+  Identifier: { spoolPush: 'after' },
 
   // case 'VariableDeclaration': // Is a new player (var) added to the scope
   // LVL 0
-  VariableDeclaration: { anim: true, topLevel: true, clearPlayers: true },
-
-  // case 'ArrayExpression':
-  ArrayExpression: {},
+  VariableDeclaration: { anim: true, topLevel: true, clearPlayers: true, spoolPush: 'after' },
 
   // case 'ExpressionStatement':  // LVL 0
-  ExpressionStatement: { anim: true, topLevel: true, clearPlayers: true },
+  ExpressionStatement: { anim: true, topLevel: true, clearPlayers: true, spoolPush: 'after' },
+
+  // case 'ArrayExpression':
+  ArrayExpression: { spoolPush: 'before' },
 
   // case 'UnaryExpression': // is one of the math operations, with a left, right and operator ['interactions'] = { arg, fn: node.operator };
-  UnaryExpression: {}, // can have token support test: unaryOperatorMap
+  UnaryExpression: { spoolPush: 'before' }, // can have token support test: unaryOperatorMap
 
   // case 'BinaryExpression': ['interactions'] = { left, right, fn: node.operator };
-  BinaryExpression: {}, // can have token support test: binaryOperatorMap
+  BinaryExpression: { spoolPush: 'before' }, // can have token support test: binaryOperatorMap
 
-  AssignmentExpression: {}, // woah doesn't have to be a stmt
+  AssignmentExpression: { spoolPush: 'after' }, // woah doesn't have to be a stmt
 
-  UpdateExpression: {}, // woah doesn't have to be a stmt
+  UpdateExpression: { spoolPush: 'after' }, // woah doesn't have to be a stmt
 
   // case 'IfStatement': // No ANIM, don't wanna give any attention to the whole block, unless necessary, only to its statements
-  IfStatement: { topLevel: true },
+  IfStatement: { topLevel: true, spoolPush: 'before' },
 
   // case 'WhileStatement': // Similar to handling structure of the 'IfStatement' block
-  WhileStatement: { topLevel: true },
+  WhileStatement: { topLevel: true, spoolPush: 'before' },
 
   // BlockStatement:  // NO IMPORTANCE YET // Naa don't wanna give any attention to the block, unless necessary, only to its statements
   BlockStatement: {},
 
-  CallExpression: {},
+  CallExpression: { spoolPush: 'after' },
 
   MemberExpression: {}
 };

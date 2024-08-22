@@ -59,6 +59,10 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
 
     let evaluateResult;
 
+    if (astNodeTypesMeta[nodeType].spoolPush === 'before') {
+      fullSpool.push(spoolItem);
+    }
+
     switch (nodeType) {
       case 'Literal':
         evaluateResult = node.value;
@@ -69,7 +73,6 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
 
         // Where the real eval magic happens: get the context var VALUE not var name
         evaluateResult = spoolItem['context'][node.name]['value']; // no eval needed, just context
-        fullSpool.push(spoolItem);
         break;
 
       case 'VariableDeclaration':
@@ -88,23 +91,19 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
           spoolItem['context'][varName] = newPlayer;
           // spoolItem['newPlayers'][varName] = varValue;
         }
-        fullSpool.push(spoolItem);
         break;
 
       case 'ExpressionStatement':
         evaluateResult = evaluate(node.expression, nextExecLevel, modeBlocks); // come in last like a good person (eg. VariableDeclaration)
-        fullSpool.push(spoolItem);
         break;
 
       case 'ArrayExpression':
-        fullSpool.push(spoolItem);
         evaluateResult = node.elements.map((element) =>
           evaluate(element, nextExecLevel, modeBlocks)
         );
         break;
 
       case 'UnaryExpression':
-        fullSpool.push(spoolItem);
         const arg = evaluate(node.argument, nextExecLevel, modeBlocks);
 
         switch (node.operator) {
@@ -127,11 +126,10 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
           spoolItem['modeBlocks'] = modeBlocks;
         }
 
-        prevFullSpoolItem = structuredClone(spoolItem);
-        fullSpool.push(spoolItem);
-
         if (bequeathEval) {
           spoolItem['anim'] = true;
+          // TODO: ANIM: if anim, in general, note which players involved, and mark them 'updated', no actually, 'playing'
+          prevFullSpoolItem = structuredClone(spoolItem);
           clearPlayerState(prevFullSpoolItem);
         }
 
@@ -155,12 +153,9 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
         spoolItem['context'][node.left.name]['isUpdated'] = true; // active (updated) player
 
         evaluateResult = assignmentExpressionResult;
-        fullSpool.push(spoolItem);
         break;
 
       case 'IfStatement':
-        fullSpool.push(spoolItem);
-
         function ifTest() {
           let ifTestEval = evaluate(node.test, nextExecLevel, modeBlocks, {
             parent: 'IfStatement'
@@ -183,8 +178,6 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
         break;
 
       case 'WhileStatement':
-        fullSpool.push(spoolItem);
-
         function whileTest() {
           let testEval = evaluate(node.test, nextExecLevel, modeBlocks, {
             parent: 'WhileStatement'
@@ -216,7 +209,6 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
         } else if (node.operator === '--') {
           context[varName]['value'] -= 1;
         }
-        fullSpool.push(spoolItem);
         break;
 
       case 'CallExpression':
@@ -239,7 +231,6 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
             throw new Error('Unsupported method: ' + property);
           }
         }
-        fullSpool.push(spoolItem);
         break;
 
       case 'MemberExpression':
@@ -258,6 +249,10 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
     if (astNodeTypesMeta[nodeType].clearPlayers) {
       prevFullSpoolItem = structuredClone(spoolItem);
       clearPlayerState(prevFullSpoolItem);
+    }
+
+    if (astNodeTypesMeta[nodeType].spoolPush === 'after') {
+      fullSpool.push(spoolItem);
     }
 
     return evaluateResult;
