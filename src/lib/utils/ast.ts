@@ -6,7 +6,8 @@ import {
   bequeathEvalEmpty,
   spoolItemBase,
   binaryExpressionResultMap,
-  assignmentExpressionMap
+  assignmentExpressionMap,
+  getRandomId
 } from './utils';
 
 export function getAST(program: string) {
@@ -38,6 +39,7 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
     let programPart = program.slice(cursor.start, cursor.end);
 
     let spoolItem = {
+      _id: getRandomId(),
       nodeType,
       execLevel,
       context,
@@ -47,8 +49,7 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
       cursor,
       programPart,
       topLevel: false,
-      anim: false,
-      index: fullSpool.length
+      anim: false
     };
 
     let newPlayer = {};
@@ -109,7 +110,7 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
             throw new Error('Unsupported unary operator: ' + node.operator);
         }
 
-      // case 'BinaryExpression':
+      // case 'BinaryExpression': ['interactions'] = { left, right, fn: node.operator };
       case 'BinaryExpression':
         // is one of the math operations, with a left, right and operator
 
@@ -137,12 +138,11 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
 
         const left = evaluate(node.left, nextExecLevel, modeBlocks);
         const right = evaluate(node.right, nextExecLevel, modeBlocks);
-        spoolItem['interactions'] = { left, right, fn: node.operator };
+
         return binaryExpressionResultMap[node.operator](left, right);
 
-      // case 'Identifier':
+      // case 'Identifier': ['interactions'] = { player: node.name };
       case 'Identifier':
-        spoolItem['interactions'] = { player: node.name };
         // is a player (var) from the scope
         spoolItem['context'][node.name]['isUpdated'] = true; // participating player
         fullSpool.push(spoolItem);
@@ -163,37 +163,6 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
         // come in last like a good person (eg. VariableDeclaration)
         return exp_result;
 
-      // case 'WhileStatement':
-      // Similar to handling structure of the 'IfStatement' block
-      case 'WhileStatement':
-        fullSpool.push(spoolItem); // Naa don't wanna give any attention to the whole block, unless necessary, only to its statements
-        spoolItem['topLevel'] = true;
-
-        function whileTest() {
-          let testEval = evaluate(node.test, nextExecLevel, modeBlocks, {
-            parent: 'WhileStatement'
-          });
-          let WhileTestSpoolItem = fullSpool[fullSpool.length - 1];
-
-          // pass the modeblocks received here from this point on.
-
-          // I think we don't need to this here as we already append to previous in the if statetment
-          // let blocksSoFar = WhileTestSpoolItem['modeBlocks']['blocksSoFar'];
-          // modeBlocks['blocksSoFar'].concat(blocksSoFar);
-
-          modeBlocks = WhileTestSpoolItem['modeBlocks'];
-          spoolItem['modeBlocks'] = modeBlocks;
-          WhileTestSpoolItem['modeBlocks'] = modeBlocks;
-          return testEval;
-        }
-        // of course, a literal while loop
-        // while (evaluate(node.test, nextExecLevel, modeBlocks)) {
-        while (whileTest()) {
-          console.log('==========Here loop');
-          evaluate(node.body, nextExecLevel, modeBlocks);
-        }
-        break;
-
       // case 'IfStatement':
       case 'IfStatement':
         fullSpool.push(spoolItem); // Naa don't wanna give any attention to the whole block, unless necessary, only to its statements
@@ -201,12 +170,6 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
 
         let ifTestEval = evaluate(node.test, nextExecLevel, modeBlocks, { parent: 'IfStatement' });
         let ifTestSpoolItem = fullSpool[fullSpool.length - 1];
-
-        // pass the modeblocks received here from this point on.
-
-        // I think we don't need to this here as we already append to previous in the if statetment
-        // let blocksSoFar = ifTestSpoolItem['modeBlocks']['blocksSoFar'];
-        // modeBlocks['blocksSoFar'].concat(blocksSoFar);
 
         modeBlocks = ifTestSpoolItem['modeBlocks'];
         spoolItem['modeBlocks'] = modeBlocks;
@@ -221,16 +184,39 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
 
         break;
 
-      case 'BlockStatement':
-        fullSpool.push(spoolItem); // Naa don't wanna give any attention to the block, unless necessary, only to its statements
+      // case 'WhileStatement':
+      // Similar to handling structure of the 'IfStatement' block
+      case 'WhileStatement':
+        fullSpool.push(spoolItem); // Naa don't wanna give any attention to the whole block, unless necessary, only to its statements
         spoolItem['topLevel'] = true;
 
+        function whileTest() {
+          let testEval = evaluate(node.test, nextExecLevel, modeBlocks, {
+            parent: 'WhileStatement'
+          });
+          let WhileTestSpoolItem = fullSpool[fullSpool.length - 1];
+
+          modeBlocks = WhileTestSpoolItem['modeBlocks'];
+          spoolItem['modeBlocks'] = modeBlocks;
+          WhileTestSpoolItem['modeBlocks'] = modeBlocks;
+          return testEval;
+        }
+        // of course, a literal while loop
+        // while (evaluate(node.test, nextExecLevel, modeBlocks)) {
+        while (whileTest()) {
+          console.log('==========Here loop');
+          evaluate(node.body, nextExecLevel, modeBlocks);
+        }
+        break;
+
+      case 'BlockStatement':
+        fullSpool.push(spoolItem); // Naa don't wanna give any attention to the block, unless necessary, only to its statements
         for (let statement of node.body) {
           evaluate(statement, nextExecLevel, modeBlocks);
         }
         break;
 
-      // The AssignmentExpression
+      // The AssignmentExpression: ['interactions'] = { target: node.left.name, value: assignmentExpressionResult };
       case 'AssignmentExpression':
         const leftValue = evaluate(node.left, nextExecLevel, modeBlocks);
         const rightValue = evaluate(node.right, nextExecLevel, modeBlocks);
@@ -242,7 +228,6 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
 
         spoolItem['context'][node.left.name]['value'] = assignmentExpressionResult;
         spoolItem['context'][node.left.name]['isUpdated'] = true; // active (updated) player
-        spoolItem['interactions'] = { target: node.left.name, value: assignmentExpressionResult };
         fullSpool.push(spoolItem);
         return assignmentExpressionResult;
 
@@ -264,8 +249,6 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
         if (callee.type === 'MemberExpression') {
           // get console.log() out of the way
           if (callee.object.name === 'console' && callee.property.name === 'log') {
-            // prevFullSpoolItem = structuredClone(spoolItem);
-            // clearPlayerState(prevFullSpoolItem);
             fullSpool.push(spoolItem);
             break;
           }
@@ -274,7 +257,6 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
           const property = callee.property.name;
 
           if (typeof object[property] === 'function') {
-            spoolItem['interactions'] = { args: [object, property, args] }; // array.push doesn't come here seems
             return object[property](...args);
           } else {
             throw new Error('Unsupported method: ' + property);
@@ -288,8 +270,6 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
         const property = node.computed
           ? evaluate(node.property, nextExecLevel, modeBlocks)
           : node.property.name;
-
-        spoolItem['interactions'] = { args2: [object, property] }; // array.push doesn't come here seems
         return object[property];
 
       default:

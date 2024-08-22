@@ -19,7 +19,7 @@
   $: unspoolExecute(ast, program, fullSpool, meta);
 
   $: spoolAnim = fullSpool.filter((s) => s.anim === true);
-  console.log('spoolAnim', spoolAnim); // why is this undefined??
+  console.log('spoolAnim', spoolAnim); // why is this undefined?? need this to work to highlight index
   console.log('fullSpool', fullSpool);
 
   $: currSpoolItem = spoolAnim[index];
@@ -45,7 +45,7 @@
       {#each fullSpool as spoolItem, i}
         <SpoolItem
           {...spoolItem}
-          active={i === currSpoolItem['index']}
+          active={spoolItem._id === currSpoolItem._id}
           {meta}
           templateType="spool"
         />

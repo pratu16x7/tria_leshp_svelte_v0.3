@@ -8,6 +8,7 @@ export function isEmpty(obj) {
   return true;
 }
 
+// what we support
 export const binaryExpressionResultMap = {
   '+': (left, right) => left + right,
   '-': (left, right) => left - right,
@@ -54,6 +55,7 @@ export const modeBlocksEmpty = { blocksSoFar: [] };
 export const bequeathEvalEmpty = { parent: undefined };
 
 export const spoolItemBase = {
+  _id: '',
   nodeType: '',
   execLevel: 0,
   context: {},
@@ -61,8 +63,13 @@ export const spoolItemBase = {
   interactions: {},
   literalValue: [],
   cursor: { start: 0, end: 0 },
-  index: 0,
   programPart: '',
   topLevel: false,
   anim: false
+};
+
+export const getRandomId = () => {
+  let id = 'id' + Math.random().toString(16).slice(2);
+  // let id = crypto.randomUUID(); // chrome > 92 and only in HTTPS  // https://developer.mozilla.org/en-US/docs/Web/API/Crypto/randomUUID
+  return id;
 };
