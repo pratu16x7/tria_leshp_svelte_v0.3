@@ -8,6 +8,8 @@
 // check if all nodes supported (needs AST)
 // check if all operators supported (needs AST)
 // max loop depth etc (needs AST eval)
+// max if else depth
+// max block depth in general
 // max int size (needs AST)
 // max string length (needs AST)
 // _
