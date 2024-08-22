@@ -63,5 +63,6 @@ export const spoolItemBase = {
   cursor: { start: 0, end: 0 },
   index: 0,
   programPart: '',
-  topLevel: false
+  topLevel: false,
+  anim: false
 };

@@ -14,6 +14,7 @@ export function getAST(program: string) {
   return ast;
 }
 
+//  indicates if you're part of the main (animation) spool
 function clearPlayerState(spoolItem) {
   // console.log('spoolItem =======', spoolItem);
   Object.values(spoolItem['context']).map((playerState) => {
@@ -21,13 +22,7 @@ function clearPlayerState(spoolItem) {
   });
 }
 
-export function unspoolExecute(
-  ast,
-  program,
-  spool = [spoolItemBase],
-  fullSpool = [spoolItemBase],
-  meta = metaBase
-) {
+export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta = metaBase) {
   let prevFullSpoolItem = structuredClone(fullSpool[fullSpool.length - 1]);
   function evaluate(
     node,
@@ -51,7 +46,8 @@ export function unspoolExecute(
       literalValue: [],
       cursor,
       programPart,
-      topLevel: false
+      topLevel: false,
+      anim: false
     };
 
     let newPlayer = {};
@@ -81,8 +77,8 @@ export function unspoolExecute(
         }
         spoolItem['index'] = fullSpool.length;
         fullSpool.push(spoolItem);
-        spool.push(spoolItem);
         prevFullSpoolItem = structuredClone(spoolItem);
+        spoolItem['anim'] = true;
         clearPlayerState(prevFullSpoolItem);
         spoolItem['topLevel'] = true;
         break;
@@ -92,16 +88,12 @@ export function unspoolExecute(
         // is just a, well, literal value
         spoolItem['literalValue'].push(node.value);
         spoolItem['index'] = fullSpool.length;
-        prevFullSpoolItem = structuredClone(spoolItem);
-        // clearPlayerState(prevFullSpoolItem);
         fullSpool.push(spoolItem);
         return node.value;
 
       // case 'ArrayExpression':
       case 'ArrayExpression':
         spoolItem['index'] = fullSpool.length;
-        prevFullSpoolItem = structuredClone(spoolItem);
-        // clearPlayerState(prevFullSpoolItem);
         fullSpool.push(spoolItem);
         return node.elements.map((element) => evaluate(element, nextExecLevel, modeBlocks));
 
@@ -111,8 +103,6 @@ export function unspoolExecute(
         spoolItem['interactions'] = { arg, fn: node.operator };
         spoolItem['index'] = fullSpool.length;
 
-        prevFullSpoolItem = structuredClone(spoolItem);
-        // clearPlayerState(prevFullSpoolItem);
         fullSpool.push(spoolItem);
 
         switch (node.operator) {
@@ -142,11 +132,10 @@ export function unspoolExecute(
 
         spoolItem['index'] = fullSpool.length;
         prevFullSpoolItem = structuredClone(spoolItem);
-        // clearPlayerState(prevFullSpoolItem);
         fullSpool.push(spoolItem);
 
         if (bequeathEval) {
-          spool.push(spoolItem);
+          spoolItem['anim'] = true;
           clearPlayerState(prevFullSpoolItem);
         }
 
@@ -161,8 +150,6 @@ export function unspoolExecute(
         // is a player (var) from the scope
         spoolItem['index'] = fullSpool.length;
         spoolItem['context'][node.name]['isUpdated'] = true; // participating player
-        prevFullSpoolItem = structuredClone(spoolItem);
-        // clearPlayerState(prevFullSpoolItem);
         fullSpool.push(spoolItem);
         // Where the real eval magic happens: get the context var VALUE not var name
         return spoolItem['context'][node.name]['value'];
@@ -173,8 +160,9 @@ export function unspoolExecute(
         let exp_result = evaluate(node.expression, nextExecLevel, modeBlocks);
         spoolItem['index'] = fullSpool.length;
         fullSpool.push(spoolItem);
-        spool.push(spoolItem);
         prevFullSpoolItem = structuredClone(spoolItem);
+
+        spoolItem['anim'] = true;
         clearPlayerState(prevFullSpoolItem);
         spoolItem['topLevel'] = true;
 
@@ -185,10 +173,7 @@ export function unspoolExecute(
       // Similar to handling structure of the 'IfStatement' block
       case 'WhileStatement':
         spoolItem['index'] = fullSpool.length;
-        fullSpool.push(spoolItem);
-        // spool.push(spoolItem);   // Naa don't wanna give any attention to the whole block, unless necessary, only to its statements
-        prevFullSpoolItem = structuredClone(spoolItem);
-        // clearPlayerState(prevFullSpoolItem);
+        fullSpool.push(spoolItem); // Naa don't wanna give any attention to the whole block, unless necessary, only to its statements
         spoolItem['topLevel'] = true;
 
         function whileTest() {
@@ -219,10 +204,7 @@ export function unspoolExecute(
       // case 'IfStatement':
       case 'IfStatement':
         spoolItem['index'] = fullSpool.length;
-        fullSpool.push(spoolItem);
-        // spool.push(spoolItem);  // Naa don't wanna give any attention to the whole block, unless necessary, only to its statements
-        prevFullSpoolItem = structuredClone(spoolItem);
-        // clearPlayerState(prevFullSpoolItem);
+        fullSpool.push(spoolItem); // Naa don't wanna give any attention to the whole block, unless necessary, only to its statements
         spoolItem['topLevel'] = true;
 
         let ifTestEval = evaluate(node.test, nextExecLevel, modeBlocks, { parent: 'IfStatement' });
@@ -249,10 +231,7 @@ export function unspoolExecute(
 
       case 'BlockStatement':
         spoolItem['index'] = fullSpool.length;
-        fullSpool.push(spoolItem);
-        // spool.push(spoolItem);  // Naa don't wanna give any attention to the block, unless necessary, only to its statements
-        prevFullSpoolItem = structuredClone(spoolItem);
-        // clearPlayerState(prevFullSpoolItem);
+        fullSpool.push(spoolItem); // Naa don't wanna give any attention to the block, unless necessary, only to its statements
         spoolItem['topLevel'] = true;
 
         for (let statement of node.body) {
@@ -274,8 +253,6 @@ export function unspoolExecute(
         spoolItem['context'][node.left.name]['isUpdated'] = true; // active (updated) player
         spoolItem['interactions'] = { target: node.left.name, value: assignmentExpressionResult };
         spoolItem['index'] = fullSpool.length;
-        prevFullSpoolItem = structuredClone(spoolItem);
-        // clearPlayerState(prevFullSpoolItem);
         fullSpool.push(spoolItem);
         return assignmentExpressionResult;
 
@@ -288,8 +265,6 @@ export function unspoolExecute(
           context[varName]['value'] -= 1;
         }
         spoolItem['index'] = fullSpool.length;
-        prevFullSpoolItem = structuredClone(spoolItem);
-        // clearPlayerState(prevFullSpoolItem);
         fullSpool.push(spoolItem);
         break;
 
@@ -317,8 +292,6 @@ export function unspoolExecute(
           }
         }
         spoolItem['index'] = fullSpool.length;
-        prevFullSpoolItem = structuredClone(spoolItem);
-        // clearPlayerState(prevFullSpoolItem);
         fullSpool.push(spoolItem);
         break;
 
@@ -333,8 +306,6 @@ export function unspoolExecute(
 
       default:
         spoolItem['index'] = fullSpool.length;
-        prevFullSpoolItem = structuredClone(spoolItem);
-        // clearPlayerState(prevFullSpoolItem);
         fullSpool.push(spoolItem);
         throw new Error('Unsupported node type: ' + node.type);
     }
@@ -344,6 +315,4 @@ export function unspoolExecute(
     evaluate(node);
     // console.log('Context:', spool);
   }
-
-  return spool;
 }

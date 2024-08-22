@@ -14,11 +14,15 @@
   $: astNode = ast.body;
 
   let meta = metaBase;
-  let spool = [spoolItemBase];
   let fullSpool = [spoolItemBase];
-  $: spoolUpdated = unspoolExecute(ast, program, spool, fullSpool, meta);
+  $: fullSpool = fullSpool; // heh, svelte
+  $: unspoolExecute(ast, program, fullSpool, meta);
 
-  $: currSpoolItem = spoolUpdated[index + 1];
+  $: spoolAnim = fullSpool.filter((s) => s.anim === true);
+  console.log('spoolAnim', spoolAnim); // why is this undefined??
+  console.log('fullSpool', fullSpool);
+
+  $: currSpoolItem = spoolAnim[index];
   $: ({ context, interactions, execLevel, nodeType, cursor, programPart } = currSpoolItem);
   // $: currLine = program.slice(cursor.start, cursor.end);
 
@@ -41,7 +45,7 @@
       {#each fullSpool as spoolItem, i}
         <SpoolItem
           {...spoolItem}
-          active={i === spoolUpdated[index + 1]['index']}
+          active={i === currSpoolItem['index']}
           {meta}
           templateType="spool"
         />
