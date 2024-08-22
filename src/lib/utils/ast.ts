@@ -19,7 +19,7 @@ export function getAST(program: string) {
 function clearPlayerState(spoolItem) {
   // console.log('spoolItem =======', spoolItem);
   Object.values(spoolItem['context']).map((playerState) => {
-    playerState['isUpdated'] = false;
+    playerState['isPlaying'] = false;
   });
 }
 
@@ -69,9 +69,7 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
         break;
 
       case 'Identifier':
-        spoolItem['context'][node.name]['isUpdated'] = true; // participating player
-
-        // Where the real eval magic happens: get the context var VALUE not var name
+        spoolItem['context'][node.name]['isPlaying'] = true; // participating player
         _res = spoolItem['context'][node.name]['value']; // no eval needed, just context
         break;
 
@@ -85,7 +83,7 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
           };
           newPlayer = {
             value: varValue,
-            isUpdated: true // persists, working
+            isPlaying: true // persists, working
           };
           meta['players'][varName] = newPlayerMeta;
           spoolItem['context'][varName] = newPlayer;
@@ -141,7 +139,7 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
 
         _res = assignmentOperatorMap[node.operator](leftValue, rightValue);
         context[varName]['value'] = _res;
-        context[varName]['isUpdated'] = true; // active (updated) player
+        context[varName]['isPlaying'] = true; // active (updated) player
         break;
 
       case 'UpdateExpression':
@@ -149,7 +147,7 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
 
         _res = updateOperatorMap[node.operator](context[varName]['value']);
         context[varName]['value'] = _res;
-        context[varName]['isUpdated'] = true; // active (updated) player
+        context[varName]['isPlaying'] = true; // active (updated) player
         break;
 
       case 'IfStatement':

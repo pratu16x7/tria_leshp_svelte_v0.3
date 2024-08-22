@@ -58,6 +58,7 @@ export const astNodeTypesMeta = {
   Literal: {},
 
   // Identifier: // is a player (var) from the scope // ['interactions'] = { player: node.name };
+  // Where the real eval magic happens: get the context var VALUE not var name
   Identifier: { spoolPush: 'after' },
 
   // VariableDeclaration: // Is a new player (var) added to the scope

@@ -13,10 +13,10 @@
         name={player}
         number={state['value']}
         color="green"
-        active={state['isUpdated']}
+        active={state['isPlaying']}
       />
     {:else if meta['players'][player]['type'] === 'array' || meta['players'][player]['type'] === 'string'}
-      <PlayerArray name={player} array={state['value']} active={state['isUpdated']} />
+      <PlayerArray name={player} array={state['value']} active={state['isPlaying']} />
     {:else}
       <p>{player}, {state['value']}</p>
     {/if}
