@@ -57,6 +57,8 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
 
     let nextExecLevel = execLevel + 1;
 
+    let evaluateResult;
+
     switch (nodeType) {
       case 'Literal':
         return node.value;
@@ -93,11 +95,15 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
         fullSpool.push(spoolItem);
         prevFullSpoolItem = structuredClone(spoolItem);
         clearPlayerState(prevFullSpoolItem);
-        return exp_result; // come in last like a good person (eg. VariableDeclaration)
+        evaluateResult = exp_result; // come in last like a good person (eg. VariableDeclaration)
+        break;
 
       case 'ArrayExpression':
         fullSpool.push(spoolItem);
-        return node.elements.map((element) => evaluate(element, nextExecLevel, modeBlocks));
+        evaluateResult = node.elements.map((element) =>
+          evaluate(element, nextExecLevel, modeBlocks)
+        );
+        break;
 
       case 'UnaryExpression':
         const arg = evaluate(node.argument, nextExecLevel, modeBlocks);
@@ -105,10 +111,11 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
 
         switch (node.operator) {
           case '!':
-            return !arg;
+            evaluateResult = !arg;
           default:
             throw new Error('Unsupported unary operator: ' + node.operator);
         }
+        break;
 
       case 'BinaryExpression':
         // TODO: what if this is not the final test
@@ -133,7 +140,8 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
         const left = evaluate(node.left, nextExecLevel, modeBlocks);
         const right = evaluate(node.right, nextExecLevel, modeBlocks);
 
-        return binaryExpressionResultMap[node.operator](left, right);
+        evaluateResult = binaryExpressionResultMap[node.operator](left, right);
+        break;
 
       // The AssignmentExpression: ['interactions'] = { target: node.left.name, value: assignmentExpressionResult };
       case 'AssignmentExpression':
@@ -148,7 +156,8 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
         spoolItem['context'][node.left.name]['value'] = assignmentExpressionResult;
         spoolItem['context'][node.left.name]['isUpdated'] = true; // active (updated) player
         fullSpool.push(spoolItem);
-        return assignmentExpressionResult;
+        evaluateResult = assignmentExpressionResult;
+        break;
 
       case 'IfStatement':
         fullSpool.push(spoolItem);
@@ -240,12 +249,17 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
         const property = node.computed
           ? evaluate(node.property, nextExecLevel, modeBlocks)
           : node.property.name;
-        return object[property];
+        evaluateResult = object[property];
+        break;
 
       default:
         fullSpool.push(spoolItem);
         throw new Error('Unsupported node type: ' + node.type);
     }
+
+    // if (astNodeTypesMeta[nodeType].clearPlayers) {
+    // }
+    return evaluateResult;
   }
 
   for (let node of ast.body) {

@@ -56,7 +56,6 @@ console.log("foo")`
 // let num = 5;
 let l = [1,2,3];
 while (j < 3) {
-  // num += 10;
   l.push(j);
   j += 1;
 }
