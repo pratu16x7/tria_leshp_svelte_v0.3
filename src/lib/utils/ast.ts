@@ -1,12 +1,12 @@
 import { parse } from 'acorn';
 import { toType, getRandomId } from './_index';
 import {
-  binaryExpressionResultMap,
+  binaryOperatorMap,
   metaBase,
   modeBlocksEmpty,
   bequeathEvalEmpty,
   spoolItemBase,
-  assignmentExpressionMap,
+  assignmentOperatorMap,
   astNodeTypesMeta
 } from './what-we-support';
 
@@ -136,23 +136,26 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
         const left = evaluate(node.left, nextExecLevel, modeBlocks);
         const right = evaluate(node.right, nextExecLevel, modeBlocks);
 
-        evaluateResult = binaryExpressionResultMap[node.operator](left, right);
+        evaluateResult = binaryOperatorMap[node.operator](left, right);
         break;
 
-      // The AssignmentExpression: ['interactions'] = { target: node.left.name, value: assignmentExpressionResult };
       case 'AssignmentExpression':
+        let varName = node.left.name;
+
         const leftValue = evaluate(node.left, nextExecLevel, modeBlocks);
         const rightValue = evaluate(node.right, nextExecLevel, modeBlocks);
 
-        let assignmentExpressionResult = assignmentExpressionMap[node.operator](
-          leftValue,
-          rightValue
-        );
+        evaluateResult = assignmentOperatorMap[node.operator](leftValue, rightValue);
+        context[varName]['value'] = evaluateResult;
+        context[varName]['isUpdated'] = true; // active (updated) player
+        break;
 
-        spoolItem['context'][node.left.name]['value'] = assignmentExpressionResult;
-        spoolItem['context'][node.left.name]['isUpdated'] = true; // active (updated) player
+      case 'UpdateExpression':
+        varName = node.argument.name;
 
-        evaluateResult = assignmentExpressionResult;
+        evaluateResult = updateOperatorMap[node.operator](context[varName]['value']);
+        context[varName]['value'] = evaluateResult;
+        context[varName]['isUpdated'] = true; // active (updated) player
         break;
 
       case 'IfStatement':
@@ -198,16 +201,6 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
       case 'BlockStatement':
         for (let statement of node.body) {
           evaluate(statement, nextExecLevel, modeBlocks);
-        }
-        break;
-
-      case 'UpdateExpression':
-        const varName = node.argument.name;
-        context[varName]['isUpdated'] = true; // active (updated) player
-        if (node.operator === '++') {
-          context[varName]['value'] += 1;
-        } else if (node.operator === '--') {
-          context[varName]['value'] -= 1;
         }
         break;
 

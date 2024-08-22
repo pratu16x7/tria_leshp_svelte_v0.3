@@ -22,8 +22,4 @@
 // _
 // _
 
-import {
-  astNodeTypes,
-  binaryExpressionResultMap,
-  assignmentExpressionMap
-} from './utils/what-we-support';
+import { astNodeTypes, binaryOperatorMap, assignmentOperatorMap } from './utils/what-we-support';

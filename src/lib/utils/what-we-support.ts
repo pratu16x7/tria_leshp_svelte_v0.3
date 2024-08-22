@@ -54,49 +54,51 @@ export const spoolItemBase = {
 
 // SERIALIZE: default values, can be updated during AST evaluation
 export const astNodeTypesMeta = {
-  // case 'Literal': // just a literal value, // NO IMPORTANCE YET // ['literalValue'].push(node.value);
+  // Literal: // just a literal value, // NO IMPORTANCE YET // ['literalValue'].push(node.value);
   Literal: {},
 
-  // case 'Identifier': // is a player (var) from the scope // ['interactions'] = { player: node.name };
+  // Identifier: // is a player (var) from the scope // ['interactions'] = { player: node.name };
   Identifier: { spoolPush: 'after' },
 
-  // case 'VariableDeclaration': // Is a new player (var) added to the scope
+  // VariableDeclaration: // Is a new player (var) added to the scope
   // LVL 0
   VariableDeclaration: { anim: true, topLevel: true, clearPlayers: true, spoolPush: 'after' },
 
-  // case 'ExpressionStatement':  // LVL 0
+  // ExpressionStatement:  // LVL 0
   ExpressionStatement: { anim: true, topLevel: true, clearPlayers: true, spoolPush: 'after' },
 
-  // case 'ArrayExpression':
-  ArrayExpression: { spoolPush: 'before' },
-
-  // case 'UnaryExpression': // is one of the math operations, with a left, right and operator ['interactions'] = { arg, fn: node.operator };
-  UnaryExpression: { spoolPush: 'before' }, // can have token support test: unaryOperatorMap
-
-  // case 'BinaryExpression': ['interactions'] = { left, right, fn: node.operator };
-  BinaryExpression: { spoolPush: 'before' }, // can have token support test: binaryOperatorMap
-
+  // The AssignmentExpression: ['interactions'] = { target: node.left.name, value: assignmentExpressionResult };
   AssignmentExpression: { spoolPush: 'after' }, // woah doesn't have to be a stmt
 
+  // Update expression
   UpdateExpression: { spoolPush: 'after' }, // woah doesn't have to be a stmt
 
-  // case 'IfStatement': // No ANIM, don't wanna give any attention to the whole block, unless necessary, only to its statements
+  // ArrayExpression:
+  ArrayExpression: { spoolPush: 'before' },
+
+  // UnaryExpression: // is one of the math operations, with a left, right and operator ['interactions'] = { arg, fn: node.operator };
+  UnaryExpression: { spoolPush: 'before' }, // can have token support test: unaryOperatorMap
+
+  // BinaryExpression: ['interactions'] = { left, right, fn: node.operator };
+  BinaryExpression: { spoolPush: 'before' }, // can have token support test: binaryOperatorMap
+
+  // IfStatement: // No ANIM, don't wanna give any attention to the whole block, unless necessary, only to its statements
   IfStatement: { topLevel: true, spoolPush: 'before' },
 
-  // case 'WhileStatement': // Similar to handling structure of the 'IfStatement' block
+  // WhileStatement: // Similar to handling structure of the 'IfStatement' block
   WhileStatement: { topLevel: true, spoolPush: 'before' },
 
   // BlockStatement:  // NO IMPORTANCE YET // Naa don't wanna give any attention to the block, unless necessary, only to its statements
   BlockStatement: {},
 
-  CallExpression: { spoolPush: 'after' },
+  CallExpression: { spoolPush: 'before' },
 
   MemberExpression: {}
 };
 
 export const unaryOperatorMap = {};
 
-export const binaryExpressionResultMap = {
+export const binaryOperatorMap = {
   '+': (left, right) => left + right,
   '-': (left, right) => left - right,
   '*': (left, right) => left * right,
@@ -113,7 +115,7 @@ export const binaryExpressionResultMap = {
   // modulo and others
 };
 
-export const assignmentExpressionMap = {
+export const assignmentOperatorMap = {
   '=': (leftValue, rightValue) => rightValue,
   '+=': (leftValue, rightValue) => leftValue + rightValue,
   '-=': (leftValue, rightValue) => leftValue - rightValue,
@@ -122,6 +124,9 @@ export const assignmentExpressionMap = {
   // Add other compound operators as needed
 };
 
-export const updateOperatorMap = {};
+export const updateOperatorMap = {
+  '++': (value) => value + 1,
+  '--': (value) => value - 1
+};
 
 export const functionsSupported = {};
