@@ -49,14 +49,25 @@ while (j < 3) {
   j += 1;
 }
 console.log("foo")`
-  }, // test uncompress raw code
+  },
+
+  array_1: {
+    text: `let j = 0;
+// let num = 5;
+let l = [1,2,3];
+while (j < 3) {
+  // num += 10;
+  l.push(j);
+  j += 1;
+}
+console.log("foo");`
+  },
 
   functionCall: {
     text: `function example() {
   console.log('Hello, world!');
 }`
-  } // test uncompress as function code
-  //   functionCall: {},
+  }
   //   functionCall: {},
   //   functionCall: {},
   //   functionCall: {},
@@ -64,6 +75,9 @@ console.log("foo")`
 };
 
 export const algorithms = {
+  // test uncompress raw code
+  // test uncompress as function code
+
   uncompress: {
     text: `let s = "2t3o11g2s";
 let res = "";
@@ -100,5 +114,18 @@ console.log("foo")`
 // Example usage
 const compressedString = "3a4b2c";
 console.log(uncompress(compressedString));  // Outputs: aaabbbbcc`
+  }
+};
+
+const erroring_programs_to_handle_at_first_meta_check = {
+  syntax_err_unknown_symbol: {
+    text: `let s = [0,1,2,3];
+// let j = 0;
+let num = j;  // unknown symbol
+while (j < 3) {
+  s.push(j);
+  j += 1;
+}
+console.log("foo")`
   }
 };
