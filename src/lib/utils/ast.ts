@@ -61,13 +61,16 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
 
     switch (nodeType) {
       case 'Literal':
-        return node.value;
+        evaluateResult = node.value;
+        break;
 
       case 'Identifier':
         spoolItem['context'][node.name]['isUpdated'] = true; // participating player
-        fullSpool.push(spoolItem);
+
         // Where the real eval magic happens: get the context var VALUE not var name
-        return spoolItem['context'][node.name]['value']; // no eval needed, just context
+        evaluateResult = spoolItem['context'][node.name]['value']; // no eval needed, just context
+        fullSpool.push(spoolItem);
+        break;
 
       case 'VariableDeclaration':
         for (let declaration of node.declarations) {
@@ -89,9 +92,8 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
         break;
 
       case 'ExpressionStatement':
-        let exp_result = evaluate(node.expression, nextExecLevel, modeBlocks);
+        evaluateResult = evaluate(node.expression, nextExecLevel, modeBlocks); // come in last like a good person (eg. VariableDeclaration)
         fullSpool.push(spoolItem);
-        evaluateResult = exp_result; // come in last like a good person (eg. VariableDeclaration)
         break;
 
       case 'ArrayExpression':
@@ -102,8 +104,8 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
         break;
 
       case 'UnaryExpression':
-        const arg = evaluate(node.argument, nextExecLevel, modeBlocks);
         fullSpool.push(spoolItem);
+        const arg = evaluate(node.argument, nextExecLevel, modeBlocks);
 
         switch (node.operator) {
           case '!':
@@ -151,8 +153,9 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
 
         spoolItem['context'][node.left.name]['value'] = assignmentExpressionResult;
         spoolItem['context'][node.left.name]['isUpdated'] = true; // active (updated) player
-        fullSpool.push(spoolItem);
+
         evaluateResult = assignmentExpressionResult;
+        fullSpool.push(spoolItem);
         break;
 
       case 'IfStatement':
@@ -181,7 +184,6 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
 
       case 'WhileStatement':
         fullSpool.push(spoolItem);
-        spoolItem['topLevel'] = true;
 
         function whileTest() {
           let testEval = evaluate(node.test, nextExecLevel, modeBlocks, {
@@ -257,6 +259,7 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
       prevFullSpoolItem = structuredClone(spoolItem);
       clearPlayerState(prevFullSpoolItem);
     }
+
     return evaluateResult;
   }
 

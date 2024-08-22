@@ -29,8 +29,6 @@
   $: currentAstNodeItem = astNode[index] || '';
 </script>
 
-<h1>Leshp</h1>
-
 <!-- wow bind works parent to child ... (go to Function preview) -->
 <Counter bind:count={index} line={programPart} />
 <!-- <h1>{programPart}</h1> -->
@@ -81,7 +79,7 @@
     padding: 1em;
     flex: 1;
     overflow: scroll;
-    height: 800px; /* with page zoom at 67%*/
+    height: 500px; /* with page zoom at 67%*/
   }
   .active {
     color: orange;
