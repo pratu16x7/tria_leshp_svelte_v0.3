@@ -7,34 +7,6 @@ export function isEmpty(obj) {
 
   return true;
 }
-
-// what we support
-export const binaryExpressionResultMap = {
-  '+': (left, right) => left + right,
-  '-': (left, right) => left - right,
-  '*': (left, right) => left * right,
-  '/': (left, right) => left / right,
-  '%': (left, right) => left % right,
-  '<': (left, right) => left < right,
-  '>': (left, right) => left > right,
-  '<=': (left, right) => left <= right,
-  '>=': (left, right) => left >= right,
-  '==': (left, right) => left == right,
-  '===': (left, right) => left === right,
-  '!=': (left, right) => left != right,
-  '!==': (left, right) => left !== right
-  // modulo and others
-};
-
-export const assignmentExpressionMap = {
-  '=': (leftValue, rightValue) => rightValue,
-  '+=': (leftValue, rightValue) => leftValue + rightValue,
-  '-=': (leftValue, rightValue) => leftValue - rightValue,
-  '*=': (leftValue, rightValue) => leftValue * rightValue,
-  '/=': (leftValue, rightValue) => leftValue / rightValue
-  // Add other compound operators as needed
-};
-
 // https://stackoverflow.com/a/7390612/6495043
 export function toType(obj) {
   return {}.toString
@@ -72,4 +44,52 @@ export const getRandomId = () => {
   let id = 'id' + Math.random().toString(16).slice(2);
   // let id = crypto.randomUUID(); // chrome > 92 and only in HTTPS  // https://developer.mozilla.org/en-US/docs/Web/API/Crypto/randomUUID
   return id;
+};
+
+//////////////////
+// what we support
+//////////////////
+
+export const astNodeTypes = [
+  'VariableDeclaration',
+  'ArrayExpression',
+  'UnaryExpression',
+  'BinaryExpression',
+  'Identifier',
+  'Literal',
+  'ExpressionStatement',
+  'IfStatement',
+  'WhileStatement',
+  'BlockStatement',
+  'AssignmentExpression',
+  'AssignmentExpression',
+  'UpdateExpression',
+  'CallExpression',
+  'MemberExpression'
+];
+
+export const binaryExpressionResultMap = {
+  '+': (left, right) => left + right,
+  '-': (left, right) => left - right,
+  '*': (left, right) => left * right,
+  '/': (left, right) => left / right,
+  '%': (left, right) => left % right,
+  '<': (left, right) => left < right,
+  '>': (left, right) => left > right,
+  '<=': (left, right) => left <= right,
+  '>=': (left, right) => left >= right,
+  '==': (left, right) => left == right,
+  '===': (left, right) => left === right,
+  '!=': (left, right) => left != right,
+  '!==': (left, right) => left !== right
+  // modulo and others
+};
+
+export const assignmentExpressionMap = {
+  '=': (leftValue, rightValue) => rightValue,
+  '+=': (leftValue, rightValue) => leftValue + rightValue,
+  '-=': (leftValue, rightValue) => leftValue - rightValue,
+  '*=': (leftValue, rightValue) => leftValue * rightValue,
+  '/=': (leftValue, rightValue) => leftValue / rightValue
+  // Add other compound operators as needed
 };

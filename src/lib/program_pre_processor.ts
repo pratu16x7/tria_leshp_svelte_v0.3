@@ -5,14 +5,19 @@
 
 // 1.....check guardings:
 // check syntax errors (needs AST)
-// max loop depth etc (needs AST)
+// check if all nodes supported (needs AST)
+// check if all operators supported (needs AST)
+// max loop depth etc (needs AST eval)
+// max int size (needs AST)
 // max string length (needs AST)
 // _
 // _
 
 // 2.....okay program safe, get meta info
-// get meta (player info) (needs AST)
+// get meta (player info) (needs AST eval)
 // get player relations
 // _
 // _
 // _
+
+import { astNodeTypes, binaryExpressionResultMap, assignmentExpressionMap } from './utils/utils';

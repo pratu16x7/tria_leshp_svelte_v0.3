@@ -84,11 +84,8 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
         spoolItem['topLevel'] = true;
         break;
 
-      // case 'Literal':
+      // case 'Literal': // is just a, well, literal value, // NO IMPORTANCE YET // ['literalValue'].push(node.value);
       case 'Literal':
-        // is just a, well, literal value
-        spoolItem['literalValue'].push(node.value);
-        fullSpool.push(spoolItem);
         return node.value;
 
       // case 'ArrayExpression':
@@ -155,7 +152,6 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
         let exp_result = evaluate(node.expression, nextExecLevel, modeBlocks);
         fullSpool.push(spoolItem);
         prevFullSpoolItem = structuredClone(spoolItem);
-
         spoolItem['anim'] = true;
         clearPlayerState(prevFullSpoolItem);
         spoolItem['topLevel'] = true;
@@ -209,8 +205,8 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
         }
         break;
 
+      // BlockStatement:  // NO IMPORTANCE YET // Naa don't wanna give any attention to the block, unless necessary, only to its statements
       case 'BlockStatement':
-        fullSpool.push(spoolItem); // Naa don't wanna give any attention to the block, unless necessary, only to its statements
         for (let statement of node.body) {
           evaluate(statement, nextExecLevel, modeBlocks);
         }
