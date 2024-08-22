@@ -1,14 +1,13 @@
 import { parse } from 'acorn';
+import { toType, getRandomId } from './_index';
 import {
-  toType,
+  binaryExpressionResultMap,
   metaBase,
   modeBlocksEmpty,
   bequeathEvalEmpty,
   spoolItemBase,
-  binaryExpressionResultMap,
-  assignmentExpressionMap,
-  getRandomId
-} from './utils';
+  assignmentExpressionMap
+} from './what-we-support';
 
 export function getAST(program: string) {
   const ast = parse(program, { ecmaVersion: 2020 });
@@ -58,6 +57,18 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
     let nextExecLevel = execLevel + 1;
 
     switch (nodeType) {
+      // case 'Literal': // is just a, well, literal value, // NO IMPORTANCE YET // ['literalValue'].push(node.value);
+      case 'Literal':
+        return node.value;
+
+      // case 'Identifier': ['interactions'] = { player: node.name };
+      case 'Identifier':
+        // is a player (var) from the scope
+        spoolItem['context'][node.name]['isUpdated'] = true; // participating player
+        fullSpool.push(spoolItem);
+        // Where the real eval magic happens: get the context var VALUE not var name
+        return spoolItem['context'][node.name]['value'];
+
       // case 'VariableDeclaration':
       case 'VariableDeclaration':
         // LVL 0
@@ -84,14 +95,17 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
         spoolItem['topLevel'] = true;
         break;
 
-      // case 'Literal': // is just a, well, literal value, // NO IMPORTANCE YET // ['literalValue'].push(node.value);
-      case 'Literal':
-        return node.value;
-
-      // case 'ArrayExpression':
-      case 'ArrayExpression':
+      // case 'ExpressionStatement': // LVL 0
+      case 'ExpressionStatement':
+        let exp_result = evaluate(node.expression, nextExecLevel, modeBlocks);
         fullSpool.push(spoolItem);
-        return node.elements.map((element) => evaluate(element, nextExecLevel, modeBlocks));
+        prevFullSpoolItem = structuredClone(spoolItem);
+        spoolItem['anim'] = true;
+        clearPlayerState(prevFullSpoolItem);
+        spoolItem['topLevel'] = true;
+
+        // come in last like a good person (eg. VariableDeclaration)
+        return exp_result;
 
       // case 'UnaryExpression':
       case 'UnaryExpression':
@@ -138,26 +152,25 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
 
         return binaryExpressionResultMap[node.operator](left, right);
 
-      // case 'Identifier': ['interactions'] = { player: node.name };
-      case 'Identifier':
-        // is a player (var) from the scope
-        spoolItem['context'][node.name]['isUpdated'] = true; // participating player
+      // case 'ArrayExpression':
+      case 'ArrayExpression':
         fullSpool.push(spoolItem);
-        // Where the real eval magic happens: get the context var VALUE not var name
-        return spoolItem['context'][node.name]['value'];
+        return node.elements.map((element) => evaluate(element, nextExecLevel, modeBlocks));
 
-      // case 'ExpressionStatement':
-      case 'ExpressionStatement':
-        // LVL 0
-        let exp_result = evaluate(node.expression, nextExecLevel, modeBlocks);
+      // The AssignmentExpression: ['interactions'] = { target: node.left.name, value: assignmentExpressionResult };
+      case 'AssignmentExpression':
+        const leftValue = evaluate(node.left, nextExecLevel, modeBlocks);
+        const rightValue = evaluate(node.right, nextExecLevel, modeBlocks);
+
+        let assignmentExpressionResult = assignmentExpressionMap[node.operator](
+          leftValue,
+          rightValue
+        );
+
+        spoolItem['context'][node.left.name]['value'] = assignmentExpressionResult;
+        spoolItem['context'][node.left.name]['isUpdated'] = true; // active (updated) player
         fullSpool.push(spoolItem);
-        prevFullSpoolItem = structuredClone(spoolItem);
-        spoolItem['anim'] = true;
-        clearPlayerState(prevFullSpoolItem);
-        spoolItem['topLevel'] = true;
-
-        // come in last like a good person (eg. VariableDeclaration)
-        return exp_result;
+        return assignmentExpressionResult;
 
       // case 'IfStatement':
       case 'IfStatement':
@@ -211,21 +224,6 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
           evaluate(statement, nextExecLevel, modeBlocks);
         }
         break;
-
-      // The AssignmentExpression: ['interactions'] = { target: node.left.name, value: assignmentExpressionResult };
-      case 'AssignmentExpression':
-        const leftValue = evaluate(node.left, nextExecLevel, modeBlocks);
-        const rightValue = evaluate(node.right, nextExecLevel, modeBlocks);
-
-        let assignmentExpressionResult = assignmentExpressionMap[node.operator](
-          leftValue,
-          rightValue
-        );
-
-        spoolItem['context'][node.left.name]['value'] = assignmentExpressionResult;
-        spoolItem['context'][node.left.name]['isUpdated'] = true; // active (updated) player
-        fullSpool.push(spoolItem);
-        return assignmentExpressionResult;
 
       case 'UpdateExpression':
         const varName = node.argument.name;

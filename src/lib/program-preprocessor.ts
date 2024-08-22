@@ -20,4 +20,8 @@
 // _
 // _
 
-import { astNodeTypes, binaryExpressionResultMap, assignmentExpressionMap } from './utils/utils';
+import {
+  astNodeTypes,
+  binaryExpressionResultMap,
+  assignmentExpressionMap
+} from './utils/what-we-support';

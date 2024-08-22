@@ -1,19 +1,23 @@
-export function isEmpty(obj) {
-  for (const prop in obj) {
-    if (Object.hasOwn(obj, prop)) {
-      return false;
-    }
-  }
+//////////////////
+// what we support
+//////////////////
 
-  return true;
-}
-// https://stackoverflow.com/a/7390612/6495043
-export function toType(obj) {
-  return {}.toString
-    .call(obj)
-    .match(/\s([a-zA-Z]+)/)[1]
-    .toLowerCase();
-}
+export const astNodeTypes = [
+  'Literal',
+  'Identifier',
+  'VariableDeclaration',
+  'ExpressionStatement',
+  'UnaryExpression',
+  'BinaryExpression',
+  'ArrayExpression',
+  'AssignmentExpression', // woah doesn't have to be a stmt
+  'UpdateExpression', // woah doesn't have to be a stmt
+  'IfStatement',
+  'WhileStatement',
+  'BlockStatement',
+  'CallExpression',
+  'MemberExpression'
+];
 
 // TODO: how to use export const type here,
 // when you know you want an initial empty value to build upon
@@ -40,33 +44,26 @@ export const spoolItemBase = {
   anim: false
 };
 
-export const getRandomId = () => {
-  let id = 'id' + Math.random().toString(16).slice(2);
-  // let id = crypto.randomUUID(); // chrome > 92 and only in HTTPS  // https://developer.mozilla.org/en-US/docs/Web/API/Crypto/randomUUID
-  return id;
+// anim
+// top level
+// clear players ?
+//
+export const astNodeTypesMeta = {
+  Literal: {},
+  Identifier: {},
+  VariableDeclaration: {},
+  ExpressionStatement: {},
+  UnaryExpression: {},
+  BinaryExpression: {},
+  ArrayExpression: {},
+  AssignmentExpression: {}, // woah doesn't have to be a stmt
+  UpdateExpression: {}, // woah doesn't have to be a stmt
+  IfStatement: {},
+  WhileStatement: {},
+  BlockStatement: {},
+  CallExpression: {},
+  MemberExpression: {}
 };
-
-//////////////////
-// what we support
-//////////////////
-
-export const astNodeTypes = [
-  'VariableDeclaration',
-  'ArrayExpression',
-  'UnaryExpression',
-  'BinaryExpression',
-  'Identifier',
-  'Literal',
-  'ExpressionStatement',
-  'IfStatement',
-  'WhileStatement',
-  'BlockStatement',
-  'AssignmentExpression',
-  'AssignmentExpression',
-  'UpdateExpression',
-  'CallExpression',
-  'MemberExpression'
-];
 
 export const binaryExpressionResultMap = {
   '+': (left, right) => left + right,
@@ -93,3 +90,7 @@ export const assignmentExpressionMap = {
   '/=': (leftValue, rightValue) => leftValue / rightValue
   // Add other compound operators as needed
 };
+
+export const updateOperatorMap = {};
+
+export const functionsSupported = {};

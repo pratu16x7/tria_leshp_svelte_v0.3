@@ -4,7 +4,7 @@
   import SpoolItem from '../lib/components/SpoolItem.svelte';
   import TempCurrentSpoolItem from '../lib/components/TempCurrentSpoolItem.svelte';
   import { getAST, unspoolExecute } from '../lib/utils/ast';
-  import { spoolItemBase, metaBase } from '../lib/utils/utils';
+  import { metaBase, spoolItemBase } from './utils/what-we-support';
 
   export let program: string;
   $: index = 0;
@@ -19,7 +19,7 @@
   $: unspoolExecute(ast, program, fullSpool, meta);
 
   $: spoolAnim = fullSpool.filter((s) => s.anim === true);
-  console.log('spoolAnim', spoolAnim); // why is this undefined?? need this to work to highlight index
+  console.log('spoolAnim', spoolAnim); // why is this undefined here and not later??
   console.log('fullSpool', fullSpool);
 
   $: currSpoolItem = spoolAnim[index];
