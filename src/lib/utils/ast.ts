@@ -47,7 +47,8 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
       cursor,
       programPart,
       topLevel: false,
-      anim: false
+      anim: false,
+      index: fullSpool.length
     };
 
     let newPlayer = {};
@@ -75,7 +76,6 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
           spoolItem['context'][varName] = newPlayer;
           // spoolItem['newPlayers'][varName] = varValue;
         }
-        spoolItem['index'] = fullSpool.length;
         fullSpool.push(spoolItem);
         prevFullSpoolItem = structuredClone(spoolItem);
         spoolItem['anim'] = true;
@@ -87,13 +87,11 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
       case 'Literal':
         // is just a, well, literal value
         spoolItem['literalValue'].push(node.value);
-        spoolItem['index'] = fullSpool.length;
         fullSpool.push(spoolItem);
         return node.value;
 
       // case 'ArrayExpression':
       case 'ArrayExpression':
-        spoolItem['index'] = fullSpool.length;
         fullSpool.push(spoolItem);
         return node.elements.map((element) => evaluate(element, nextExecLevel, modeBlocks));
 
@@ -101,7 +99,6 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
       case 'UnaryExpression':
         const arg = evaluate(node.argument, nextExecLevel, modeBlocks);
         spoolItem['interactions'] = { arg, fn: node.operator };
-        spoolItem['index'] = fullSpool.length;
 
         fullSpool.push(spoolItem);
 
@@ -130,7 +127,6 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
           spoolItem['modeBlocks'] = modeBlocks;
         }
 
-        spoolItem['index'] = fullSpool.length;
         prevFullSpoolItem = structuredClone(spoolItem);
         fullSpool.push(spoolItem);
 
@@ -148,7 +144,6 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
       case 'Identifier':
         spoolItem['interactions'] = { player: node.name };
         // is a player (var) from the scope
-        spoolItem['index'] = fullSpool.length;
         spoolItem['context'][node.name]['isUpdated'] = true; // participating player
         fullSpool.push(spoolItem);
         // Where the real eval magic happens: get the context var VALUE not var name
@@ -158,7 +153,6 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
       case 'ExpressionStatement':
         // LVL 0
         let exp_result = evaluate(node.expression, nextExecLevel, modeBlocks);
-        spoolItem['index'] = fullSpool.length;
         fullSpool.push(spoolItem);
         prevFullSpoolItem = structuredClone(spoolItem);
 
@@ -172,7 +166,6 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
       // case 'WhileStatement':
       // Similar to handling structure of the 'IfStatement' block
       case 'WhileStatement':
-        spoolItem['index'] = fullSpool.length;
         fullSpool.push(spoolItem); // Naa don't wanna give any attention to the whole block, unless necessary, only to its statements
         spoolItem['topLevel'] = true;
 
@@ -203,7 +196,6 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
 
       // case 'IfStatement':
       case 'IfStatement':
-        spoolItem['index'] = fullSpool.length;
         fullSpool.push(spoolItem); // Naa don't wanna give any attention to the whole block, unless necessary, only to its statements
         spoolItem['topLevel'] = true;
 
@@ -230,7 +222,6 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
         break;
 
       case 'BlockStatement':
-        spoolItem['index'] = fullSpool.length;
         fullSpool.push(spoolItem); // Naa don't wanna give any attention to the block, unless necessary, only to its statements
         spoolItem['topLevel'] = true;
 
@@ -252,7 +243,6 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
         spoolItem['context'][node.left.name]['value'] = assignmentExpressionResult;
         spoolItem['context'][node.left.name]['isUpdated'] = true; // active (updated) player
         spoolItem['interactions'] = { target: node.left.name, value: assignmentExpressionResult };
-        spoolItem['index'] = fullSpool.length;
         fullSpool.push(spoolItem);
         return assignmentExpressionResult;
 
@@ -264,7 +254,6 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
         } else if (node.operator === '--') {
           context[varName]['value'] -= 1;
         }
-        spoolItem['index'] = fullSpool.length;
         fullSpool.push(spoolItem);
         break;
 
@@ -291,7 +280,6 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
             throw new Error('Unsupported method: ' + property);
           }
         }
-        spoolItem['index'] = fullSpool.length;
         fullSpool.push(spoolItem);
         break;
 
@@ -305,7 +293,6 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
         return object[property];
 
       default:
-        spoolItem['index'] = fullSpool.length;
         fullSpool.push(spoolItem);
         throw new Error('Unsupported node type: ' + node.type);
     }
