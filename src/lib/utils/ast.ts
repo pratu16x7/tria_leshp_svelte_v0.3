@@ -57,7 +57,7 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
 
     let nextExecLevel = execLevel + 1;
 
-    let evaluateResult;
+    let _res;
 
     if (astNodeTypesMeta[nodeType].spoolPush === 'before') {
       fullSpool.push(spoolItem);
@@ -65,14 +65,14 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
 
     switch (nodeType) {
       case 'Literal':
-        evaluateResult = node.value;
+        _res = node.value;
         break;
 
       case 'Identifier':
         spoolItem['context'][node.name]['isUpdated'] = true; // participating player
 
         // Where the real eval magic happens: get the context var VALUE not var name
-        evaluateResult = spoolItem['context'][node.name]['value']; // no eval needed, just context
+        _res = spoolItem['context'][node.name]['value']; // no eval needed, just context
         break;
 
       case 'VariableDeclaration':
@@ -94,13 +94,7 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
         break;
 
       case 'ExpressionStatement':
-        evaluateResult = evaluate(node.expression, nextExecLevel, modeBlocks); // come in last like a good person (eg. VariableDeclaration)
-        break;
-
-      case 'ArrayExpression':
-        evaluateResult = node.elements.map((element) =>
-          evaluate(element, nextExecLevel, modeBlocks)
-        );
+        _res = evaluate(node.expression, nextExecLevel, modeBlocks); // come in last like a good person (eg. VariableDeclaration)
         break;
 
       case 'UnaryExpression':
@@ -108,7 +102,7 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
 
         switch (node.operator) {
           case '!':
-            evaluateResult = !arg;
+            _res = !arg;
           default:
             throw new Error('Unsupported unary operator: ' + node.operator);
         }
@@ -136,7 +130,7 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
         const left = evaluate(node.left, nextExecLevel, modeBlocks);
         const right = evaluate(node.right, nextExecLevel, modeBlocks);
 
-        evaluateResult = binaryOperatorMap[node.operator](left, right);
+        _res = binaryOperatorMap[node.operator](left, right);
         break;
 
       case 'AssignmentExpression':
@@ -145,16 +139,16 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
         const leftValue = evaluate(node.left, nextExecLevel, modeBlocks);
         const rightValue = evaluate(node.right, nextExecLevel, modeBlocks);
 
-        evaluateResult = assignmentOperatorMap[node.operator](leftValue, rightValue);
-        context[varName]['value'] = evaluateResult;
+        _res = assignmentOperatorMap[node.operator](leftValue, rightValue);
+        context[varName]['value'] = _res;
         context[varName]['isUpdated'] = true; // active (updated) player
         break;
 
       case 'UpdateExpression':
         varName = node.argument.name;
 
-        evaluateResult = updateOperatorMap[node.operator](context[varName]['value']);
-        context[varName]['value'] = evaluateResult;
+        _res = updateOperatorMap[node.operator](context[varName]['value']);
+        context[varName]['value'] = _res;
         context[varName]['isUpdated'] = true; // active (updated) player
         break;
 
@@ -192,16 +186,19 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
           WhileTestSpoolItem['modeBlocks'] = modeBlocks;
           return testEval;
         }
+
         // of course, a literal while loop
         while (whileTest()) {
           evaluate(node.body, nextExecLevel, modeBlocks);
         }
         break;
 
+      case 'ArrayExpression':
+        _res = node.elements.map((element) => evaluate(element, nextExecLevel, modeBlocks));
+        break;
+
       case 'BlockStatement':
-        for (let statement of node.body) {
-          evaluate(statement, nextExecLevel, modeBlocks);
-        }
+        node.body.map((statement) => evaluate(statement, nextExecLevel, modeBlocks));
         break;
 
       case 'CallExpression':
@@ -231,7 +228,7 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
         const property = node.computed
           ? evaluate(node.property, nextExecLevel, modeBlocks)
           : node.property.name;
-        evaluateResult = object[property];
+        _res = object[property];
         break;
 
       default:
@@ -248,7 +245,7 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
       fullSpool.push(spoolItem);
     }
 
-    return evaluateResult;
+    return _res;
   }
 
   for (let node of ast.body) {

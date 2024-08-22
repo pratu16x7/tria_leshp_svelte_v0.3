@@ -67,14 +67,13 @@ export const astNodeTypesMeta = {
   // ExpressionStatement:  // LVL 0
   ExpressionStatement: { anim: true, topLevel: true, clearPlayers: true, spoolPush: 'after' },
 
+  // Assignment and update are siblings
+
   // The AssignmentExpression: ['interactions'] = { target: node.left.name, value: assignmentExpressionResult };
   AssignmentExpression: { spoolPush: 'after' }, // woah doesn't have to be a stmt
 
   // Update expression
   UpdateExpression: { spoolPush: 'after' }, // woah doesn't have to be a stmt
-
-  // ArrayExpression:
-  ArrayExpression: { spoolPush: 'before' },
 
   // UnaryExpression: // is one of the math operations, with a left, right and operator ['interactions'] = { arg, fn: node.operator };
   UnaryExpression: { spoolPush: 'before' }, // can have token support test: unaryOperatorMap
@@ -82,11 +81,18 @@ export const astNodeTypesMeta = {
   // BinaryExpression: ['interactions'] = { left, right, fn: node.operator };
   BinaryExpression: { spoolPush: 'before' }, // can have token support test: binaryOperatorMap
 
+  // If and while are siblings
+
   // IfStatement: // No ANIM, don't wanna give any attention to the whole block, unless necessary, only to its statements
   IfStatement: { topLevel: true, spoolPush: 'before' },
 
   // WhileStatement: // Similar to handling structure of the 'IfStatement' block
   WhileStatement: { topLevel: true, spoolPush: 'before' },
+
+  // Array and Block are siblings
+
+  // ArrayExpression:
+  ArrayExpression: { spoolPush: 'before' },
 
   // BlockStatement:  // NO IMPORTANCE YET // Naa don't wanna give any attention to the block, unless necessary, only to its statements
   BlockStatement: {},
