@@ -3,7 +3,8 @@
   import FunctionPreview from '../lib/FunctionPreview.svelte';
   import SpoolItem from '../lib/components/SpoolItem.svelte';
   import TempCurrentSpoolItem from '../lib/components/TempCurrentSpoolItem.svelte';
-  import { getAST, unspoolExecute, spoolItemBase, metaBase } from '../lib/utils/ast';
+  import { getAST, unspoolExecute } from '../lib/utils/ast';
+  import { spoolItemBase, metaBase } from '../lib/utils/utils';
 
   export let program: string;
   $: index = 0;

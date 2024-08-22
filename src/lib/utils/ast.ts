@@ -1,40 +1,17 @@
 import { parse } from 'acorn';
+import {
+  toType,
+  metaBase,
+  modeBlocksEmpty,
+  bequeathEvalEmpty,
+  spoolItemBase,
+  binaryExpressionResultMap,
+  assignmentExpressionMap
+} from './utils';
 
 export function getAST(program: string) {
   const ast = parse(program, { ecmaVersion: 2020 });
   return ast;
-}
-
-// TODO: how to use export const type here,
-// when you know you want an initial empty value to build upon
-// likely make the empty value from scratch, as it's not the job of the type to do that
-export const metaBase = {
-  players: {},
-  relations: {}
-};
-
-export const modeBlocksEmpty = { blocksSoFar: [] };
-export const bequeathEvalEmpty = { parent: undefined };
-
-export const spoolItemBase = {
-  nodeType: '',
-  execLevel: 0,
-  context: {},
-  modeBlocks: modeBlocksEmpty,
-  interactions: {},
-  literalValue: [],
-  cursor: { start: 0, end: 0 },
-  index: 0,
-  programPart: '',
-  topLevel: false
-};
-
-// https://stackoverflow.com/a/7390612/6495043
-function toType(obj) {
-  return {}.toString
-    .call(obj)
-    .match(/\s([a-zA-Z]+)/)[1]
-    .toLowerCase();
 }
 
 function clearPlayerState(spoolItem) {
@@ -176,51 +153,7 @@ export function unspoolExecute(
         const left = evaluate(node.left, nextExecLevel, modeBlocks);
         const right = evaluate(node.right, nextExecLevel, modeBlocks);
         spoolItem['interactions'] = { left, right, fn: node.operator };
-        let binaryExpResult;
-
-        switch (node.operator) {
-          case '+':
-            binaryExpResult = left + right;
-            break;
-          case '-':
-            binaryExpResult = left - right;
-            break;
-          case '*':
-            binaryExpResult = left * right;
-            break;
-          case '/':
-            binaryExpResult = left / right;
-            break;
-          // modulo and others
-          case '<':
-            binaryExpResult = left < right;
-            break;
-          case '>':
-            binaryExpResult = left > right;
-            break;
-          case '<=':
-            binaryExpResult = left <= right;
-            break;
-          case '>=':
-            binaryExpResult = left >= right;
-            break;
-          case '==':
-            binaryExpResult = left == right;
-            break;
-          case '===':
-            binaryExpResult = left === right;
-            break;
-          case '!=':
-            binaryExpResult = left != right;
-            break;
-          case '!==':
-            binaryExpResult = left !== right;
-            break;
-          default:
-            throw new Error('Unsupported operator: ' + node.operator);
-        }
-
-        return binaryExpResult;
+        return binaryExpressionResultMap[node.operator](left, right);
 
       // case 'Identifier':
       case 'Identifier':
@@ -331,37 +264,20 @@ export function unspoolExecute(
       case 'AssignmentExpression':
         const leftValue = evaluate(node.left, nextExecLevel, modeBlocks);
         const rightValue = evaluate(node.right, nextExecLevel, modeBlocks);
-        let result;
 
-        switch (node.operator) {
-          case '=':
-            result = rightValue;
-            break;
-          case '+=':
-            result = leftValue + rightValue;
-            break;
-          case '-=':
-            result = leftValue - rightValue;
-            break;
-          case '*=':
-            result = leftValue * rightValue;
-            break;
-          case '/=':
-            result = leftValue / rightValue;
-            break;
-          // Add other compound operators as needed
-          default:
-            throw new Error('Unsupported operator: ' + node.operator);
-        }
+        let assignmentExpressionResult = assignmentExpressionMap[node.operator](
+          leftValue,
+          rightValue
+        );
 
-        spoolItem['context'][node.left.name]['value'] = result;
+        spoolItem['context'][node.left.name]['value'] = assignmentExpressionResult;
         spoolItem['context'][node.left.name]['isUpdated'] = true; // active (updated) player
-        spoolItem['interactions'] = { target: node.left.name, value: result };
+        spoolItem['interactions'] = { target: node.left.name, value: assignmentExpressionResult };
         spoolItem['index'] = fullSpool.length;
         prevFullSpoolItem = structuredClone(spoolItem);
         // clearPlayerState(prevFullSpoolItem);
         fullSpool.push(spoolItem);
-        return result;
+        return assignmentExpressionResult;
 
       case 'UpdateExpression':
         const varName = node.argument.name;
