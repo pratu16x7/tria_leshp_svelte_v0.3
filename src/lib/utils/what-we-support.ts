@@ -62,13 +62,13 @@ export const astNodeTypesMeta = {
 
   // case 'VariableDeclaration': // Is a new player (var) added to the scope
   // LVL 0
-  VariableDeclaration: { anim: true, topLevel: true },
+  VariableDeclaration: { anim: true, topLevel: true, clearPlayers: true },
 
   // case 'ArrayExpression':
   ArrayExpression: {},
 
   // case 'ExpressionStatement':  // LVL 0
-  ExpressionStatement: { anim: true, topLevel: true },
+  ExpressionStatement: { anim: true, topLevel: true, clearPlayers: true },
 
   // case 'UnaryExpression': // is one of the math operations, with a left, right and operator ['interactions'] = { arg, fn: node.operator };
   UnaryExpression: {}, // can have token support test: unaryOperatorMap

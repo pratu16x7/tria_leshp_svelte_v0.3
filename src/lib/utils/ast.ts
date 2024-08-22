@@ -86,15 +86,11 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
           // spoolItem['newPlayers'][varName] = varValue;
         }
         fullSpool.push(spoolItem);
-        prevFullSpoolItem = structuredClone(spoolItem);
-        clearPlayerState(prevFullSpoolItem);
         break;
 
       case 'ExpressionStatement':
         let exp_result = evaluate(node.expression, nextExecLevel, modeBlocks);
         fullSpool.push(spoolItem);
-        prevFullSpoolItem = structuredClone(spoolItem);
-        clearPlayerState(prevFullSpoolItem);
         evaluateResult = exp_result; // come in last like a good person (eg. VariableDeclaration)
         break;
 
@@ -257,8 +253,10 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
         throw new Error('Unsupported node type: ' + node.type);
     }
 
-    // if (astNodeTypesMeta[nodeType].clearPlayers) {
-    // }
+    if (astNodeTypesMeta[nodeType].clearPlayers) {
+      prevFullSpoolItem = structuredClone(spoolItem);
+      clearPlayerState(prevFullSpoolItem);
+    }
     return evaluateResult;
   }
 
