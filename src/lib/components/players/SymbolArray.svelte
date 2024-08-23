@@ -7,6 +7,7 @@
 -->
 
 <script lang="ts">
+  import { fade } from 'svelte/transition';
   import Number from './Number.svelte';
 
   export let name = ''; // Variable name
@@ -18,7 +19,7 @@
   <span class="var-name">{name}</span>
   <div class="array-box">
     {#each array as element}
-      <div class="element-box">
+      <div class="element-box" in:fade={{ duration: 300 }} out:fade={{ duration: 300 }}>
         {element}
       </div>
     {/each}
