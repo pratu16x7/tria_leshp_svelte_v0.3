@@ -3,22 +3,16 @@
 </script>
 
 {#if wrappers.length}
-  <svelte:element this={wrappers[0]} {...$$restProps}>
-    <svelte:self wrappers={wrappers.slice(1)}>
-      <slot />
-    </svelte:self>
-  </svelte:element>
-{:else}
-  <slot />
+  <div class="border current dont-display" class:display={wrappers.length >= 1}>
+    <div class="border current dont-display" class:display={wrappers.length >= 2}>
+      <div class="border current dont-display" class:display={wrappers.length >= 3}>
+        <div class="border current dont-display" class:display={wrappers.length >= 4}></div>
+      </div>
+    </div>
+  </div>
 {/if}
 
 <style>
-  div {
-    border: 1px solid lightgrey;
-    border-radius: 8px;
-    margin: 1em 0;
-  }
-
   .border {
     border: 1px solid lightgrey;
     border-radius: 8px;
@@ -27,6 +21,17 @@
   .current {
     background-color: #fff;
   }
+
+  .dont-display {
+    opacity: 0.1;
+    position: relative;
+    min-height: 100px;
+  }
+
+  .display {
+    opacity: 1;
+  }
+
   .test {
     background-color: lightgoldenrodyellow;
   }
