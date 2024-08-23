@@ -18,7 +18,13 @@
         active={playerState['isPlaying']}
       />
     {:else if playerType === 'array' || playerType === 'string'}
-      <PlayerArray name={player} array={playerState['value']} active={playerState['isPlaying']} />
+      <PlayerArray
+        name={player}
+        array={playerState['value']}
+        active={playerState['isPlaying']}
+        pointerName="ptr"
+        pointerValue={2}
+      />
     {:else}
       <p>{player}, {playerState['value']}</p>
     {/if}
