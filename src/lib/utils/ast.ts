@@ -39,6 +39,7 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase]) {
     let nodeType = node.type;
     let cursor = { start: node.start, end: node.end };
     let programPart = program.slice(cursor.start, cursor.end);
+    let _res;
 
     let spoolItem = {
       _id: getRandomId(),
@@ -54,11 +55,7 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase]) {
       anim: astNodeTypesMeta[nodeType].anim ? true : false
     };
 
-    let newPlayer = {};
-
-    let nextExecLevel = execLevel + 1;
-
-    let _res;
+    let nextExecLevel = execLevel + 1; // TODO: rm
 
     if (astNodeTypesMeta[nodeType].spoolPush === 'before') {
       fullSpool.push(spoolItem);
@@ -74,24 +71,47 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase]) {
         _res = spoolItem['context'][node.name]['value']; // no eval needed, just context
         break;
 
-      case 'VariableDeclaration':
-        for (let declaration of node.declarations) {
-          let varName = declaration.id.name;
-          let varValue = evaluate(declaration.init, nextExecLevel, modeBlocks);
-          newPlayer = {
-            value: varValue,
-            isPlaying: true // persists, working
-          };
-          spoolItem['context'][varName] = newPlayer;
-          // spoolItem['newPlayers'][varName] = varValue;
-        }
-        break;
-
       case 'ExpressionStatement':
         _res = evaluate(node.expression, nextExecLevel, modeBlocks); // come in last like a good person (eg. VariableDeclaration)
         break;
 
+      case 'ArrayExpression':
+        _res = node.elements.map((element) => evaluate(element, nextExecLevel, modeBlocks));
+        break;
+
+      case 'BlockStatement':
+        node.body.map((statement) => evaluate(statement, nextExecLevel, modeBlocks));
+        break;
+
+      case 'VariableDeclaration':
+        node.declarations.map((declaration) => {
+          let varName = declaration.id.name;
+          spoolItem['context'][varName] = {
+            value: evaluate(declaration.init, nextExecLevel, modeBlocks),
+            isPlaying: true // persists, working
+          };
+        });
+        break;
+
       case 'UnaryExpression':
+        // TODO: what if this is not the final test
+        if (bequeathEval.parent) {
+          modeBlocks.blocksSoFar.push({
+            name: programPart,
+            type: 'test',
+            parent: bequeathEval.parent
+          });
+
+          spoolItem['modeBlocks'] = modeBlocks;
+        }
+
+        if (bequeathEval) {
+          spoolItem['anim'] = true;
+          // TODO: ANIM: if anim, in general, note which players involved, and mark them 'updated', no actually, 'playing'
+          prevFullSpoolItem = structuredClone(spoolItem);
+          clearPlayerState(prevFullSpoolItem);
+        }
+
         const arg = evaluate(node.argument, nextExecLevel, modeBlocks);
 
         switch (node.operator) {
@@ -185,14 +205,6 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase]) {
         while (whileTest()) {
           evaluate(node.body, nextExecLevel, modeBlocks);
         }
-        break;
-
-      case 'ArrayExpression':
-        _res = node.elements.map((element) => evaluate(element, nextExecLevel, modeBlocks));
-        break;
-
-      case 'BlockStatement':
-        node.body.map((statement) => evaluate(statement, nextExecLevel, modeBlocks));
         break;
 
       case 'CallExpression':
