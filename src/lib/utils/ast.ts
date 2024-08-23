@@ -1,8 +1,7 @@
 import { parse } from 'acorn';
-import { toType, getRandomId } from './_index';
+import { getRandomId } from './_index';
 import {
   binaryOperatorMap,
-  metaBase,
   modeBlocksEmpty,
   bequeathEvalEmpty,
   spoolItemBase,
@@ -23,8 +22,11 @@ function clearPlayerState(spoolItem) {
   });
 }
 
-export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta = metaBase) {
+// export function basicEvaluateAST(ast) {}
+
+export function unspoolExecute(ast, program, fullSpool = [spoolItemBase]) {
   let prevFullSpoolItem = structuredClone(fullSpool[fullSpool.length - 1]);
+
   function evaluate(
     node,
     execLevel = 0,
@@ -53,7 +55,6 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
     };
 
     let newPlayer = {};
-    let newPlayerMeta = {};
 
     let nextExecLevel = execLevel + 1;
 
@@ -77,15 +78,10 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase], meta =
         for (let declaration of node.declarations) {
           let varName = declaration.id.name;
           let varValue = evaluate(declaration.init, nextExecLevel, modeBlocks);
-          newPlayerMeta = {
-            name: varName,
-            type: toType(varValue)
-          };
           newPlayer = {
             value: varValue,
             isPlaying: true // persists, working
           };
-          meta['players'][varName] = newPlayerMeta;
           spoolItem['context'][varName] = newPlayer;
           // spoolItem['newPlayers'][varName] = varValue;
         }

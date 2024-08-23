@@ -4,7 +4,7 @@
   import SpoolItem from '../lib/components/SpoolItem.svelte';
   import TempCurrentSpoolItem from '../lib/components/TempCurrentSpoolItem.svelte';
   import { getAST, unspoolExecute } from '../lib/utils/ast';
-  import { metaBase, spoolItemBase } from './utils/what-we-support';
+  import { spoolItemBase } from './utils/what-we-support';
 
   export let program: string;
   $: index = 0;
@@ -13,10 +13,9 @@
   // $: console.log('Debug AST', ast);
   $: astNode = ast.body;
 
-  let meta = metaBase;
   let fullSpool = [spoolItemBase];
   $: fullSpool = fullSpool; // heh, svelte
-  $: unspoolExecute(ast, program, fullSpool, meta);
+  $: unspoolExecute(ast, program, fullSpool);
 
   $: spoolAnim = fullSpool.filter((s) => s.anim === true);
   console.log('spoolAnim', spoolAnim); // why is this undefined here and not later??
@@ -36,7 +35,7 @@
   <div class="top-row">
     <div class="box border">
       <FunctionPreview bind:program {cursor} />
-      <SpoolItem {...currSpoolItem} topLevel={false} {meta} templateType="animation" />
+      <SpoolItem {...currSpoolItem} topLevel={false} templateType="animation" />
     </div>
     <div class="box border">
       <h3>Full Spool</h3>
@@ -44,15 +43,13 @@
         <SpoolItem
           {...spoolItem}
           active={spoolItem._id === currSpoolItem._id}
-          {meta}
           templateType="spool"
         />
       {/each}
     </div>
   </div>
   <div class="border">
-    <h3>Meta and astNode Item</h3>
-    <p>{JSON.stringify(meta)}</p>
+    <h3>astNode Item</h3>
     <TempCurrentSpoolItem ast={JSON.stringify(currentAstNodeItem)} />
   </div>
 </div>

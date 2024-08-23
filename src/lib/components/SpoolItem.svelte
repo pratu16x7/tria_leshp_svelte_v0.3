@@ -5,7 +5,6 @@
   export let execLevel;
   export let context;
   export let interactions;
-  export let meta;
   export let programPart;
   export let topLevel;
   export let modeBlocks;
@@ -19,7 +18,7 @@
   {#if modeBlocks.blocksSoFar.length === 0}
     <div class="border" class:top-level={topLevel}>
       <h4>{execLevel} : {programPart}</h4>
-      <State {context} {meta} />
+      <State {context} />
     </div>
   {/if}
   {#if modeBlocks.blocksSoFar.length === 1}
@@ -30,7 +29,7 @@
       <!-- use the parent type here once you have it, as in whose test is this, is it a loop or conditional -->
       <div class="border current">
         <h4>{execLevel} : {programPart}</h4>
-        <State {context} {meta} />
+        <State {context} />
       </div>
     </div>
   {/if}
@@ -43,7 +42,7 @@
       <div class="border current">
         <div class="border current">
           <h4>{execLevel} : {programPart}</h4>
-          <State {context} {meta} />
+          <State {context} />
         </div>
       </div>
     </div>
@@ -58,7 +57,7 @@
         <div class="border current">
           <div class="border current">
             <h4>{execLevel} : {programPart}</h4>
-            <State {context} {meta} />
+            <State {context} />
           </div>
         </div>
       </div>
@@ -66,7 +65,7 @@
 {:else if templateType === 'spool'}
   <div class="border" class:active class:anim class:top-level={topLevel}>
     <h4>{nodeType} : {execLevel} : {programPart}</h4>
-    <State {context} {meta} />
+    <State {context} />
     <p>{JSON.stringify(modeBlocks)} __ {JSON.stringify(interactions)}</p>
     <!-- <p>{JSON.stringify(context)}</p> -->
   </div>

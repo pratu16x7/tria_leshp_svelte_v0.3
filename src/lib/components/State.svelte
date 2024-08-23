@@ -1,24 +1,26 @@
 <script>
   import PlayerNumeric from './players/Number.svelte';
   import PlayerArray from './players/SymbolArray.svelte';
+  import { toType } from '../utils/_index';
 
   export let context;
-  export let meta;
 </script>
 
 <div class="template">
-  {#each Object.entries(context) as [player, state]}
-    {#if meta['players'][player]['type'] === 'number'}
+  {#each Object.entries(context) as [player, playerState]}
+    <!-- actually the safest way to check type here based on actual value -->
+    {@const playerType = toType(playerState['value'])}
+    {#if playerType === 'number'}
       <PlayerNumeric
         name={player}
-        number={state['value']}
+        number={playerState['value']}
         color="green"
-        active={state['isPlaying']}
+        active={playerState['isPlaying']}
       />
-    {:else if meta['players'][player]['type'] === 'array' || meta['players'][player]['type'] === 'string'}
-      <PlayerArray name={player} array={state['value']} active={state['isPlaying']} />
+    {:else if playerType === 'array' || playerType === 'string'}
+      <PlayerArray name={player} array={playerState['value']} active={playerState['isPlaying']} />
     {:else}
-      <p>{player}, {state['value']}</p>
+      <p>{player}, {playerState['value']}</p>
     {/if}
   {/each}
 </div>
