@@ -1,4 +1,54 @@
 
+  {#if modeBlocks.blocksSoFar.length === 0}
+  <div class="border" class:top-level={topLevel}>
+    <h4>{execLevel} : {programPart}</h4>
+    <State {context} {meta} />
+  </div>
+{/if}
+{#if modeBlocks.blocksSoFar.length === 1}
+  <div class="border {modeBlocks.blocksSoFar[0]['type']}" class:top-level={topLevel}>
+    <p>
+      {JSON.stringify(modeBlocks.blocksSoFar[0]['name'])}: {modeBlocks.blocksSoFar[0]['parent']}
+    </p>
+    <!-- use the parent type here once you have it, as in whose test is this, is it a loop or conditional -->
+    <div class="border current">
+      <h4>{execLevel} : {programPart}</h4>
+      <State {context} {meta} />
+    </div>
+  </div>
+{/if}
+{#if modeBlocks.blocksSoFar.length === 2}
+  <div class="border {modeBlocks.blocksSoFar[0]['type']}" class:top-level={topLevel}>
+    <p>
+      {JSON.stringify(modeBlocks.blocksSoFar[0]['name'])}: {modeBlocks.blocksSoFar[0]['parent']}
+    </p>
+    <!-- use the parent type here once you have it, as in whose test is this, is it a loop or conditional -->
+    <div class="border current">
+      <div class="border current">
+        <h4>{execLevel} : {programPart}</h4>
+        <State {context} {meta} />
+      </div>
+    </div>
+  </div>
+{/if}
+{#if modeBlocks.blocksSoFar.length === 3}
+  <div class="border {modeBlocks.blocksSoFar[0]['type']}" class:top-level={topLevel}>
+    <p>
+      {JSON.stringify(modeBlocks.blocksSoFar[0]['name'])}: {modeBlocks.blocksSoFar[0]['parent']}
+    </p>
+    <!-- use the parent type here once you have it, as in whose test is this, is it a loop or conditional -->
+    <div class="border current">
+      <div class="border current">
+        <div class="border current">
+          <h4>{execLevel} : {programPart}</h4>
+          <State {context} {meta} />
+        </div>
+      </div>
+    </div>
+  </div>{/if}
+
+
+
 // {#each spool as spoolItem, i}
 //   <SpoolItem {...spoolItem} active={i === index + 1} {meta} />
 // {/each}

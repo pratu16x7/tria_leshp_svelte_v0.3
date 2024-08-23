@@ -62,6 +62,17 @@ while (j < 3) {
 console.log("foo");`
   },
 
+  array_pointer_1: {
+    text: `let j = 0;
+let num = 0;
+let l = [1,2,3];
+while (j < 3) {
+  num = l[j];
+  j += 1;
+}
+console.log("foo");`
+  },
+
   functionCall: {
     text: `function example() {
   console.log('Hello, world!');

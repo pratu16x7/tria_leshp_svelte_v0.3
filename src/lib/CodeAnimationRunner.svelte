@@ -25,6 +25,12 @@
   $: ({ context, interactions, execLevel, nodeType, cursor, programPart } = currSpoolItem);
   // $: currLine = program.slice(cursor.start, cursor.end);
 
+  let meta = {
+    l: {
+      pointer_1: 'j'
+    }
+  };
+
   $: currentAstNodeItem = astNode[index] || '';
 </script>
 
@@ -35,7 +41,7 @@
   <div class="top-row">
     <div class="box border">
       <FunctionPreview bind:program {cursor} />
-      <SpoolItem {...currSpoolItem} topLevel={false} templateType="animation" />
+      <SpoolItem {...currSpoolItem} topLevel={false} templateType="animation" {meta} />
     </div>
     <div class="box border">
       <h3>Full Spool</h3>
@@ -44,6 +50,7 @@
           {...spoolItem}
           active={spoolItem._id === currSpoolItem._id}
           templateType="spool"
+          {meta}
         />
       {/each}
     </div>

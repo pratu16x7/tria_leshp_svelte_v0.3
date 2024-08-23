@@ -4,6 +4,7 @@
   import { toType } from '../utils/_index';
 
   export let context;
+  export let meta;
 </script>
 
 <div class="template">
@@ -18,12 +19,13 @@
         active={playerState['isPlaying']}
       />
     {:else if playerType === 'array' || playerType === 'string'}
+      {@const pointer_1 = meta[player]['pointer_1']}
       <PlayerArray
         name={player}
         array={playerState['value']}
         active={playerState['isPlaying']}
-        pointerName="ptr"
-        pointerValue={2}
+        pointerName={pointer_1}
+        pointerValue={context[pointer_1]['value']}
       />
     {:else}
       <p>{player}, {playerState['value']}</p>

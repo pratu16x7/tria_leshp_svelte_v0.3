@@ -1,7 +1,9 @@
 <!-- TODO list
 - [ ] empty state symbol
-- [ ] length prop
-- [ ] pointers support
+- [ ] length (hideable)
+- [ ] indexes (hideable)
+- [ ] 1 pointer support
+- [ ] 2 pointer support
 - [ ] substring support (color, block ... whatever)
 - [ ] ...
 -->
@@ -16,14 +18,13 @@
   export let array: Number[] | string; // Array of numbers
   export let active = true; // Active state control
   export let pointerName = 'i';
-  export let pointerValue = 0;
+  export let pointerValue;
 
   const pointerPosition = tweened(0, {
     duration: 500,
     easing: cubicOut
   });
-
-  $: pointerPosition.set(pointerValue * 32); // Assuming each box is 32px wide with margin
+  $: pointerPosition.set(pointerValue * 32);
 </script>
 
 <div class="container" style="--opacity: {active ? '1' : '0.2'}">
