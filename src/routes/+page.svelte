@@ -1,13 +1,13 @@
-<script>
-  import CodeAnimationRunner from '../lib/CodeAnimationRunner.svelte';
-  import { testPrograms } from '../programs/sample_program.js';
+<script lang="ts">
+  import { programs } from '../programs/sample_program.js';
 
-  // let program = testPrograms['whileLoop']['text'];
-  let program = testPrograms['else']['text'];
-  // let program = testPrograms['array_pointer_1']['text'];
-  // let program = algorithms['uncompress']['text'];
+  // Example algorithm family and program
+  const sampleFamily = 'test_programs';
+  const sampleProgram = 'array_1';
 </script>
 
-<!-- Will be based on routes -->
+<h1>Welcome to the Algorithm Runner</h1>
 
-<CodeAnimationRunner {program} />
+<p>Click the link below to see an example program animation:</p>
+
+<a href={`/${sampleFamily}/${sampleProgram}`}>Run Sample Program</a>

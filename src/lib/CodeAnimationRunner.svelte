@@ -18,6 +18,7 @@
   $: unspoolExecute(ast, program, fullSpool);
 
   $: spoolAnim = fullSpool.filter((s) => s.anim === true);
+  console.log('program', program);
   console.log('spoolAnim', spoolAnim); // why is this undefined here and not later??
   console.log('fullSpool', fullSpool);
 
