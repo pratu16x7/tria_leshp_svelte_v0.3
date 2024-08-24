@@ -11,6 +11,8 @@
   {#each Object.entries(context) as [player, playerState]}
     <!-- actually the safest way to check type here based on actual value -->
     {@const playerType = toType(playerState['value'])}
+    <!-- {@const pointers = meta[player]['pointers']} -->
+    <!-- {#if playerType === 'number' && !pointers.includes(player)} -->
     {#if playerType === 'number'}
       <PlayerNumeric
         name={player}
