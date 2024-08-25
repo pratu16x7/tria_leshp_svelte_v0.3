@@ -5,48 +5,34 @@
 
   let canvas;
   let { nodes, edges } = jsonData;
-  let isDragging = false;
-  let lastPosX, lastPosY;
 
   onMount(() => {
     canvas = new Canvas('graph-canvas', {
       width: 1900,
       height: 1000,
       backgroundColor: '#f0f0f0',
-      selection: false
+      selection: false,
+      perPixelTargetFind: true
     });
 
-    canvas.forEachObject((obj) => (obj.selectable = false));
-
-    canvas.on('mouse:down', (opt) => {
-      var evt = opt.e;
-      if (evt.altKey === true) {
-        isDragging = true;
-        lastPosX = evt.clientX;
-        lastPosY = evt.clientY;
-      }
-    });
-
-    canvas.on('mouse:move', (opt) => {
-      if (isDragging) {
-        var e = opt.e;
-        canvas.relativePan({ x: e.clientX - lastPosX, y: e.clientY - lastPosY });
-        lastPosX = e.clientX;
-        lastPosY = e.clientY;
-      }
-    });
-
-    canvas.on('mouse:up', () => {
-      isDragging = false;
+    canvas.forEachObject((obj) => {
+      obj.selectable = false;
+      obj.evented = false;
     });
 
     canvas.on('mouse:wheel', (opt) => {
-      var delta = opt.e.deltaY;
-      var zoom = canvas.getZoom();
-      zoom *= 0.999 ** delta;
-      if (zoom > 20) zoom = 20;
-      if (zoom < 0.01) zoom = 0.01;
-      canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
+      if (opt.e.ctrlKey) {
+        var delta = opt.e.deltaY;
+        var zoom = canvas.getZoom();
+        zoom *= 0.99 ** delta;
+        if (zoom > 20) zoom = 20;
+        if (zoom < 0.1) zoom = 0.1;
+        canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
+      } else {
+        var deltaX = opt.e.deltaX * -1;
+        var deltaY = opt.e.deltaY * -1;
+        canvas.relativePan({ x: deltaX, y: deltaY });
+      }
       opt.e.preventDefault();
       opt.e.stopPropagation();
     });
