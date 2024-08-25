@@ -1,7 +1,7 @@
 <script lang="ts">
   import { page } from '$app/stores';
   import CodeAnimationRunner from '../../../lib/CodeAnimationRunner.svelte';
-  import { programs } from '../../../static/programs/sample_program.js';
+  import { programs } from '../../../programs/sample_program.js';
 
   let program: string = '';
   let algorithmFamily: string = '';

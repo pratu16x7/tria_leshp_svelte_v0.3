@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { programs } from '../static/programs/sample_program.js';
+  // import { programs } from '../../static/programs/sample_program.js';
   import Layout from './__layout.svelte';
 
   // Example algorithm family and program
