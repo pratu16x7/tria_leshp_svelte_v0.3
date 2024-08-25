@@ -10,12 +10,9 @@
   $: index = 0;
 
   $: ast = getAST(program);
-  // $: console.log('Debug AST', ast);
   $: astNode = ast.body;
 
-  let fullSpool = [spoolItemBase];
-  $: fullSpool = fullSpool; // heh, svelte
-  $: unspoolExecute(ast, program, fullSpool);
+  $: fullSpool = unspoolExecute(ast, program);
 
   $: spoolAnim = fullSpool.filter((s) => s.anim === true);
   console.log('program', program);
@@ -52,10 +49,9 @@
     </div>
     <div class="box border">
       <h3>Full Spool</h3>
-      <!-- group first, you'll have to form a json tree structure again sadly -->
-      <!-- recursively keep rendering any children nodes -->
-      <!-- but you'll still have to keep the linear order for the animation above -->
-      <!-- so just simply update the current spool with the depth first node -->
+      group first, you'll have to form a json tree structure again sadly recursively keep rendering any
+      children nodes but you'll still have to keep the linear order for the animation above so just simply
+      update the current spool with the depth first node
       {#each fullSpool as spoolItem, i}
         <SpoolItem
           {...spoolItem}

@@ -24,8 +24,10 @@ function clearPlayerState(spoolItem) {
 
 // export function basicEvaluateAST(ast) {}
 
-export function unspoolExecute(ast, program, fullSpool = [spoolItemBase]) {
-  let prevFullSpoolItem = structuredClone(fullSpool[fullSpool.length - 1]);
+export function unspoolExecute(ast, program) {
+  let prevFullSpoolItem;
+  let linearSpool = [];
+  let treeSpool = [];
 
   function evaluate(
     node,
@@ -34,7 +36,7 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase]) {
     bequeathEval = bequeathEvalEmpty
   ) {
     // bequeathEval is used to show you want to focus on the expression which is otherwise not top level
-    let context = prevFullSpoolItem['context'];
+    let context = prevFullSpoolItem?.context || {};
     modeBlocks = structuredClone(modeBlocks);
     let nodeType = node.type;
     let cursor = { start: node.start, end: node.end };
@@ -55,10 +57,27 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase]) {
       anim: astNodeTypesMeta[nodeType].anim ? true : false
     };
 
+    let treeSpoolItem = {
+      _id: getRandomId(),
+      nodeType,
+      execLevel,
+      context,
+      modeBlocks,
+      interactions: {},
+      literalValue: [],
+      cursor,
+      programPart,
+      topLevel: astNodeTypesMeta[nodeType].topLevel ? true : false,
+      anim: astNodeTypesMeta[nodeType].anim ? true : false,
+      index: 0,
+      children: [],
+      childrenGrid: []
+    };
+
     let nextExecLevel = execLevel + 1; // TODO: rm
 
     if (astNodeTypesMeta[nodeType].spoolPush === 'before') {
-      fullSpool.push(spoolItem);
+      linearSpool.push(spoolItem);
     }
 
     switch (nodeType) {
@@ -67,8 +86,8 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase]) {
         break;
 
       case 'Identifier':
-        spoolItem['context'][node.name]['isPlaying'] = true; // participating player
-        _res = spoolItem['context'][node.name]['value']; // no eval needed, just context
+        context[node.name]['isPlaying'] = true; // participating player
+        _res = context[node.name]['value']; // no eval needed, just context
         break;
 
       case 'ExpressionStatement':
@@ -181,11 +200,14 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase]) {
           let ifTestEval = evaluate(node.test, nextExecLevel, modeBlocks, {
             parent: 'IfStatement'
           });
-          let ifTestSpoolItem = fullSpool[fullSpool.length - 1];
+          if (linearSpool.length) {
+            let ifTestSpoolItem = linearSpool[linearSpool.length - 1];
 
-          modeBlocks = ifTestSpoolItem['modeBlocks'];
-          spoolItem['modeBlocks'] = modeBlocks;
-          ifTestSpoolItem['modeBlocks'] = modeBlocks;
+            modeBlocks = ifTestSpoolItem['modeBlocks'];
+            spoolItem['modeBlocks'] = modeBlocks;
+            ifTestSpoolItem['modeBlocks'] = modeBlocks;
+          }
+
           return ifTestEval;
         }
 
@@ -203,11 +225,14 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase]) {
           let testEval = evaluate(node.test, nextExecLevel, modeBlocks, {
             parent: 'WhileStatement'
           });
-          let WhileTestSpoolItem = fullSpool[fullSpool.length - 1];
 
-          modeBlocks = WhileTestSpoolItem['modeBlocks'];
-          spoolItem['modeBlocks'] = modeBlocks;
-          WhileTestSpoolItem['modeBlocks'] = modeBlocks;
+          if (linearSpool.length) {
+            let WhileTestSpoolItem = linearSpool[linearSpool.length - 1];
+
+            modeBlocks = WhileTestSpoolItem['modeBlocks'];
+            spoolItem['modeBlocks'] = modeBlocks;
+            WhileTestSpoolItem['modeBlocks'] = modeBlocks;
+          }
           return testEval;
         }
 
@@ -224,7 +249,7 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase]) {
         if (callee.type === 'MemberExpression') {
           // get console.log() out of the way
           if (callee.object.name === 'console' && callee.property.name === 'log') {
-            fullSpool.push(spoolItem);
+            linearSpool.push(spoolItem);
             break;
           }
 
@@ -248,7 +273,7 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase]) {
         break;
 
       default:
-        fullSpool.push(spoolItem);
+        linearSpool.push(spoolItem);
         throw new Error('Unsupported node type: ' + node.type);
     }
 
@@ -258,7 +283,7 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase]) {
     }
 
     if (astNodeTypesMeta[nodeType].spoolPush === 'after') {
-      fullSpool.push(spoolItem);
+      linearSpool.push(spoolItem);
     }
 
     return _res;
@@ -266,6 +291,8 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase]) {
 
   for (let node of ast.body) {
     evaluate(node);
-    // console.log('Context:', spool);
+    // treeSpool.push(treeSpoolItem);
   }
+
+  return linearSpool;
 }
