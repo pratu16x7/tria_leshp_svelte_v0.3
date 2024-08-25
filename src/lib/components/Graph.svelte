@@ -1,10 +1,10 @@
 <script>
   import { onMount } from 'svelte';
   import { Canvas, Text, Rect, Group, IText } from 'fabric';
-  import jsonData from '../../static/data.json';
+  import jsonData from '../../static/data.canvas?raw';
 
   let canvas;
-  let { nodes, edges } = jsonData;
+  let { nodes, edges } = JSON.parse(jsonData);
 
   onMount(() => {
     canvas = new Canvas('graph-canvas', {
