@@ -1,0 +1,7 @@
+{
+  "nodes": [
+    { "id": "1", "title": "Algorithm A", "content": "Description of Algorithm A" },
+    { "id": "2", "title": "Algorithm B", "content": "Description of Algorithm B" }
+  ],
+  "links": [{ "source": "1", "target": "2", "relationship": "follows" }]
+}
