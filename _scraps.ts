@@ -1,4 +1,87 @@
 <script>
+  import jsonData from '../../../static/data.canvas?raw';
+  let { nodes, edges } = JSON.parse(jsonData);
+
+  let zoomLevel = 1;
+  let canvasContainer;
+
+  function zoom(event) {
+    event.preventDefault();
+    if (event.ctrlKey) {
+      zoomLevel += event.deltaY * -0.01;
+      zoomLevel = Math.min(Math.max(0.5, zoomLevel), 4);
+    } else {
+      // Inverse scroll for smoother navigation
+      canvasContainer.scrollLeft += event.deltaX;
+      canvasContainer.scrollTop += event.deltaY;
+    }
+  }
+</script>
+
+<div
+  bind:this={canvasContainer}
+  id="canvas"
+  on:wheel={zoom}
+  style="width: 100%; height: 100%; overflow: scroll; position: relative; border: 2px solid #ccc;"
+>
+  {#each nodes as node (node.id)}
+    <div
+      class="node"
+      style="position: absolute; left: calc(50% + {node.x}px); top: calc(50% + {node.y}px); transform: scale({zoomLevel});"
+    >
+      {#if node.type === 'text'}
+        <div class="text-node">
+          <div class="box">
+            <p>{node.text}</p>
+          </div>
+        </div>
+      {/if}
+      {#if node.type === 'link'}
+        <div class="link-node">
+          <a href={node.url} target="_blank">Link to Video</a>
+        </div>
+      {/if}
+    </div>
+  {/each}
+</div>
+
+<style>
+  #canvas {
+    background-color: white;
+    border-radius: 8px;
+  }
+
+  .text-node .box {
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px;
+    max-width: 250px;
+  }
+
+  .link-node a {
+    text-decoration: none;
+    color: #000;
+    background-color: #999;
+    padding: 5px 10px;
+    border-radius: 5px;
+    display: inline-block;
+  }
+
+  .node {
+    transition: transform 0.2s;
+  }
+</style>
+
+
+
+
+
+
+
+
+
+<script>
   //   import { onMount } from 'svelte';
   import response from '../../static/data.json';
 
