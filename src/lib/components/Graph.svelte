@@ -50,14 +50,42 @@
   });
 
   function addTextNode(node) {
+    const padding = 10;
+
+    // Create a text object
     const text = new IText(node.text, {
+      left: node.x + padding, // Adjust to add padding
+      top: node.y + padding,
+      fontSize: 14,
+      fill: 'black',
+      selectable: false,
+      hasControls: false,
+      hasBorders: false
+    });
+
+    // Create a rectangle with rounded corners behind the text
+    const rect = new Rect({
       left: node.x,
       top: node.y,
-      fill: 'black',
-      fontSize: 14,
-      selectable: false
+      width: text.width + 2 * padding,
+      height: text.height + 2 * padding,
+      fill: '#f0f0f0', // Light grey fill
+      rx: 10, // Rounded corners
+      ry: 10,
+      stroke: '#ccc', // Light grey border
+      strokeWidth: 1
     });
-    canvas.add(text);
+
+    // Group the rectangle and text together
+    const group = new Group([rect, text], {
+      left: node.x,
+      top: node.y,
+      selectable: false,
+      hasControls: false,
+      hasBorders: false
+    });
+
+    canvas.add(group);
   }
 
   function addLinkNode(node) {
