@@ -1,6 +1,6 @@
-<script lang="ts">
-  // Any logic you need for this page
+<script>
+  import SvelteMarkdown from 'svelte-markdown';
+  import whyStory from '../../static/why.md?raw';
 </script>
 
-<h1>About</h1>
-<p>Learn more about this app on the About page.</p>
+<SvelteMarkdown source={whyStory} />

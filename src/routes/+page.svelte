@@ -15,7 +15,7 @@
       <li><a href="/">Home</a></li>
       <li><a href="/{sampleFamily}">Island</a></li>
       <li><a href="/world_map">World Map</a></li>
-      <li><a href="/about">About</a></li>
+      <li><a href="/why">Why?</a></li>
       <li><a href="/settings">Settings</a></li>
     </ul>
   </nav>
