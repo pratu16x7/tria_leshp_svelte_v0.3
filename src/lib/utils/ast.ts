@@ -167,6 +167,16 @@ export function unspoolExecute(ast, program, fullSpool = [spoolItemBase]) {
         break;
 
       case 'IfStatement':
+        // I put my mark on you, all the node generated here in
+        // if you have already a mark, I put one yet after
+        // and then the spool sees a new mark, and so cocoons you
+        // until the mark is gone
+
+        // Or what ho, just make a json tree again
+        // just have children in this node itself
+        // Muuuuuuch easier
+
+        // WhileLoop will have to have a children grid
         function ifTest() {
           let ifTestEval = evaluate(node.test, nextExecLevel, modeBlocks, {
             parent: 'IfStatement'

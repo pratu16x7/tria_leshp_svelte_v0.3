@@ -95,7 +95,7 @@ export const astNodeTypesMeta = {
   // ArrayExpression:
   ArrayExpression: { spoolPush: 'before' },
 
-  // BlockStatement:  // NO IMPORTANCE YET // Naa don't wanna give any attention to the block, unless necessary, only to its statements
+  // BlockStatement:  // OKAY NOW WE DO // Naa don't wanna give any attention to the block, unless necessary, only to its statements
   BlockStatement: {},
 
   CallExpression: { spoolPush: 'before' },
