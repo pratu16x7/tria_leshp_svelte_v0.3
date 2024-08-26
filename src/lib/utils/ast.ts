@@ -38,8 +38,11 @@ export function unspoolExecute(ast, program) {
     let context = prevContext || {}; // by reference, hence change reflect in object too
     modeBlocks = structuredClone(modeBlocks);
     let nodeType = node.type;
-    let cursor = { start: node.start, end: node.end };
-    let programPart = program.slice(cursor.start, cursor.end);
+    let cursor = {
+      start: node.start,
+      end: node.end,
+      programPart: program.slice(node.start, node.end)
+    };
     let _res;
     execLevel += 1;
 
@@ -49,10 +52,7 @@ export function unspoolExecute(ast, program) {
       execLevel,
       context,
       modeBlocks,
-      interactions: {},
-      literalValue: [],
       cursor,
-      programPart,
       topLevel: astNodeTypesMeta[nodeType].topLevel ? true : false,
       anim: astNodeTypesMeta[nodeType].anim ? true : false
     };
@@ -97,7 +97,7 @@ export function unspoolExecute(ast, program) {
         // TODO: what if this is not the final test
         if (bequeathEval.parent) {
           modeBlocks.blocksSoFar.push({
-            name: programPart,
+            name: cursor.programPart,
             type: 'test',
             parent: bequeathEval.parent
           });
@@ -126,7 +126,7 @@ export function unspoolExecute(ast, program) {
         // TODO: what if this is not the final test
         if (bequeathEval.parent) {
           modeBlocks.blocksSoFar.push({
-            name: programPart,
+            name: cursor.programPart,
             type: 'test',
             parent: bequeathEval.parent
           });
