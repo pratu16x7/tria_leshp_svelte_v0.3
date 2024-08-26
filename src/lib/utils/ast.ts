@@ -270,10 +270,7 @@ export function unspoolExecute(ast, program) {
     return _res;
   }
 
-  for (let node of ast.body) {
-    evaluate(node);
-    // treeSpool.push(treeSpoolItem);
-  }
+  ast.body.map((node) => evaluate(node));
 
   return linearSpool;
 }
