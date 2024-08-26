@@ -94,24 +94,8 @@ export function unspoolExecute(ast, program) {
         break;
 
       case 'UnaryExpression':
+        // TODO: copy what Binary does
         // TODO: what if this is not the final test
-        if (bequeathEval.parent) {
-          modeBlocks.blocksSoFar.push({
-            name: cursor.programPart,
-            type: 'test',
-            parent: bequeathEval.parent
-          });
-
-          spoolItem['modeBlocks'] = modeBlocks;
-        }
-
-        if (bequeathEval) {
-          spoolItem['anim'] = true;
-          // TODO: ANIM: if anim, in general, note which players involved, and mark them 'updated', no actually, 'playing'
-          prevContext = structuredClone(spoolItem.context);
-          clearPlayerPlayingState(prevContext);
-        }
-
         const arg = evaluate(node.argument, execLevel, modeBlocks);
 
         switch (node.operator) {
