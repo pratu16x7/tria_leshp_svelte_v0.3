@@ -55,18 +55,38 @@ export const bequeathEvalEmpty = { parent: undefined };
 // SERIALIZE: default values, can be updated during AST evaluation
 export const astNodeTypesMeta = {
   // Literal: // just a literal value, // NO IMPORTANCE YET // ['literalValue'].push(node.value);
-  Literal: {},
+  Literal: { returns: true },
 
   // Identifier: // is a player (var) from the scope // ['interactions'] = { player: node.name };
   // Where the real eval magic happens: get the context var VALUE not var name
-  Identifier: { spoolPush: 'after' },
+  Identifier: { spoolPush: 'after', returns: true },
+
+  // ExpressionStatement:  // LVL 0
+  ExpressionStatement: {
+    anim: true,
+    topLevel: true,
+    contextUpdate: true,
+    spoolPush: 'after',
+    returns: true
+  },
+
+  // Array and Block are siblings
+
+  // ArrayExpression:
+  ArrayExpression: { spoolPush: 'before', returns: true },
+
+  // BlockStatement:  // OKAY NOW WE DO // Naa don't wanna give any attention to the block, unless necessary, only to its statements
+  BlockStatement: {},
 
   // VariableDeclaration: // Is a new player (var) added to the scope
   // LVL 0
   VariableDeclaration: { anim: true, topLevel: true, contextUpdate: true, spoolPush: 'after' },
 
-  // ExpressionStatement:  // LVL 0
-  ExpressionStatement: { anim: true, topLevel: true, contextUpdate: true, spoolPush: 'after' },
+  // UnaryExpression: // is one of the math operations, with a left, right and operator ['interactions'] = { arg, fn: node.operator };
+  UnaryExpression: { spoolPush: 'before', returns: true }, // can have token support test: unaryOperatorMap
+
+  // BinaryExpression: ['interactions'] = { left, right, fn: node.operator };
+  BinaryExpression: { spoolPush: 'before', returns: true }, // can have token support test: binaryOperatorMap
 
   // Assignment and update are siblings
 
@@ -76,12 +96,6 @@ export const astNodeTypesMeta = {
   // Update expression
   UpdateExpression: { spoolPush: 'after' }, // woah doesn't have to be a stmt
 
-  // UnaryExpression: // is one of the math operations, with a left, right and operator ['interactions'] = { arg, fn: node.operator };
-  UnaryExpression: { spoolPush: 'before' }, // can have token support test: unaryOperatorMap
-
-  // BinaryExpression: ['interactions'] = { left, right, fn: node.operator };
-  BinaryExpression: { spoolPush: 'before' }, // can have token support test: binaryOperatorMap
-
   // If and while are siblings
 
   // IfStatement: // No ANIM, don't wanna give any attention to the whole block, unless necessary, only to its statements
@@ -90,15 +104,7 @@ export const astNodeTypesMeta = {
   // WhileStatement: // Similar to handling structure of the 'IfStatement' block
   WhileStatement: { topLevel: true, spoolPush: 'before' },
 
-  // Array and Block are siblings
-
-  // ArrayExpression:
-  ArrayExpression: { spoolPush: 'before' },
-
-  // BlockStatement:  // OKAY NOW WE DO // Naa don't wanna give any attention to the block, unless necessary, only to its statements
-  BlockStatement: {},
-
-  CallExpression: { spoolPush: 'before' },
+  CallExpression: { spoolPush: 'before', returns: true },
 
   MemberExpression: {}
 };
