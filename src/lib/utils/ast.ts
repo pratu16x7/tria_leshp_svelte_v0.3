@@ -143,16 +143,14 @@ export function unspoolExecute(ast, program) {
         const leftValue = evaluate(node.left, execLevel, modeBlocks);
         const rightValue = evaluate(node.right, execLevel, modeBlocks);
 
-        _res = assignmentOperatorMap[node.operator](leftValue, rightValue);
-        context[varName]['value'] = _res;
+        context[varName]['value'] = assignmentOperatorMap[node.operator](leftValue, rightValue);
         context[varName]['isPlaying'] = true; // active (updated) player
         break;
 
       case 'UpdateExpression':
         varName = node.argument.name;
 
-        _res = updateOperatorMap[node.operator](context[varName]['value']);
-        context[varName]['value'] = _res;
+        context[varName]['value'] = updateOperatorMap[node.operator](context[varName]['value']);
         context[varName]['isPlaying'] = true; // active (updated) player
         break;
 
@@ -220,7 +218,7 @@ export function unspoolExecute(ast, program) {
           const property = callee.property.name;
 
           if (typeof object[property] === 'function') {
-            return object[property](...args);
+            _res = object[property](...args);
           } else {
             throw new Error('Unsupported method: ' + property);
           }
