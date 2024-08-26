@@ -36,13 +36,8 @@ export function unspoolExecute(ast, program) {
     node,
     execLevel = -1,
     modeBlocks = modeBlocksEmpty,
-    bequeathEval = bequeathEvalEmpty
+    bequeathEval = bequeathEvalEmpty // bequeathEval is used to show you want to focus on the expression which is otherwise not top level
   ) {
-    // bequeathEval is used to show you want to focus on the expression which is otherwise not top level
-
-    // context is kept getting added to throughout, unlike execLevel which also has to decrease
-    let context = prevContext ? clearPlayerPlayingState(prevContext) : {}; // by reference, hence change reflect in object too
-    modeBlocks = structuredClone(modeBlocks);
     let nodeType = node.type;
     let cursor = {
       start: node.start,
@@ -53,8 +48,13 @@ export function unspoolExecute(ast, program) {
       anim: astNodeTypesMeta[nodeType].anim ? true : false,
       topLevel: astNodeTypesMeta[nodeType].topLevel ? true : false
     };
-    let _res;
     execLevel += 1;
+
+    // context is kept getting added to throughout, unlike execLevel which also has to decrease
+    let context = prevContext ? clearPlayerPlayingState(prevContext) : {}; // by reference, hence change reflect in object too
+    modeBlocks = structuredClone(modeBlocks);
+
+    let _res;
 
     let spoolItem = {
       _id: getRandomId(),
