@@ -30,17 +30,18 @@ export function unspoolExecute(ast, program) {
 
   function evaluate(
     node,
-    execLevel = 0,
+    execLevel = -1,
     modeBlocks = modeBlocksEmpty,
     bequeathEval = bequeathEvalEmpty
   ) {
     // bequeathEval is used to show you want to focus on the expression which is otherwise not top level
-    let context = prevFullSpoolItem?.context || {};
+    let context = prevFullSpoolItem?.context || {}; // by reference, hence change reflect in object too
     modeBlocks = structuredClone(modeBlocks);
     let nodeType = node.type;
     let cursor = { start: node.start, end: node.end };
     let programPart = program.slice(cursor.start, cursor.end);
     let _res;
+    execLevel += 1;
 
     let spoolItem = {
       _id: getRandomId(),
@@ -55,8 +56,6 @@ export function unspoolExecute(ast, program) {
       topLevel: astNodeTypesMeta[nodeType].topLevel ? true : false,
       anim: astNodeTypesMeta[nodeType].anim ? true : false
     };
-
-    let nextExecLevel = execLevel + 1; // TODO: rm
 
     if (astNodeTypesMeta[nodeType].spoolPush === 'before') {
       linearSpool.push(spoolItem);
@@ -73,22 +72,22 @@ export function unspoolExecute(ast, program) {
         break;
 
       case 'ExpressionStatement':
-        _res = evaluate(node.expression, nextExecLevel, modeBlocks); // come in last like a good person (eg. VariableDeclaration)
+        _res = evaluate(node.expression, execLevel, modeBlocks); // come in last like a good person (eg. VariableDeclaration)
         break;
 
       case 'ArrayExpression':
-        _res = node.elements.map((element) => evaluate(element, nextExecLevel, modeBlocks));
+        _res = node.elements.map((element) => evaluate(element, execLevel, modeBlocks));
         break;
 
       case 'BlockStatement':
-        node.body.map((statement) => evaluate(statement, nextExecLevel, modeBlocks));
+        node.body.map((statement) => evaluate(statement, execLevel, modeBlocks));
         break;
 
       case 'VariableDeclaration':
         node.declarations.map((declaration) => {
           let varName = declaration.id.name;
           spoolItem['context'][varName] = {
-            value: evaluate(declaration.init, nextExecLevel, modeBlocks),
+            value: evaluate(declaration.init, execLevel, modeBlocks),
             isPlaying: true // persists, working
           };
         });
@@ -113,7 +112,7 @@ export function unspoolExecute(ast, program) {
           clearPlayerState(prevFullSpoolItem);
         }
 
-        const arg = evaluate(node.argument, nextExecLevel, modeBlocks);
+        const arg = evaluate(node.argument, execLevel, modeBlocks);
 
         switch (node.operator) {
           case '!':
@@ -142,8 +141,8 @@ export function unspoolExecute(ast, program) {
           clearPlayerState(prevFullSpoolItem);
         }
 
-        const left = evaluate(node.left, nextExecLevel, modeBlocks);
-        const right = evaluate(node.right, nextExecLevel, modeBlocks);
+        const left = evaluate(node.left, execLevel, modeBlocks);
+        const right = evaluate(node.right, execLevel, modeBlocks);
 
         _res = binaryOperatorMap[node.operator](left, right);
         break;
@@ -151,8 +150,8 @@ export function unspoolExecute(ast, program) {
       case 'AssignmentExpression':
         let varName = node.left.name;
 
-        const leftValue = evaluate(node.left, nextExecLevel, modeBlocks);
-        const rightValue = evaluate(node.right, nextExecLevel, modeBlocks);
+        const leftValue = evaluate(node.left, execLevel, modeBlocks);
+        const rightValue = evaluate(node.right, execLevel, modeBlocks);
 
         _res = assignmentOperatorMap[node.operator](leftValue, rightValue);
         context[varName]['value'] = _res;
@@ -179,7 +178,7 @@ export function unspoolExecute(ast, program) {
 
         // WhileLoop will have to have a children grid
         function ifTest() {
-          let ifTestEval = evaluate(node.test, nextExecLevel, modeBlocks, {
+          let ifTestEval = evaluate(node.test, execLevel, modeBlocks, {
             parent: 'IfStatement'
           });
           if (linearSpool.length) {
@@ -195,16 +194,16 @@ export function unspoolExecute(ast, program) {
 
         // of course, a literal If else
         if (ifTest()) {
-          evaluate(node.consequent, nextExecLevel, modeBlocks); // usually a block stmt
+          evaluate(node.consequent, execLevel, modeBlocks); // usually a block stmt
         } else if (node.alternate) {
-          evaluate(node.alternate, nextExecLevel, modeBlocks); // usually a block stmt
+          evaluate(node.alternate, execLevel, modeBlocks); // usually a block stmt
         }
 
         break;
 
       case 'WhileStatement':
         function whileTest() {
-          let testEval = evaluate(node.test, nextExecLevel, modeBlocks, {
+          let testEval = evaluate(node.test, execLevel, modeBlocks, {
             parent: 'WhileStatement'
           });
 
@@ -220,13 +219,13 @@ export function unspoolExecute(ast, program) {
 
         // of course, a literal while loop
         while (whileTest()) {
-          evaluate(node.body, nextExecLevel, modeBlocks);
+          evaluate(node.body, execLevel, modeBlocks);
         }
         break;
 
       case 'CallExpression':
         const callee = node.callee;
-        const args = node.arguments.map((arg) => evaluate(arg, nextExecLevel, modeBlocks));
+        const args = node.arguments.map((arg) => evaluate(arg, execLevel, modeBlocks));
 
         if (callee.type === 'MemberExpression') {
           // get console.log() out of the way
@@ -235,7 +234,7 @@ export function unspoolExecute(ast, program) {
             break;
           }
 
-          const object = evaluate(callee.object, nextExecLevel, modeBlocks);
+          const object = evaluate(callee.object, execLevel, modeBlocks);
           const property = callee.property.name;
 
           if (typeof object[property] === 'function') {
@@ -247,9 +246,9 @@ export function unspoolExecute(ast, program) {
         break;
 
       case 'MemberExpression':
-        const object = evaluate(node.object, nextExecLevel, modeBlocks);
+        const object = evaluate(node.object, execLevel, modeBlocks);
         const property = node.computed
-          ? evaluate(node.property, nextExecLevel, modeBlocks)
+          ? evaluate(node.property, execLevel, modeBlocks)
           : node.property.name;
         _res = object[property];
         break;
