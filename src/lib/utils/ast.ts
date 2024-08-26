@@ -54,6 +54,7 @@ export function unspoolExecute(ast, program) {
     let context = prevContext ? clearPlayerPlayingState(prevContext) : {}; // by reference, hence change reflect in object too
     modeBlocks = structuredClone(modeBlocks);
 
+    let _res;
     let spoolItem = {
       _id: getRandomId(),
       nodeType,
@@ -62,7 +63,7 @@ export function unspoolExecute(ast, program) {
       modeBlocks,
       cursor,
       levels,
-      _res: undefined
+      _res
     };
 
     if (astNodeTypesMeta[nodeType].spoolPush === 'before') {
@@ -71,23 +72,21 @@ export function unspoolExecute(ast, program) {
 
     switch (nodeType) {
       case 'Literal':
-        spoolItem._res = node.value;
+        _res = node.value;
         break;
 
       case 'Identifier':
         context[node.name]['isPlaying'] = true; // participating player
-        spoolItem._res = context[node.name]['value']; // no eval needed, just context
+        _res = context[node.name]['value']; // no eval needed, just context
         break;
 
       case 'ExpressionStatement':
-        spoolItem._res = evaluate(node.expression, execLevel, modeBlocks)._res; // come in last like a good person (eg. VariableDeclaration)
+        _res = evaluate(node.expression, execLevel, modeBlocks)._res; // come in last like a good person (eg. VariableDeclaration)
         prevContext = structuredClone(context);
         break;
 
       case 'ArrayExpression':
-        spoolItem._res = node.elements.map(
-          (element) => evaluate(element, execLevel, modeBlocks)._res
-        );
+        _res = node.elements.map((element) => evaluate(element, execLevel, modeBlocks)._res);
         break;
 
       case 'BlockStatement':
@@ -112,7 +111,7 @@ export function unspoolExecute(ast, program) {
 
         switch (node.operator) {
           case '!':
-            spoolItem._res = !arg;
+            _res = !arg;
           default:
             throw new Error('Unsupported unary operator: ' + node.operator);
         }
@@ -135,7 +134,7 @@ export function unspoolExecute(ast, program) {
         const left = evaluate(node.left, execLevel, modeBlocks)._res;
         const right = evaluate(node.right, execLevel, modeBlocks)._res;
 
-        spoolItem._res = binaryOperatorMap[node.operator](left, right);
+        _res = binaryOperatorMap[node.operator](left, right);
         break;
 
       case 'AssignmentExpression':
@@ -220,7 +219,7 @@ export function unspoolExecute(ast, program) {
           const property = callee.property.name;
 
           if (typeof object[property] === 'function') {
-            spoolItem._res = object[property](...args);
+            _res = object[property](...args);
           } else {
             throw new Error('Unsupported method: ' + property);
           }
@@ -232,7 +231,7 @@ export function unspoolExecute(ast, program) {
         const property = node.computed
           ? evaluate(node.property, execLevel, modeBlocks)._res
           : node.property.name;
-        spoolItem._res = object[property];
+        _res = object[property];
         break;
 
       default:
@@ -244,6 +243,7 @@ export function unspoolExecute(ast, program) {
       linearSpool.push(spoolItem);
     }
 
+    spoolItem._res = _res;
     return spoolItem;
   }
 
