@@ -14,11 +14,15 @@ export function getAST(program: string) {
 }
 
 //  indicates if you're part of the main (animation) spool
+// technically only needed when prevContext is updated
+// But good to be sure always, in case of any future code, it will automatically handle it if we do on the top always
+// so let's just lumpsum do on the top to take it out of any future doubts, it's a harmless fucntion
 function clearPlayerPlayingState(context) {
   // console.log('spoolItem =======', spoolItem);
   Object.values(context).map((playerState) => {
     playerState['isPlaying'] = false;
   });
+  return context;
 }
 
 // export function basicEvaluateAST(ast) {}
@@ -35,7 +39,9 @@ export function unspoolExecute(ast, program) {
     bequeathEval = bequeathEvalEmpty
   ) {
     // bequeathEval is used to show you want to focus on the expression which is otherwise not top level
-    let context = prevContext || {}; // by reference, hence change reflect in object too
+
+    // context is kept getting added to throughout, unlike execLevel which also has to decrease
+    let context = prevContext ? clearPlayerPlayingState(prevContext) : {}; // by reference, hence change reflect in object too
     modeBlocks = structuredClone(modeBlocks);
     let nodeType = node.type;
     let cursor = {
@@ -240,11 +246,6 @@ export function unspoolExecute(ast, program) {
         linearSpool.push(spoolItem);
         throw new Error('Unsupported node type: ' + node.type);
     }
-
-    // if (astNodeTypesMeta[nodeType].contextUpdate) {
-
-    //   // cPPS
-    // }
 
     if (astNodeTypesMeta[nodeType].spoolPush === 'after') {
       linearSpool.push(spoolItem);
