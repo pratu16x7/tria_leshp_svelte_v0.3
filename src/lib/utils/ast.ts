@@ -18,7 +18,6 @@ export function getAST(program: string) {
 // But good to be sure always, in case of any future code, it will automatically handle it if we do on the top always
 // so let's just lumpsum do on the top to take it out of any future doubts, it's a harmless fucntion
 function clearPlayerPlayingState(context) {
-  // console.log('spoolItem =======', spoolItem);
   Object.values(context).map((playerState) => {
     playerState['isPlaying'] = false;
   });
@@ -55,7 +54,7 @@ export function unspoolExecute(ast, program) {
     modeBlocks = structuredClone(modeBlocks);
 
     let _res;
-    let spoolItem = {
+    let linearSpoolItem = {
       _id: getRandomId(),
       nodeType,
       execLevel,
@@ -67,7 +66,7 @@ export function unspoolExecute(ast, program) {
     };
 
     if (astNodeTypesMeta[nodeType].spoolPush === 'before') {
-      linearSpool.push(spoolItem);
+      linearSpool.push(linearSpoolItem);
     }
 
     switch (nodeType) {
@@ -128,7 +127,7 @@ export function unspoolExecute(ast, program) {
         }
 
         if (bequeathEval) {
-          spoolItem.levels.anim = true;
+          linearSpoolItem.levels.anim = true;
         }
 
         const left = evaluate(node.left, execLevel, modeBlocks)._res;
@@ -210,7 +209,7 @@ export function unspoolExecute(ast, program) {
         if (callee.type === 'MemberExpression') {
           // get console.log() out of the way
           if (callee.object.name === 'console' && callee.property.name === 'log') {
-            linearSpool.push(spoolItem);
+            linearSpool.push(linearSpoolItem);
             break;
           }
 
@@ -235,16 +234,16 @@ export function unspoolExecute(ast, program) {
         break;
 
       default:
-        linearSpool.push(spoolItem);
+        linearSpool.push(linearSpoolItem);
         throw new Error('Unsupported node type: ' + node.type);
     }
 
     if (astNodeTypesMeta[nodeType].spoolPush === 'after') {
-      linearSpool.push(spoolItem);
+      linearSpool.push(linearSpoolItem);
     }
 
-    spoolItem._res = _res;
-    return spoolItem;
+    linearSpoolItem._res = _res;
+    return linearSpoolItem;
   }
 
   ast.body.map((node) => evaluate(node));
