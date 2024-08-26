@@ -120,9 +120,6 @@ export function unspoolExecute(ast, program) {
 
         if (bequeathEval) {
           spoolItem['anim'] = true;
-          // TODO: ANIM: if anim, in general, note which players involved, and mark them 'updated', no actually, 'playing'
-          prevContext = structuredClone(spoolItem.context);
-          clearPlayerPlayingState(prevContext);
         }
 
         const left = evaluate(node.left, execLevel, modeBlocks);
