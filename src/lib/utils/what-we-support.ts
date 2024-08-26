@@ -30,19 +30,19 @@ export const metaBase = {
 export const modeBlocksEmpty = { blocksSoFar: [] };
 export const bequeathEvalEmpty = { parent: undefined };
 
-export const spoolItemBase = {
-  _id: '',
-  nodeType: '', // SERIALIZE: this also has it's own meta props to make the full independent spool
-  execLevel: 0,
-  context: {},
-  modeBlocks: modeBlocksEmpty,
-  interactions: {},
-  literalValue: [],
-  cursor: { start: 0, end: 0 },
-  programPart: '',
-  topLevel: false,
-  anim: false
-};
+// export const spoolItemBase = {
+//   _id: '',
+//   nodeType: '', // SERIALIZE: this also has it's own meta props to make the full independent spool
+//   execLevel: 0,
+//   context: {},
+//   modeBlocks: modeBlocksEmpty,
+//   interactions: {},
+//   literalValue: [],
+//   cursor: { start: 0, end: 0 },
+//   programPart: '',
+//   topLevel: false,
+//   anim: false
+// };
 
 // description, key props
 

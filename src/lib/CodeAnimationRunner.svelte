@@ -4,7 +4,6 @@
   import SpoolItem from '../lib/components/SpoolItem.svelte';
   import TempCurrentSpoolItem from '../lib/components/TempCurrentSpoolItem.svelte';
   import { getAST, unspoolExecute } from '../lib/utils/ast';
-  import { spoolItemBase } from './utils/what-we-support';
 
   export let program: string;
   $: index = 0;
@@ -14,7 +13,7 @@
 
   $: fullSpool = unspoolExecute(ast, program);
 
-  $: spoolAnim = fullSpool.filter((s) => s.anim === true);
+  $: spoolAnim = fullSpool.filter((s) => s.levels.anim === true);
   console.log('program', program);
   console.log('spoolAnim', spoolAnim); // why is this undefined here and not later??
   console.log('fullSpool', fullSpool);

@@ -60,7 +60,7 @@ export function unspoolExecute(ast, program) {
       modeBlocks,
       cursor,
       topLevel: astNodeTypesMeta[nodeType].topLevel ? true : false,
-      anim: astNodeTypesMeta[nodeType].anim ? true : false
+      levels: { anim: astNodeTypesMeta[nodeType].anim ? true : false }
     };
 
     if (astNodeTypesMeta[nodeType].spoolPush === 'before') {
@@ -127,7 +127,7 @@ export function unspoolExecute(ast, program) {
         }
 
         if (bequeathEval) {
-          spoolItem['anim'] = true;
+          spoolItem.levels.anim = true;
         }
 
         const left = evaluate(node.left, execLevel, modeBlocks);
