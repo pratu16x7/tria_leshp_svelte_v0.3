@@ -63,10 +63,10 @@ export const astNodeTypesMeta = {
 
   // VariableDeclaration: // Is a new player (var) added to the scope
   // LVL 0
-  VariableDeclaration: { anim: true, topLevel: true, clearPlayers: true, spoolPush: 'after' },
+  VariableDeclaration: { anim: true, topLevel: true, contextUpdate: true, spoolPush: 'after' },
 
   // ExpressionStatement:  // LVL 0
-  ExpressionStatement: { anim: true, topLevel: true, clearPlayers: true, spoolPush: 'after' },
+  ExpressionStatement: { anim: true, topLevel: true, contextUpdate: true, spoolPush: 'after' },
 
   // Assignment and update are siblings
 

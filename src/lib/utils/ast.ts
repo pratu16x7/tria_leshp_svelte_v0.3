@@ -73,6 +73,7 @@ export function unspoolExecute(ast, program) {
 
       case 'ExpressionStatement':
         _res = evaluate(node.expression, execLevel, modeBlocks); // come in last like a good person (eg. VariableDeclaration)
+        prevContext = structuredClone(context);
         break;
 
       case 'ArrayExpression':
@@ -86,11 +87,12 @@ export function unspoolExecute(ast, program) {
       case 'VariableDeclaration':
         node.declarations.map((declaration) => {
           let varName = declaration.id.name;
-          spoolItem['context'][varName] = {
+          context[varName] = {
             value: evaluate(declaration.init, execLevel, modeBlocks),
             isPlaying: true // persists, working
           };
         });
+        prevContext = structuredClone(context);
         break;
 
       case 'UnaryExpression':
@@ -239,10 +241,10 @@ export function unspoolExecute(ast, program) {
         throw new Error('Unsupported node type: ' + node.type);
     }
 
-    if (astNodeTypesMeta[nodeType].clearPlayers) {
-      prevContext = structuredClone(spoolItem.context);
-      clearPlayerPlayingState(prevContext);
-    }
+    // if (astNodeTypesMeta[nodeType].contextUpdate) {
+
+    //   // cPPS
+    // }
 
     if (astNodeTypesMeta[nodeType].spoolPush === 'after') {
       linearSpool.push(spoolItem);
