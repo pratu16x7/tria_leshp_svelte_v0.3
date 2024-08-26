@@ -178,7 +178,6 @@ export function unspoolExecute(ast, program) {
 
             modeBlocks = ifTestSpoolItem['modeBlocks'];
             spoolItem['modeBlocks'] = modeBlocks;
-            ifTestSpoolItem['modeBlocks'] = modeBlocks;
           }
 
           return ifTestEval;
@@ -204,7 +203,6 @@ export function unspoolExecute(ast, program) {
 
             modeBlocks = WhileTestSpoolItem['modeBlocks'];
             spoolItem['modeBlocks'] = modeBlocks;
-            WhileTestSpoolItem['modeBlocks'] = modeBlocks;
           }
           return testEval;
         }
