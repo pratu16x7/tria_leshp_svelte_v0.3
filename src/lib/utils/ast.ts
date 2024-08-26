@@ -125,8 +125,6 @@ export function unspoolExecute(ast, program) {
             type: 'test',
             parent: bequeathEval.parent
           });
-
-          spoolItem['modeBlocks'] = modeBlocks;
         }
 
         if (bequeathEval) {
@@ -174,10 +172,7 @@ export function unspoolExecute(ast, program) {
             parent: 'IfStatement'
           });
           if (linearSpool.length) {
-            let ifTestSpoolItem = linearSpool[linearSpool.length - 1];
-
-            modeBlocks = ifTestSpoolItem['modeBlocks'];
-            spoolItem['modeBlocks'] = modeBlocks;
+            modeBlocks = linearSpool[linearSpool.length - 1]['modeBlocks'];
           }
 
           return ifTestEval;
@@ -199,10 +194,7 @@ export function unspoolExecute(ast, program) {
           });
 
           if (linearSpool.length) {
-            let WhileTestSpoolItem = linearSpool[linearSpool.length - 1];
-
-            modeBlocks = WhileTestSpoolItem['modeBlocks'];
-            spoolItem['modeBlocks'] = modeBlocks;
+            modeBlocks = linearSpool[linearSpool.length - 1]['modeBlocks'];
           }
           return testEval;
         }
