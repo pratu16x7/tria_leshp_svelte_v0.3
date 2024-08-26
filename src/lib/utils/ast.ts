@@ -14,9 +14,9 @@ export function getAST(program: string) {
 }
 
 //  indicates if you're part of the main (animation) spool
-function clearPlayerState(spoolItem) {
+function clearPlayerPlayingState(context) {
   // console.log('spoolItem =======', spoolItem);
-  Object.values(spoolItem['context']).map((playerState) => {
+  Object.values(context).map((playerState) => {
     playerState['isPlaying'] = false;
   });
 }
@@ -26,7 +26,7 @@ function clearPlayerState(spoolItem) {
 export function unspoolExecute(ast, program) {
   let linearSpool = [];
 
-  let prevFullSpoolItem;
+  let prevContext;
 
   function evaluate(
     node,
@@ -35,7 +35,7 @@ export function unspoolExecute(ast, program) {
     bequeathEval = bequeathEvalEmpty
   ) {
     // bequeathEval is used to show you want to focus on the expression which is otherwise not top level
-    let context = prevFullSpoolItem?.context || {}; // by reference, hence change reflect in object too
+    let context = prevContext || {}; // by reference, hence change reflect in object too
     modeBlocks = structuredClone(modeBlocks);
     let nodeType = node.type;
     let cursor = { start: node.start, end: node.end };
@@ -108,8 +108,8 @@ export function unspoolExecute(ast, program) {
         if (bequeathEval) {
           spoolItem['anim'] = true;
           // TODO: ANIM: if anim, in general, note which players involved, and mark them 'updated', no actually, 'playing'
-          prevFullSpoolItem = structuredClone(spoolItem);
-          clearPlayerState(prevFullSpoolItem);
+          prevContext = structuredClone(spoolItem.context);
+          clearPlayerPlayingState(prevContext);
         }
 
         const arg = evaluate(node.argument, execLevel, modeBlocks);
@@ -137,8 +137,8 @@ export function unspoolExecute(ast, program) {
         if (bequeathEval) {
           spoolItem['anim'] = true;
           // TODO: ANIM: if anim, in general, note which players involved, and mark them 'updated', no actually, 'playing'
-          prevFullSpoolItem = structuredClone(spoolItem);
-          clearPlayerState(prevFullSpoolItem);
+          prevContext = structuredClone(spoolItem.context);
+          clearPlayerPlayingState(prevContext);
         }
 
         const left = evaluate(node.left, execLevel, modeBlocks);
@@ -259,8 +259,8 @@ export function unspoolExecute(ast, program) {
     }
 
     if (astNodeTypesMeta[nodeType].clearPlayers) {
-      prevFullSpoolItem = structuredClone(spoolItem);
-      clearPlayerState(prevFullSpoolItem);
+      prevContext = structuredClone(spoolItem.context);
+      clearPlayerPlayingState(prevContext);
     }
 
     if (astNodeTypesMeta[nodeType].spoolPush === 'after') {
