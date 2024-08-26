@@ -63,6 +63,7 @@
   </div>
   <div class="border">
     <h3>astNode Item</h3>
+    <TempCurrentSpoolItem ast={JSON.stringify(currSpoolItem)} />
     <TempCurrentSpoolItem ast={JSON.stringify(currentAstNodeItem)} />
   </div>
 </div>

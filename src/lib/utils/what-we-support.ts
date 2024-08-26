@@ -55,7 +55,7 @@ export const bequeathEvalEmpty = { parent: undefined };
 // SERIALIZE: default values, can be updated during AST evaluation
 export const astNodeTypesMeta = {
   // Literal: // just a literal value, // NO IMPORTANCE YET // ['literalValue'].push(node.value);
-  Literal: { returns: true },
+  Literal: { returns: true, spoolPush: 'before' },
 
   // Identifier: // is a player (var) from the scope // ['interactions'] = { player: node.name };
   // Where the real eval magic happens: get the context var VALUE not var name
@@ -86,7 +86,7 @@ export const astNodeTypesMeta = {
   UnaryExpression: { spoolPush: 'before', returns: true }, // can have token support test: unaryOperatorMap
 
   // BinaryExpression: ['interactions'] = { left, right, fn: node.operator };
-  BinaryExpression: { spoolPush: 'before', returns: true }, // can have token support test: binaryOperatorMap
+  BinaryExpression: { returns: true }, // can have token support test: binaryOperatorMap
 
   // Assignment and update are siblings
 
@@ -99,7 +99,7 @@ export const astNodeTypesMeta = {
   // If and while are siblings
 
   // IfStatement: // No ANIM, don't wanna give any attention to the whole block, unless necessary, only to its statements
-  IfStatement: { topLevel: true, spoolPush: 'before' },
+  IfStatement: { topLevel: true, spoolPush: 'after' },
 
   // WhileStatement: // Similar to handling structure of the 'IfStatement' block
   WhileStatement: { topLevel: true, spoolPush: 'before' },

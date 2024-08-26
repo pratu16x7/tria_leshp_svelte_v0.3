@@ -30,6 +30,8 @@ console.log(c);`
 let num = 5;
 if (j > 0) {
   num = 10;
+  j = 12;
+  let a = 4;
 }
 console.log("foo")`
     },

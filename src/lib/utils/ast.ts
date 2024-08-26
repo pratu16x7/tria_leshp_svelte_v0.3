@@ -54,6 +54,9 @@ export function unspoolExecute(ast, program) {
     modeBlocks = structuredClone(modeBlocks);
 
     let _res;
+
+    let testChildren = []; // by reference doesn't work for these it seems
+    let blockChildren = [];
     let linearSpoolItem = {
       _id: getRandomId(),
       nodeType,
@@ -62,7 +65,9 @@ export function unspoolExecute(ast, program) {
       modeBlocks,
       cursor,
       levels,
-      _res
+      _res,
+      testChildren,
+      blockChildren
     };
 
     if (astNodeTypesMeta[nodeType].spoolPush === 'before') {
@@ -89,7 +94,9 @@ export function unspoolExecute(ast, program) {
         break;
 
       case 'BlockStatement':
-        node.body.map((statement) => evaluate(statement, execLevel, modeBlocks));
+        linearSpoolItem.blockChildren = node.body.map((statement) =>
+          evaluate(statement, execLevel, modeBlocks)
+        );
         break;
 
       case 'VariableDeclaration':
@@ -130,10 +137,12 @@ export function unspoolExecute(ast, program) {
           linearSpoolItem.levels.anim = true;
         }
 
-        const left = evaluate(node.left, execLevel, modeBlocks)._res;
-        const right = evaluate(node.right, execLevel, modeBlocks)._res;
+        const left = evaluate(node.left, execLevel, modeBlocks);
+        const right = evaluate(node.right, execLevel, modeBlocks);
 
-        _res = binaryOperatorMap[node.operator](left, right);
+        linearSpoolItem.testChildren = [left, right];
+
+        _res = binaryOperatorMap[node.operator](left._res, right._res);
         break;
 
       case 'AssignmentExpression':
@@ -164,10 +173,11 @@ export function unspoolExecute(ast, program) {
         // Muuuuuuch easier
 
         // WhileLoop will have to have a children grid
+
         function ifTest() {
           let ifTestEval = evaluate(node.test, execLevel, modeBlocks, {
             parent: 'IfStatement'
-          })._res;
+          });
           if (linearSpool.length) {
             modeBlocks = linearSpool[linearSpool.length - 1]['modeBlocks'];
           }
@@ -175,12 +185,17 @@ export function unspoolExecute(ast, program) {
           return ifTestEval;
         }
 
+        let ifBlockSpoolItem;
+        let ifTestSpoolItem = ifTest();
         // of course, a literal If else
-        if (ifTest()) {
-          evaluate(node.consequent, execLevel, modeBlocks); // usually a block stmt
+        if (ifTestSpoolItem._res) {
+          ifBlockSpoolItem = evaluate(node.consequent, execLevel, modeBlocks); // usually a block stmt
         } else if (node.alternate) {
-          evaluate(node.alternate, execLevel, modeBlocks); // usually a block stmt
+          ifBlockSpoolItem = evaluate(node.alternate, execLevel, modeBlocks); // usually a block stmt
         }
+
+        linearSpoolItem.testChildren = [ifTestSpoolItem];
+        linearSpoolItem.blockChildren = ifBlockSpoolItem.blockChildren;
 
         break;
 

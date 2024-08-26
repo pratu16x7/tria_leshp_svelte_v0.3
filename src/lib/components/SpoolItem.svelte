@@ -5,7 +5,8 @@
   export let nodeType;
   export let execLevel;
   export let context;
-  export let interactions;
+  export let testChildren = [];
+  export let blockChildren = [];
   export let meta;
   export let cursor;
   export let modeBlocks;
@@ -39,7 +40,20 @@
   <div class="border" class:active class:anim={levels.anim} class:top-level={topLevel}>
     <h4>{nodeType} : {execLevel} : {cursor.programPart}</h4>
     <State {context} {meta} />
-    <p>{JSON.stringify(modeBlocks)} __ {JSON.stringify(interactions)}</p>
+    <p>{JSON.stringify(modeBlocks)}</p>
+    {#if blockChildren.length}
+      <h3>Test</h3>
+    {/if}
+    {#each testChildren as spoolItem, i}
+      <svelte:self {...spoolItem} templateType="spool" {meta} />
+    {/each}
+    {#if blockChildren.length}
+      <h3>Block</h3>
+    {/if}
+    {#each blockChildren as spoolItem, i}
+      <svelte:self {...spoolItem} templateType="spool" {meta} />
+    {/each}
+    <!-- <p>{JSON.stringify(testChildren)} __ {JSON.stringify(blockChildren)}</p> -->
     <!-- <p>{JSON.stringify(context)}</p> -->
   </div>
 {/if}
