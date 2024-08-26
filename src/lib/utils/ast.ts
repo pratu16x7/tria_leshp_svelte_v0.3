@@ -4,7 +4,6 @@ import {
   binaryOperatorMap,
   modeBlocksEmpty,
   bequeathEvalEmpty,
-  spoolItemBase,
   assignmentOperatorMap,
   astNodeTypesMeta
 } from './what-we-support';
@@ -25,9 +24,9 @@ function clearPlayerState(spoolItem) {
 // export function basicEvaluateAST(ast) {}
 
 export function unspoolExecute(ast, program) {
-  let prevFullSpoolItem;
   let linearSpool = [];
-  let treeSpool = [];
+
+  let prevFullSpoolItem;
 
   function evaluate(
     node,
@@ -55,23 +54,6 @@ export function unspoolExecute(ast, program) {
       programPart,
       topLevel: astNodeTypesMeta[nodeType].topLevel ? true : false,
       anim: astNodeTypesMeta[nodeType].anim ? true : false
-    };
-
-    let treeSpoolItem = {
-      _id: getRandomId(),
-      nodeType,
-      execLevel,
-      context,
-      modeBlocks,
-      interactions: {},
-      literalValue: [],
-      cursor,
-      programPart,
-      topLevel: astNodeTypesMeta[nodeType].topLevel ? true : false,
-      anim: astNodeTypesMeta[nodeType].anim ? true : false,
-      index: 0,
-      children: [],
-      childrenGrid: []
     };
 
     let nextExecLevel = execLevel + 1; // TODO: rm
