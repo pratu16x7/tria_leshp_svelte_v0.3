@@ -7,7 +7,7 @@
   export let context;
   export let interactions;
   export let meta;
-  export let programPart;
+  export let cursor;
   export let topLevel;
   export let modeBlocks;
   // export let cursor;  // Already used in program code editor to highlight
@@ -26,18 +26,18 @@
       <div class="anchor">
         <LoopWrapper wrappers={modeBlocks.blocksSoFar} />
         <div class="absolute">
-          <h4>{execLevel} : {programPart}</h4>
+          <h4>{execLevel} : {cursor.programPart}</h4>
           <State {context} {meta} />
         </div>
       </div>
     </div>
   {:else}
-    <h4>{execLevel} : {programPart}</h4>
+    <h4>{execLevel} : {cursor.programPart}</h4>
     <State {context} {meta} />
   {/if}
 {:else if templateType === 'spool'}
   <div class="border" class:active class:anim class:top-level={topLevel}>
-    <h4>{nodeType} : {execLevel} : {programPart}</h4>
+    <h4>{nodeType} : {execLevel} : {cursor.programPart}</h4>
     <State {context} {meta} />
     <p>{JSON.stringify(modeBlocks)} __ {JSON.stringify(interactions)}</p>
     <!-- <p>{JSON.stringify(context)}</p> -->
