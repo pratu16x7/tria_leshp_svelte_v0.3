@@ -49,6 +49,10 @@ export function unspoolExecute(ast, program) {
       end: node.end,
       programPart: program.slice(node.start, node.end)
     };
+    let levels = {
+      anim: astNodeTypesMeta[nodeType].anim ? true : false,
+      topLevel: astNodeTypesMeta[nodeType].topLevel ? true : false
+    };
     let _res;
     execLevel += 1;
 
@@ -59,8 +63,7 @@ export function unspoolExecute(ast, program) {
       context,
       modeBlocks,
       cursor,
-      topLevel: astNodeTypesMeta[nodeType].topLevel ? true : false,
-      levels: { anim: astNodeTypesMeta[nodeType].anim ? true : false }
+      levels
     };
 
     if (astNodeTypesMeta[nodeType].spoolPush === 'before') {

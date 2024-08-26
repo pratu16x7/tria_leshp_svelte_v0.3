@@ -8,11 +8,11 @@
   export let interactions;
   export let meta;
   export let cursor;
-  export let topLevel;
   export let modeBlocks;
   // export let cursor;  // Already used in program code editor to highlight
   export let active = false;
   export let levels;
+  export let topLevel = levels.topLevel;
   export let templateType;
 </script>
 
