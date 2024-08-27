@@ -54,6 +54,9 @@ export const bequeathEvalEmpty = { parent: undefined };
 
 // SERIALIZE: default values, can be updated during AST evaluation
 export const astNodeTypesMeta = {
+  // Program
+  Program: {}, // no need to add it to the spool or tree, it is the allfather for now
+
   // Literal: // just a literal value, // NO IMPORTANCE YET // ['literalValue'].push(node.value);
   Literal: { returns: true, spoolPush: 'before' },
 

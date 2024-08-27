@@ -95,9 +95,10 @@ export function unspoolExecute(ast, program) {
         _res = node.elements.map((element) => evaluate(element, execLevel, modeBlocks)._res);
         break;
 
+      case 'Program':
       case 'BlockStatement':
-        linearSpoolItem.blockChildren = node.body.map((statement) =>
-          evaluate(statement, execLevel, modeBlocks)
+        linearSpoolItem.blockChildren = node.body.map((node) =>
+          evaluate(node, execLevel, modeBlocks)
         );
         break;
 
@@ -273,7 +274,7 @@ export function unspoolExecute(ast, program) {
     return linearSpoolItem;
   }
 
-  ast.body.map((node) => evaluate(node));
+  evaluate(ast);
 
   return linearSpool;
 }

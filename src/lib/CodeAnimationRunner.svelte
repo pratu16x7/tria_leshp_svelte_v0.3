@@ -9,8 +9,6 @@
   $: index = 0;
 
   $: ast = getAST(program);
-  $: astNode = ast.body;
-
   $: fullSpool = unspoolExecute(ast, program);
 
   $: spoolAnim = fullSpool.filter((s) => s.levels.anim === true);
@@ -34,6 +32,7 @@
     // two substrings?
   };
 
+  $: astNode = ast.body;
   $: currentAstNodeItem = astNode[index] || '';
 </script>
 
