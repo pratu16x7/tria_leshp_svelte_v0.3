@@ -57,6 +57,7 @@ export function unspoolExecute(ast, program) {
 
     let testChildren = []; // by reference doesn't work for these it seems
     let blockChildren = [];
+    let loopChildren = [];
     let linearSpoolItem = {
       _id: getRandomId(),
       nodeType,
@@ -67,7 +68,8 @@ export function unspoolExecute(ast, program) {
       levels,
       _res,
       testChildren,
-      blockChildren
+      blockChildren,
+      loopChildren
     };
 
     if (astNodeTypesMeta[nodeType].spoolPush === 'before') {
@@ -175,14 +177,14 @@ export function unspoolExecute(ast, program) {
         // WhileLoop will have to have a children grid
 
         function ifTest() {
-          let ifTestEval = evaluate(node.test, execLevel, modeBlocks, {
+          let ifTestEvalSpoolItem = evaluate(node.test, execLevel, modeBlocks, {
             parent: 'IfStatement'
           });
           if (linearSpool.length) {
             modeBlocks = linearSpool[linearSpool.length - 1]['modeBlocks'];
           }
 
-          return ifTestEval;
+          return ifTestEvalSpoolItem;
         }
 
         let ifBlockSpoolItem;
@@ -201,20 +203,30 @@ export function unspoolExecute(ast, program) {
 
       case 'WhileStatement':
         function whileTest() {
-          let testEval = evaluate(node.test, execLevel, modeBlocks, {
+          let testEvalSpoolItem = evaluate(node.test, execLevel, modeBlocks, {
             parent: 'WhileStatement'
-          })._res;
+          });
 
           if (linearSpool.length) {
             modeBlocks = linearSpool[linearSpool.length - 1]['modeBlocks'];
           }
-          return testEval;
+          return testEvalSpoolItem;
         }
 
+        let whileTestSpoolItem;
+        let whileBlockSpoolItem;
         // of course, a literal while loop
-        while (whileTest()) {
-          evaluate(node.body, execLevel, modeBlocks);
+        let whileTestRes = true;
+        while (whileTestRes) {
+          whileTestSpoolItem = whileTest();
+          linearSpoolItem.testChildren.push(whileTestSpoolItem);
+          whileTestRes = whileTestSpoolItem._res;
+          if (whileTestRes) {
+            whileBlockSpoolItem = evaluate(node.body, execLevel, modeBlocks);
+            linearSpoolItem.loopChildren.push(whileBlockSpoolItem.blockChildren);
+          }
         }
+
         break;
 
       case 'CallExpression':

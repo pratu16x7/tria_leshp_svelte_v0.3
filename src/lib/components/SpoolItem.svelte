@@ -7,14 +7,16 @@
   export let context;
   export let testChildren = [];
   export let blockChildren = [];
+  export let loopChildren = [];
   export let meta;
   export let cursor;
   export let modeBlocks;
   // export let cursor;  // Already used in program code editor to highlight
   export let active = false;
   export let levels;
-  export let topLevel = levels.topLevel;
   export let templateType;
+
+  export let topLevel = levels.topLevel;
 </script>
 
 {#if templateType === 'animation'}
@@ -41,18 +43,35 @@
     <h4>{nodeType} : {execLevel} : {cursor.programPart}</h4>
     <State {context} {meta} />
     <p>{JSON.stringify(modeBlocks)}</p>
-    {#if blockChildren.length}
-      <h3>Test</h3>
+
+    {#if loopChildren.length}
+      <h3>Loop (WIP color coding spool Items)</h3>
+      {#if testChildren.length}
+        <h3>Tests first</h3>
+      {/if}
+      {#each testChildren as spoolItem, i}
+        <svelte:self {...spoolItem} templateType="spool" {meta} />
+      {/each}
+      {#each loopChildren as children, i}
+        <h3>Loop {i} exec</h3>
+        {#each children as spoolItem, i}
+          <svelte:self {...spoolItem} templateType="spool" {meta} />
+        {/each}
+      {/each}
+    {:else}
+      {#if testChildren.length}
+        <h3>Test</h3>
+      {/if}
+      {#each testChildren as spoolItem, i}
+        <svelte:self {...spoolItem} templateType="spool" {meta} />
+      {/each}
+      {#if blockChildren.length}
+        <h3>Block</h3>
+      {/if}
+      {#each blockChildren as spoolItem, i}
+        <svelte:self {...spoolItem} templateType="spool" {meta} />
+      {/each}
     {/if}
-    {#each testChildren as spoolItem, i}
-      <svelte:self {...spoolItem} templateType="spool" {meta} />
-    {/each}
-    {#if blockChildren.length}
-      <h3>Block</h3>
-    {/if}
-    {#each blockChildren as spoolItem, i}
-      <svelte:self {...spoolItem} templateType="spool" {meta} />
-    {/each}
     <!-- <p>{JSON.stringify(testChildren)} __ {JSON.stringify(blockChildren)}</p> -->
     <!-- <p>{JSON.stringify(context)}</p> -->
   </div>
