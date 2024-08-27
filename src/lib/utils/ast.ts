@@ -72,7 +72,7 @@ export function unspoolExecute(ast, program) {
       loopChildren
     };
 
-    if (astNodeTypesMeta[nodeType].spoolPush === 'before') {
+    if (astNodeTypesMeta[nodeType].linearSpoolPush === 'before') {
       linearSpool.push(linearSpoolItem);
     }
 
@@ -137,13 +137,13 @@ export function unspoolExecute(ast, program) {
         }
 
         if (bequeathEval) {
-          linearSpoolItem.levels.anim = true;
+          levels.anim = true;
         }
 
         const left = evaluate(node.left, execLevel, modeBlocks);
         const right = evaluate(node.right, execLevel, modeBlocks);
 
-        linearSpoolItem.testChildren = [left, right];
+        // testChildren = [left, right];
 
         _res = binaryOperatorMap[node.operator](left._res, right._res);
         break;
@@ -266,7 +266,7 @@ export function unspoolExecute(ast, program) {
         throw new Error('Unsupported node type: ' + node.type);
     }
 
-    if (astNodeTypesMeta[nodeType].spoolPush === 'after') {
+    if (astNodeTypesMeta[nodeType].linearSpoolPush === 'after') {
       linearSpool.push(linearSpoolItem);
     }
 
@@ -274,7 +274,8 @@ export function unspoolExecute(ast, program) {
     return linearSpoolItem;
   }
 
-  evaluate(ast);
+  let justtheone = evaluate(ast);
 
   return linearSpool;
+  // return [justtheone];
 }

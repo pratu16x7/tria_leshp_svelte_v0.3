@@ -55,38 +55,43 @@ export const bequeathEvalEmpty = { parent: undefined };
 // SERIALIZE: default values, can be updated during AST evaluation
 export const astNodeTypesMeta = {
   // Program
-  Program: {}, // no need to add it to the spool or tree, it is the allfather for now
+  Program: { linearSpoolPush: 'before' }, // no need to add it to the spool or tree, it is the allfather for now
 
   // Literal: // just a literal value, // NO IMPORTANCE YET // ['literalValue'].push(node.value);
-  Literal: { returns: true, spoolPush: 'before' },
+  Literal: { returns: true, linearSpoolPush: 'before' },
 
   // Identifier: // is a player (var) from the scope // ['interactions'] = { player: node.name };
   // Where the real eval magic happens: get the context var VALUE not var name
-  Identifier: { spoolPush: 'after', returns: true },
+  Identifier: { linearSpoolPush: 'after', returns: true },
 
   // ExpressionStatement:  // LVL 0
   ExpressionStatement: {
     anim: true,
     topLevel: true,
     contextUpdate: true,
-    spoolPush: 'after',
+    linearSpoolPush: 'after',
     returns: true
   },
 
   // Array and Block are siblings
 
   // ArrayExpression:
-  ArrayExpression: { spoolPush: 'before', returns: true },
+  ArrayExpression: { linearSpoolPush: 'before', returns: true },
 
   // BlockStatement:  // OKAY NOW WE DO // Naa don't wanna give any attention to the block, unless necessary, only to its statements
   BlockStatement: {},
 
   // VariableDeclaration: // Is a new player (var) added to the scope
   // LVL 0
-  VariableDeclaration: { anim: true, topLevel: true, contextUpdate: true, spoolPush: 'after' },
+  VariableDeclaration: {
+    anim: true,
+    topLevel: true,
+    contextUpdate: true,
+    linearSpoolPush: 'after'
+  },
 
   // UnaryExpression: // is one of the math operations, with a left, right and operator ['interactions'] = { arg, fn: node.operator };
-  UnaryExpression: { spoolPush: 'before', returns: true }, // can have token support test: unaryOperatorMap
+  UnaryExpression: { linearSpoolPush: 'before', returns: true }, // can have token support test: unaryOperatorMap
 
   // BinaryExpression: ['interactions'] = { left, right, fn: node.operator };
   BinaryExpression: { returns: true }, // can have token support test: binaryOperatorMap
@@ -94,20 +99,20 @@ export const astNodeTypesMeta = {
   // Assignment and update are siblings
 
   // The AssignmentExpression: ['interactions'] = { target: node.left.name, value: assignmentExpressionResult };
-  AssignmentExpression: { spoolPush: 'after' }, // woah doesn't have to be a stmt
+  AssignmentExpression: { linearSpoolPush: 'after' }, // woah doesn't have to be a stmt
 
   // Update expression
-  UpdateExpression: { spoolPush: 'after' }, // woah doesn't have to be a stmt
+  UpdateExpression: { linearSpoolPush: 'after' }, // woah doesn't have to be a stmt
 
   // If and while are siblings
 
   // IfStatement: // No ANIM, don't wanna give any attention to the whole block, unless necessary, only to its statements
-  IfStatement: { topLevel: true, spoolPush: 'after' },
+  IfStatement: { topLevel: true, linearSpoolPush: 'after' },
 
   // WhileStatement: // Similar to handling structure of the 'IfStatement' block
-  WhileStatement: { topLevel: true, spoolPush: 'before' },
+  WhileStatement: { topLevel: true, linearSpoolPush: 'before' },
 
-  CallExpression: { spoolPush: 'before', returns: true },
+  CallExpression: { linearSpoolPush: 'before', returns: true },
 
   MemberExpression: {}
 };
