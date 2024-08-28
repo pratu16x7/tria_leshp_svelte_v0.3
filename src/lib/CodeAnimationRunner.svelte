@@ -6,22 +6,12 @@
   import { getAST, unspoolExecute } from '../lib/utils/ast';
 
   export let program: string;
-  // let fullSpool = [];
   $: index = 0;
 
   $: ast = getAST(program);
-  $: [fullSpool, linearSpoolIds] = unspoolExecute(ast, program);
-
-  $: spoolAnim = fullSpool.filter((s) => s.levels.anim === true);
-
-  console.log('program', program);
-  $: console.log('linearSpoolIds', linearSpoolIds.length, linearSpoolIds); // why is this undefined here and not later??
-  $: console.log('spoolAnim', spoolAnim.length, spoolAnim); // why is this undefined here and not later??
-
-  $: currSpoolItem = spoolAnim[index];
-  $: activeId = linearSpoolIds[index];
-  $: ({ context, interactions, execLevel, nodeType, cursor, programPart } = currSpoolItem);
-  // $: currLine = program.slice(cursor.start, cursor.end);
+  $: [justtheone, nodeEvalList] = unspoolExecute(ast, program);
+  $: currSpoolItem = nodeEvalList[index];
+  $: ({ _id, cursor } = currSpoolItem);
 
   let meta = {
     l: {
@@ -40,7 +30,7 @@
 </script>
 
 <!-- wow bind works parent to child ... (go to Function preview) -->
-<Counter bind:count={index} line={programPart} />
+<Counter bind:count={index} line={cursor.programPart} />
 <!-- <h1>{programPart}</h1> -->
 <div class="container">
   <div class="top-row">
@@ -49,19 +39,7 @@
       <SpoolItem {...currSpoolItem} templateType="animation" {meta} />
     </div>
     <div class="box border">
-      <h3>Full Spool</h3>
-      group first, you'll have to form a json tree structure again sadly recursively keep rendering any
-      children nodes but you'll still have to keep the linear order for the animation above so just simply
-      update the current spool with the depth first node
-      {#each fullSpool as spoolItem, i}
-        <SpoolItem
-          {...spoolItem}
-          active={spoolItem._id === activeId}
-          {activeId}
-          templateType="spool"
-          {meta}
-        />
-      {/each}
+      <SpoolItem {...justtheone} activeId={_id} templateType="spool" {meta} />
     </div>
   </div>
   <div class="border">

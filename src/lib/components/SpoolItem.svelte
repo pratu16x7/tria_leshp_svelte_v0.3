@@ -20,8 +20,7 @@
   export let cursor;
   export let modeBlocks;
   // export let cursor;  // Already used in program code editor to highlight
-  export let active = false;
-  export let levels;
+  export let anim;
   export let templateType;
 
   export let children = [];
@@ -38,19 +37,19 @@
       <div class="anchor">
         <LoopWrapper wrappers={modeBlocks.blocksSoFar} />
         <div class="absolute">
-          <h4>{execLevel} : {cursor.programPart}</h4>
+          <h4>{cursor.programPart}</h4>
           <State {context} {meta} />
         </div>
       </div>
     </div>
   {:else}
-    <h4>{execLevel} : {cursor.programPart}</h4>
+    <h4>{cursor.programPart}</h4>
     <State {context} {meta} />
   {/if}
 {:else if templateType === 'spool'}
-  <div class="border" class:active={_id === activeId} class:anim={levels.anim}>
+  <div class="border" class:active={_id === activeId} class:anim>
     <h4>id {_id}</h4>
-    <h4>{nodeType} : {execLevel} : {cursor.programPart}</h4>
+    <h4>{nodeType} : {cursor.programPart}</h4>
     <State {context} {meta} />
     <p>{JSON.stringify(modeBlocks)}</p>
 

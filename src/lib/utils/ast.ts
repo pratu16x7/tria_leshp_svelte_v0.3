@@ -44,15 +44,13 @@ export function unspoolExecute(ast, program) {
       end: node.end,
       programPart: program.slice(node.start, node.end)
     };
-    let levels = {
-      anim: astNodeTypesMeta[nodeType].anim ? true : false
-    };
     execLevel += 1;
 
     // context is kept getting added to throughout (only works on objects not arrays), unlike execLevel which also has to decrease
     let context = prevContext ? clearPlayerPlayingState(prevContext) : {}; // by reference, hence change reflect in object too
     modeBlocks = structuredClone(modeBlocks);
 
+    let anim = astNodeTypesMeta[nodeType].anim ? true : false;
     let _res;
 
     // TODO: interface
@@ -76,7 +74,7 @@ export function unspoolExecute(ast, program) {
       context,
       modeBlocks,
       cursor,
-      levels,
+      anim,
       _res,
       testAndBlock,
       loopAndBlocks,
@@ -279,8 +277,8 @@ export function unspoolExecute(ast, program) {
       linearSpoolNodes.push(evalNode);
     }
 
-    if (levels.anim) {
-      linearSpoolIds.push(_id);
+    if (anim) {
+      linearSpoolIds.push(evalNode);
     }
 
     evalNode._res = _res;
@@ -289,6 +287,6 @@ export function unspoolExecute(ast, program) {
 
   let justtheone = evaluate(ast);
 
-  return [linearSpoolNodes, linearSpoolIds];
+  return [justtheone, linearSpoolIds];
   // return [justtheone];
 }
