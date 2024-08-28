@@ -77,7 +77,7 @@
   }
 </script>
 
-<p>okay not sure anymore how to bind, but we don't need it yet</p>
+<!-- <p>okay not sure anymore how to bind, but we don't need it yet</p> -->
 <div bind:this={editorContainer} class="editor"></div>
 
 <!--<script lang="ts">

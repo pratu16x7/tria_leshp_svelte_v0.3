@@ -47,22 +47,21 @@
 </script>
 
 <!-- wow bind works parent to child ... (go to Function preview) -->
-<Counter bind:count={index} line={cursor.programPart} />
+<!-- <Counter bind:count={index} line={cursor.programPart} /> -->
 <div class="container">
   <div class="top-row">
-    <div class="box border">
+    <div class="box border flex-1">
+      <h3>Leshp ___ {cursor.programPart}</h3>
       <FunctionPreview bind:program {cursor} />
-      <div class="box border">
-        <SpoolItem
-          {...justtheone}
-          activeId={_id}
-          activeParentBreadcrumbs={parentBreadcrumbs}
-          templateType="animation"
-          {meta}
-        />
-      </div>
+      <SpoolItem
+        {...justtheone}
+        activeId={_id}
+        activeParentBreadcrumbs={parentBreadcrumbs}
+        templateType="animation"
+        {meta}
+      />
     </div>
-    <div class="box border">
+    <div class="box border flex-2">
       <SpoolItem
         {...justtheone}
         activeId={_id}
@@ -72,40 +71,34 @@
       />
     </div>
   </div>
-  <div class="border">
+  <div>
     <h3>astNode Item</h3>
     <TempCurrentSpoolItem ast={JSON.stringify(currSpoolItem)} />
     <TempCurrentSpoolItem ast={JSON.stringify(currentAstNodeItem)} />
   </div>
 </div>
 
-<svelte:window on:keydown|preventDefault={onKeyDown} />
+<svelte:window on:keydown={onKeyDown} />
 
 <style>
-  .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
   .top-row {
     display: flex;
-    justify-content: space-between;
-    width: 100%;
   }
+
+  .flex-1 {
+    flex: 1; /* Takes 1 part of the available space */
+  }
+  .flex-2 {
+    flex: 2; /* Takes 2 parts of the available space */
+  }
+
   .border {
     border: 1px solid lightgrey;
     border-radius: 8px;
-    width: 100%;
     margin: 1em;
   }
   .box {
-    /* margin: 1em; */
-    padding: 1em;
-    flex: 1;
     overflow: scroll;
     height: 900px; /* with page zoom at 67%*/
-  }
-  .active {
-    color: orange;
   }
 </style>
