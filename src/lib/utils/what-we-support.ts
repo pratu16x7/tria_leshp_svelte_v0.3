@@ -40,7 +40,6 @@ export const bequeathEvalEmpty = { parent: undefined };
 //   literalValue: [],
 //   cursor: { start: 0, end: 0 },
 //   programPart: '',
-//   topLevel: false,
 //   anim: false
 // };
 
@@ -64,7 +63,6 @@ export const astNodeTypesMeta = {
   // ExpressionStatement:  // LVL 0
   ExpressionStatement: {
     anim: true,
-    topLevel: true,
     contextUpdate: true,
     linearSpoolPush: 'after',
     returns: true
@@ -85,7 +83,6 @@ export const astNodeTypesMeta = {
   // LVL 0
   VariableDeclaration: {
     anim: true,
-    topLevel: true,
     contextUpdate: true,
     linearSpoolPush: 'after'
   },
@@ -94,7 +91,7 @@ export const astNodeTypesMeta = {
   UnaryExpression: { linearSpoolPush: 'before', returns: true }, // can have token support test: unaryOperatorMap
 
   // BinaryExpression: ['interactions'] = { left, right, fn: node.operator };
-  BinaryExpression: { returns: true }, // can have token support test: binaryOperatorMap
+  BinaryExpression: { anim: true, returns: true }, // can have token support test: binaryOperatorMap
 
   // Assignment and update are siblings
 
@@ -107,10 +104,10 @@ export const astNodeTypesMeta = {
   // If and while are siblings
 
   // IfStatement: // No ANIM, don't wanna give any attention to the whole block, unless necessary, only to its statements
-  IfStatement: { topLevel: true, linearSpoolPush: 'after' },
+  IfStatement: { linearSpoolPush: 'after' },
 
   // WhileStatement: // Similar to handling structure of the 'IfStatement' block
-  WhileStatement: { topLevel: true, linearSpoolPush: 'before' },
+  WhileStatement: { linearSpoolPush: 'before' },
 
   CallExpression: { linearSpoolPush: 'before', returns: true },
 

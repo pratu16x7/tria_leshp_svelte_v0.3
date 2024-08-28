@@ -22,14 +22,12 @@
   export let levels;
   export let templateType;
 
-  export let topLevel = levels.topLevel;
-
   export let children = [];
 </script>
 
 {#if templateType === 'animation'}
   {#if modeBlocks.blocksSoFar.length}
-    <div class="border {modeBlocks.blocksSoFar[0]['type']}" class:top-level={topLevel}>
+    <div class="border {modeBlocks.blocksSoFar[0]['type']}">
       <p>
         {JSON.stringify(modeBlocks.blocksSoFar[0]['name'])}: {modeBlocks.blocksSoFar[0]['parent']}
       </p>
@@ -47,7 +45,7 @@
     <State {context} {meta} />
   {/if}
 {:else if templateType === 'spool'}
-  <div class="border" class:active class:anim={levels.anim} class:top-level={topLevel}>
+  <div class="border" class:active class:anim={levels.anim}>
     <h4>{nodeType} : {execLevel} : {cursor.programPart}</h4>
     <State {context} {meta} />
     <p>{JSON.stringify(modeBlocks)}</p>

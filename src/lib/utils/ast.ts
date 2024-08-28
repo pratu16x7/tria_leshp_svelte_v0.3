@@ -44,8 +44,7 @@ export function unspoolExecute(ast, program) {
       programPart: program.slice(node.start, node.end)
     };
     let levels = {
-      anim: astNodeTypesMeta[nodeType].anim ? true : false,
-      topLevel: astNodeTypesMeta[nodeType].topLevel ? true : false
+      anim: astNodeTypesMeta[nodeType].anim ? true : false
     };
     execLevel += 1;
 
@@ -141,10 +140,6 @@ export function unspoolExecute(ast, program) {
             type: 'test',
             parent: bequeathEval.parent
           });
-        }
-
-        if (bequeathEval) {
-          levels.anim = true;
         }
 
         const left = evaluate(node.left, execLevel, modeBlocks);

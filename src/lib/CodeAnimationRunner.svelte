@@ -43,7 +43,7 @@
   <div class="top-row">
     <div class="box border">
       <FunctionPreview bind:program {cursor} />
-      <SpoolItem {...currSpoolItem} topLevel={false} templateType="animation" {meta} />
+      <SpoolItem {...currSpoolItem} templateType="animation" {meta} />
     </div>
     <div class="box border">
       <h3>Full Spool</h3>
