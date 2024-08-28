@@ -13,30 +13,36 @@
     {@const playerType = toType(playerState['value'])}
     <!-- {@const pointers = meta[player]['pointers']} -->
     <!-- {#if playerType === 'number' && !pointers.includes(player)} -->
-    {#if playerType === 'number'}
-      <PlayerNumeric
-        name={player}
-        number={playerState['value']}
-        color="green"
-        active={playerState['isPlaying']}
-      />
-    {:else if playerType === 'array' || playerType === 'string'}
-      {@const pointer_1 = meta[player]['pointer_1']}
-      <PlayerArray
-        name={player}
-        array={playerState['value']}
-        active={playerState['isPlaying']}
-        pointerName={pointer_1}
-        pointerValue={context[pointer_1]['value']}
-      />
-    {:else}
-      <p>{player}, {playerState['value']}</p>
-    {/if}
+
+    <div class="margin">
+      {#if playerType === 'number'}
+        <PlayerNumeric
+          name={player}
+          number={playerState['value']}
+          color="green"
+          active={playerState['isPlaying']}
+        />
+      {:else if playerType === 'array' || playerType === 'string'}
+        {@const pointer_1 = meta[player]['pointer_1']}
+        <PlayerArray
+          name={player}
+          array={playerState['value']}
+          active={playerState['isPlaying']}
+          pointerName={pointer_1}
+          pointerValue={context[pointer_1]['value']}
+        />
+      {:else}
+        <p>{player}, {playerState['value']}</p>
+      {/if}
+    </div>
   {/each}
 </div>
 
 <style>
   .template {
     /* height: 200px; */
+  }
+  .margin {
+    margin: 16px;
   }
 </style>

@@ -57,7 +57,7 @@
           {...justtheone}
           activeId={_id}
           activeParentBreadcrumbs={parentBreadcrumbs}
-          templateType="spool"
+          templateType="animation"
           {meta}
         />
       </div>
@@ -67,7 +67,7 @@
         {...justtheone}
         activeId={_id}
         activeParentBreadcrumbs={parentBreadcrumbs}
-        templateType="animation"
+        templateType="spool"
         {meta}
       />
     </div>
@@ -103,7 +103,7 @@
     padding: 1em;
     flex: 1;
     overflow: scroll;
-    height: 700px; /* with page zoom at 67%*/
+    height: 900px; /* with page zoom at 67%*/
   }
   .active {
     color: orange;
