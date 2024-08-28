@@ -54,9 +54,6 @@ export const bequeathEvalEmpty = { parent: undefined };
 
 // SERIALIZE: default values, can be updated during AST evaluation
 export const astNodeTypesMeta = {
-  // Program
-  Program: { linearSpoolPush: 'before' }, // no need to add it to the spool or tree, it is the allfather for now
-
   // Literal: // just a literal value, // NO IMPORTANCE YET // ['literalValue'].push(node.value);
   Literal: { returns: true, linearSpoolPush: 'before' },
 
@@ -78,8 +75,11 @@ export const astNodeTypesMeta = {
   // ArrayExpression:
   ArrayExpression: { linearSpoolPush: 'before', returns: true },
 
+  // Program
+  Program: { linearSpoolPush: 'before' }, // no need to add it to the spool or tree, it is the allfather for now
+
   // BlockStatement:  // OKAY NOW WE DO // Naa don't wanna give any attention to the block, unless necessary, only to its statements
-  BlockStatement: {},
+  BlockStatement: {}, // but we return the list of nodes, apart from that doesn't have meaning
 
   // VariableDeclaration: // Is a new player (var) added to the scope
   // LVL 0

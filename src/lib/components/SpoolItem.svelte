@@ -5,9 +5,15 @@
   export let nodeType;
   export let execLevel;
   export let context;
-  export let testChildren = [];
-  export let blockChildren = [];
-  export let loopChildren = [];
+  export let testAndBlock = {
+    test: {},
+    block: { children: [] }
+  };
+
+  export let loopAndBlocks = {
+    testAndBlocks: []
+  };
+
   export let meta;
   export let cursor;
   export let modeBlocks;
@@ -17,6 +23,8 @@
   export let templateType;
 
   export let topLevel = levels.topLevel;
+
+  export let children = [];
 </script>
 
 {#if templateType === 'animation'}
@@ -44,35 +52,28 @@
     <State {context} {meta} />
     <p>{JSON.stringify(modeBlocks)}</p>
 
-    {#if loopChildren.length}
+    {#if loopAndBlocks.testAndBlocks.length}
       <h3>Loop (WIP color coding spool Items)</h3>
-      {#if testChildren.length}
-        <h3>Tests first</h3>
-      {/if}
-      {#each testChildren as spoolItem, i}
-        <svelte:self {...spoolItem} templateType="spool" {meta} />
-      {/each}
-      {#each loopChildren as children, i}
-        <h3>Loop {i} exec</h3>
-        {#each children as spoolItem, i}
+      {#each loopAndBlocks.testAndBlocks as testAndBlock, i}
+        <h3>Loop {i + 1} test</h3>
+        <svelte:self {...testAndBlock.test} templateType="spool" {meta} />
+        <h3>exec</h3>
+        {#each testAndBlock.block.children as spoolItem, i}
           <svelte:self {...spoolItem} templateType="spool" {meta} />
         {/each}
       {/each}
-    {:else}
-      {#if testChildren.length}
-        <h3>Test</h3>
-      {/if}
-      {#each testChildren as spoolItem, i}
+    {:else if testAndBlock.block.children.length}
+      <svelte:self {...testAndBlock.test} templateType="spool" {meta} />
+      <h3>Test</h3>
+      {#each testAndBlock.block.children as spoolItem, i}
         <svelte:self {...spoolItem} templateType="spool" {meta} />
       {/each}
-      {#if blockChildren.length}
-        <h3>Block</h3>
-      {/if}
-      {#each blockChildren as spoolItem, i}
+    {:else if nodeType === 'Program' && children.length}
+      {#each children as spoolItem, i}
         <svelte:self {...spoolItem} templateType="spool" {meta} />
       {/each}
     {/if}
-    <!-- <p>{JSON.stringify(testChildren)} __ {JSON.stringify(blockChildren)}</p> -->
+    <!-- <p>{JSON.stringify(testAndBlock)} __ {JSON.stringify(blockChildren)}</p> -->
     <!-- <p>{JSON.stringify(context)}</p> -->
   </div>
 {/if}

@@ -49,15 +49,24 @@ export function unspoolExecute(ast, program) {
     };
     execLevel += 1;
 
-    // context is kept getting added to throughout, unlike execLevel which also has to decrease
+    // context is kept getting added to throughout (only works on objects not arrays), unlike execLevel which also has to decrease
     let context = prevContext ? clearPlayerPlayingState(prevContext) : {}; // by reference, hence change reflect in object too
     modeBlocks = structuredClone(modeBlocks);
 
     let _res;
 
-    let testChildren = []; // by reference doesn't work for these it seems
-    let blockChildren = [];
-    let loopChildren = [];
+    // TODO: interface
+    let testAndBlock = {
+      test: {},
+      block: { children: [] }
+    };
+
+    let loopAndBlocks = {
+      testAndBlocks: []
+    };
+
+    let children = [];
+
     let linearSpoolItem = {
       _id: getRandomId(),
       nodeType,
@@ -67,9 +76,9 @@ export function unspoolExecute(ast, program) {
       cursor,
       levels,
       _res,
-      testChildren,
-      blockChildren,
-      loopChildren
+      testAndBlock,
+      loopAndBlocks,
+      children
     };
 
     if (astNodeTypesMeta[nodeType].linearSpoolPush === 'before') {
@@ -97,9 +106,7 @@ export function unspoolExecute(ast, program) {
 
       case 'Program':
       case 'BlockStatement':
-        linearSpoolItem.blockChildren = node.body.map((node) =>
-          evaluate(node, execLevel, modeBlocks)
-        );
+        linearSpoolItem.children = node.body.map((node) => evaluate(node, execLevel, modeBlocks));
         break;
 
       case 'VariableDeclaration':
@@ -143,7 +150,7 @@ export function unspoolExecute(ast, program) {
         const left = evaluate(node.left, execLevel, modeBlocks);
         const right = evaluate(node.right, execLevel, modeBlocks);
 
-        // testChildren = [left, right];
+        // testAndBlock = [left, right];
 
         _res = binaryOperatorMap[node.operator](left._res, right._res);
         break;
@@ -188,17 +195,19 @@ export function unspoolExecute(ast, program) {
           return ifTestEvalSpoolItem;
         }
 
-        let ifBlockSpoolItem;
-        let ifTestSpoolItem = ifTest();
+        let ifBlock;
+        let ifTestItem = ifTest();
         // of course, a literal If else
-        if (ifTestSpoolItem._res) {
-          ifBlockSpoolItem = evaluate(node.consequent, execLevel, modeBlocks); // usually a block stmt
+        if (ifTestItem._res) {
+          ifBlock = evaluate(node.consequent, execLevel, modeBlocks); // usually a block stmt
         } else if (node.alternate) {
-          ifBlockSpoolItem = evaluate(node.alternate, execLevel, modeBlocks); // usually a block stmt
+          ifBlock = evaluate(node.alternate, execLevel, modeBlocks); // usually a block stmt
         }
 
-        linearSpoolItem.testChildren = [ifTestSpoolItem];
-        linearSpoolItem.blockChildren = ifBlockSpoolItem.blockChildren;
+        testAndBlock.test = ifTestItem;
+
+        // Antipattern for AST: pass over of responsibility to the test node
+        testAndBlock.block = ifBlock;
 
         break;
 
@@ -214,17 +223,22 @@ export function unspoolExecute(ast, program) {
           return testEvalSpoolItem;
         }
 
-        let whileTestSpoolItem;
-        let whileBlockSpoolItem;
+        let whileTestItem;
+        let whileBlock;
+        let whileTestAndBlock;
         // of course, a literal while loop
         let whileTestRes = true;
         while (whileTestRes) {
-          whileTestSpoolItem = whileTest();
-          linearSpoolItem.testChildren.push(whileTestSpoolItem);
-          whileTestRes = whileTestSpoolItem._res;
+          whileTestItem = whileTest();
+          // linearSpoolItem.testAndBlock.push(whileTestItem);
+          whileTestRes = whileTestItem._res;
           if (whileTestRes) {
-            whileBlockSpoolItem = evaluate(node.body, execLevel, modeBlocks);
-            linearSpoolItem.loopChildren.push(whileBlockSpoolItem.blockChildren);
+            whileBlock = evaluate(node.body, execLevel, modeBlocks);
+
+            loopAndBlocks.testAndBlocks.push({
+              test: whileTestItem,
+              block: whileBlock // Antipattern for AST: pass over of responsibility to the test node
+            });
           }
         }
 
