@@ -27,6 +27,23 @@
 
   $: astNode = ast.body;
   $: currentAstNodeItem = astNode[index] || '';
+
+  function onKeyDown(e) {
+    switch (e.keyCode) {
+      case 38: // up
+        index -= 1;
+        break;
+      case 40: // down
+        index += 1;
+        break;
+      case 37: // left
+        index -= 1;
+        break;
+      case 39: // right
+        index += 1;
+        break;
+    }
+  }
 </script>
 
 <!-- wow bind works parent to child ... (go to Function preview) -->
@@ -61,6 +78,8 @@
     <TempCurrentSpoolItem ast={JSON.stringify(currentAstNodeItem)} />
   </div>
 </div>
+
+<svelte:window on:keydown|preventDefault={onKeyDown} />
 
 <style>
   .container {
