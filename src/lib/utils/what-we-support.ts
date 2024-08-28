@@ -91,7 +91,7 @@ export const astNodeTypesMeta = {
   UnaryExpression: { linearSpoolPush: 'before', returns: true }, // can have token support test: unaryOperatorMap
 
   // BinaryExpression: ['interactions'] = { left, right, fn: node.operator };
-  BinaryExpression: { anim: true, returns: true }, // can have token support test: binaryOperatorMap
+  BinaryExpression: { linearSpoolPush: 'before', anim: true, returns: true }, // can have token support test: binaryOperatorMap
 
   // Assignment and update are siblings
 

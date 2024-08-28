@@ -6,17 +6,20 @@
   import { getAST, unspoolExecute } from '../lib/utils/ast';
 
   export let program: string;
+  // let fullSpool = [];
   $: index = 0;
 
   $: ast = getAST(program);
-  $: fullSpool = unspoolExecute(ast, program);
+  $: [fullSpool, linearSpoolIds] = unspoolExecute(ast, program);
 
   $: spoolAnim = fullSpool.filter((s) => s.levels.anim === true);
+
   console.log('program', program);
-  console.log('spoolAnim', spoolAnim); // why is this undefined here and not later??
-  console.log('fullSpool', fullSpool);
+  $: console.log('linearSpoolIds', linearSpoolIds.length, linearSpoolIds); // why is this undefined here and not later??
+  $: console.log('spoolAnim', spoolAnim.length, spoolAnim); // why is this undefined here and not later??
 
   $: currSpoolItem = spoolAnim[index];
+  $: activeId = linearSpoolIds[index];
   $: ({ context, interactions, execLevel, nodeType, cursor, programPart } = currSpoolItem);
   // $: currLine = program.slice(cursor.start, cursor.end);
 
@@ -53,7 +56,8 @@
       {#each fullSpool as spoolItem, i}
         <SpoolItem
           {...spoolItem}
-          active={spoolItem._id === currSpoolItem._id}
+          active={spoolItem._id === activeId}
+          {activeId}
           templateType="spool"
           {meta}
         />

@@ -2,6 +2,8 @@
   import State from './State.svelte';
   import LoopWrapper from './LoopWrapper.svelte';
 
+  export let _id;
+  export let activeId;
   export let nodeType;
   export let execLevel;
   export let context;
@@ -26,6 +28,7 @@
 </script>
 
 {#if templateType === 'animation'}
+  <h4>id {_id}</h4>
   {#if modeBlocks.blocksSoFar.length}
     <div class="border {modeBlocks.blocksSoFar[0]['type']}">
       <p>
@@ -45,7 +48,8 @@
     <State {context} {meta} />
   {/if}
 {:else if templateType === 'spool'}
-  <div class="border" class:active class:anim={levels.anim}>
+  <div class="border" class:active={_id === activeId} class:anim={levels.anim}>
+    <h4>id {_id}</h4>
     <h4>{nodeType} : {execLevel} : {cursor.programPart}</h4>
     <State {context} {meta} />
     <p>{JSON.stringify(modeBlocks)}</p>
@@ -54,21 +58,21 @@
       <h3>Loop (WIP color coding spool Items)</h3>
       {#each loopAndBlocks.testAndBlocks as testAndBlock, i}
         <h3>Loop {i + 1} test</h3>
-        <svelte:self {...testAndBlock.test} templateType="spool" {meta} />
+        <svelte:self {...testAndBlock.test} templateType="spool" {meta} {activeId} />
         <h3>exec</h3>
         {#each testAndBlock.block.children as spoolItem, i}
-          <svelte:self {...spoolItem} templateType="spool" {meta} />
+          <svelte:self {...spoolItem} templateType="spool" {meta} {activeId} />
         {/each}
       {/each}
     {:else if testAndBlock.block.children.length}
-      <svelte:self {...testAndBlock.test} templateType="spool" {meta} />
+      <svelte:self {...testAndBlock.test} templateType="spool" {meta} {activeId} />
       <h3>Test</h3>
       {#each testAndBlock.block.children as spoolItem, i}
-        <svelte:self {...spoolItem} templateType="spool" {meta} />
+        <svelte:self {...spoolItem} templateType="spool" {meta} {activeId} />
       {/each}
     {:else if nodeType === 'Program' && children.length}
       {#each children as spoolItem, i}
-        <svelte:self {...spoolItem} templateType="spool" {meta} />
+        <svelte:self {...spoolItem} templateType="spool" {meta} {activeId} />
       {/each}
     {/if}
     <!-- <p>{JSON.stringify(testAndBlock)} __ {JSON.stringify(blockChildren)}</p> -->

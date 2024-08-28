@@ -27,7 +27,8 @@ function clearPlayerPlayingState(context) {
 // export function basicEvaluateAST(ast) {}
 
 export function unspoolExecute(ast, program) {
-  let linearSpool = [];
+  let linearSpoolNodes = [];
+  let linearSpoolIds = [];
 
   let prevContext;
 
@@ -66,8 +67,10 @@ export function unspoolExecute(ast, program) {
 
     let children = [];
 
+    let _id = getRandomId();
+
     let evalNode = {
-      _id: getRandomId(),
+      _id,
       nodeType,
       execLevel,
       context,
@@ -81,7 +84,7 @@ export function unspoolExecute(ast, program) {
     };
 
     if (astNodeTypesMeta[nodeType].linearSpoolPush === 'before') {
-      linearSpool.push(evalNode);
+      linearSpoolNodes.push(evalNode);
     }
 
     switch (nodeType) {
@@ -183,8 +186,8 @@ export function unspoolExecute(ast, program) {
           let ifTestEvalSpoolItem = evaluate(node.test, execLevel, modeBlocks, {
             parent: 'IfStatement'
           });
-          if (linearSpool.length) {
-            modeBlocks = linearSpool[linearSpool.length - 1]['modeBlocks'];
+          if (linearSpoolNodes.length) {
+            modeBlocks = linearSpoolNodes[linearSpoolNodes.length - 1]['modeBlocks'];
           }
 
           return ifTestEvalSpoolItem;
@@ -212,8 +215,8 @@ export function unspoolExecute(ast, program) {
             parent: 'WhileStatement'
           });
 
-          if (linearSpool.length) {
-            modeBlocks = linearSpool[linearSpool.length - 1]['modeBlocks'];
+          if (linearSpoolNodes.length) {
+            modeBlocks = linearSpoolNodes[linearSpoolNodes.length - 1]['modeBlocks'];
           }
           return testEvalSpoolItem;
         }
@@ -273,7 +276,11 @@ export function unspoolExecute(ast, program) {
     }
 
     if (astNodeTypesMeta[nodeType].linearSpoolPush === 'after') {
-      linearSpool.push(evalNode);
+      linearSpoolNodes.push(evalNode);
+    }
+
+    if (levels.anim) {
+      linearSpoolIds.push(_id);
     }
 
     evalNode._res = _res;
@@ -282,6 +289,6 @@ export function unspoolExecute(ast, program) {
 
   let justtheone = evaluate(ast);
 
-  return linearSpool;
+  return [linearSpoolNodes, linearSpoolIds];
   // return [justtheone];
 }
