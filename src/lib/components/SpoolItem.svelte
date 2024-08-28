@@ -18,24 +18,27 @@
 
   export let meta;
   export let cursor;
-  export let modeBlocks;
+  export let parentBreadcrumbs;
   // export let cursor;  // Already used in program code editor to highlight
   export let anim;
   export let templateType;
 
   export let children = [];
+
+  let parent = 'test';
+  // console.log('========', parentBreadcrumbs);
 </script>
 
 {#if templateType === 'animation'}
   <h4>id {_id}</h4>
-  {#if modeBlocks.blocksSoFar.length}
-    <div class="border {modeBlocks.blocksSoFar[0]['type']}">
-      <p>
-        {JSON.stringify(modeBlocks.blocksSoFar[0]['name'])}: {modeBlocks.blocksSoFar[0]['parent']}
-      </p>
+  {#if parentBreadcrumbs.length}
+    <div class="border {parent}">
+      <!-- <p>
+        {JSON.stringify(loopAndBlocks.testAndBlocks[0]['name'])}: {loopAndBlocks.testAndBlocks[0]['parent']}
+      </p> -->
 
       <div class="anchor">
-        <LoopWrapper wrappers={modeBlocks.blocksSoFar} />
+        <LoopWrapper wrappers={parentBreadcrumbs} />
         <div class="absolute">
           <h4>{cursor.programPart}</h4>
           <State {context} {meta} />
@@ -47,11 +50,17 @@
     <State {context} {meta} />
   {/if}
 {:else if templateType === 'spool'}
-  <div class="border" class:active={_id === activeId} class:anim>
+  <div
+    class="border default-node"
+    class:active={_id === activeId}
+    class:anim
+    class:loop={loopAndBlocks.testAndBlocks.length > 0}
+    class:test={testAndBlock.block.children.length > 0}
+  >
     <h4>id {_id}</h4>
     <h4>{nodeType} : {cursor.programPart}</h4>
     <State {context} {meta} />
-    <p>{JSON.stringify(modeBlocks)}</p>
+    <p>{JSON.stringify(parentBreadcrumbs)}</p>
 
     {#if loopAndBlocks.testAndBlocks.length}
       <h3>Loop (WIP color coding spool Items)</h3>
@@ -92,11 +101,20 @@
   .border {
     border: 1px solid lightgrey;
     border-radius: 8px;
-    margin: 1em 0;
+    margin: 1em;
+    margin-left: 3em;
   }
 
   .top-level {
     background-color: rgb(220, 231, 243);
+  }
+
+  .anim {
+    background-color: lightpink;
+  }
+
+  .default-node {
+    background-color: #fff;
   }
 
   .current {
@@ -104,11 +122,10 @@
   }
 
   .test {
-    background-color: lightgoldenrodyellow;
+    background-color: lightcyan;
   }
-
-  .anim {
-    background-color: lightpink;
+  .loop {
+    background-color: lightgoldenrodyellow;
   }
 
   .active {

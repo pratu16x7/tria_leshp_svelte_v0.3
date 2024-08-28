@@ -35,7 +35,7 @@ export const bequeathEvalEmpty = { parent: undefined };
 //   nodeType: '', // SERIALIZE: this also has it's own meta props to make the full independent spool
 //   execLevel: 0,
 //   context: {},
-//   modeBlocks: modeBlocksEmpty,
+//   parentBreadcrumbs: modeBlocksEmpty,
 //   interactions: {},
 //   literalValue: [],
 //   cursor: { start: 0, end: 0 },

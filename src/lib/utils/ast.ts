@@ -1,22 +1,12 @@
 import { parse } from 'acorn';
 import { getRandomId } from './_index';
-import {
-  binaryOperatorMap,
-  modeBlocksEmpty,
-  bequeathEvalEmpty,
-  assignmentOperatorMap,
-  astNodeTypesMeta
-} from './what-we-support';
+import { binaryOperatorMap, assignmentOperatorMap, astNodeTypesMeta } from './what-we-support';
 
 export function getAST(program: string) {
   const ast = parse(program, { ecmaVersion: 2020 });
   return ast;
 }
 
-//  indicates if you're part of the main (animation) spool
-// technically only needed when prevContext is updated
-// But good to be sure always, in case of any future code, it will automatically handle it if we do on the top always
-// so let's just lumpsum do on the top to take it out of any future doubts, it's a harmless fucntion
 function clearPlayerPlayingState(context) {
   Object.values(context).map((playerState) => {
     playerState['isPlaying'] = false;
@@ -24,20 +14,13 @@ function clearPlayerPlayingState(context) {
   return context;
 }
 
-// export function basicEvaluateAST(ast) {}
-
 export function unspoolExecute(ast, program) {
   let linearSpoolNodes = [];
-  let linearSpoolIds = [];
 
   let prevContext;
 
-  function evaluate(
-    node,
-    execLevel = -1,
-    modeBlocks = modeBlocksEmpty,
-    bequeathEval = bequeathEvalEmpty // bequeathEval is used to show you want to focus on the expression which is otherwise not top level
-  ) {
+  function evaluate(node, execLevel: number = -1, parentBreadcrumbs: string[] = []) {
+    let _id = getRandomId();
     let nodeType = node.type;
     let cursor = {
       start: node.start,
@@ -48,7 +31,9 @@ export function unspoolExecute(ast, program) {
 
     // context is kept getting added to throughout (only works on objects not arrays), unlike execLevel which also has to decrease
     let context = prevContext ? clearPlayerPlayingState(prevContext) : {}; // by reference, hence change reflect in object too
-    modeBlocks = structuredClone(modeBlocks);
+    parentBreadcrumbs = structuredClone(parentBreadcrumbs);
+
+    if (nodeType !== 'Program') parentBreadcrumbs.push(_id);
 
     let anim = astNodeTypesMeta[nodeType].anim ? true : false;
     let _res;
@@ -65,14 +50,12 @@ export function unspoolExecute(ast, program) {
 
     let children = [];
 
-    let _id = getRandomId();
-
     let evalNode = {
       _id,
       nodeType,
       execLevel,
       context,
-      modeBlocks,
+      parentBreadcrumbs,
       cursor,
       anim,
       _res,
@@ -80,10 +63,6 @@ export function unspoolExecute(ast, program) {
       loopAndBlocks,
       children
     };
-
-    if (astNodeTypesMeta[nodeType].linearSpoolPush === 'before') {
-      linearSpoolNodes.push(evalNode);
-    }
 
     switch (nodeType) {
       case 'Literal':
@@ -96,24 +75,24 @@ export function unspoolExecute(ast, program) {
         break;
 
       case 'ExpressionStatement':
-        _res = evaluate(node.expression, execLevel, modeBlocks)._res; // come in last like a good person (eg. VariableDeclaration)
+        _res = evaluate(node.expression, execLevel, parentBreadcrumbs)._res; // come in last like a good person (eg. VariableDeclaration)
         prevContext = structuredClone(context);
         break;
 
       case 'ArrayExpression':
-        _res = node.elements.map((element) => evaluate(element, execLevel, modeBlocks)._res);
+        _res = node.elements.map((element) => evaluate(element, execLevel, parentBreadcrumbs)._res);
         break;
 
       case 'Program':
       case 'BlockStatement':
-        evalNode.children = node.body.map((node) => evaluate(node, execLevel, modeBlocks));
+        evalNode.children = node.body.map((node) => evaluate(node, execLevel, parentBreadcrumbs));
         break;
 
       case 'VariableDeclaration':
         node.declarations.map((declaration) => {
           let varName = declaration.id.name;
           context[varName] = {
-            value: evaluate(declaration.init, execLevel, modeBlocks)._res,
+            value: evaluate(declaration.init, execLevel, parentBreadcrumbs)._res,
             isPlaying: true // persists, working
           };
         });
@@ -123,7 +102,7 @@ export function unspoolExecute(ast, program) {
       case 'UnaryExpression':
         // TODO: copy what Binary does
         // TODO: what if this is not the final test
-        const arg = evaluate(node.argument, execLevel, modeBlocks)._res;
+        const arg = evaluate(node.argument, execLevel, parentBreadcrumbs)._res;
 
         switch (node.operator) {
           case '!':
@@ -135,18 +114,9 @@ export function unspoolExecute(ast, program) {
 
       case 'BinaryExpression':
         // TODO: what if this is not the final test
-        if (bequeathEval.parent) {
-          modeBlocks.blocksSoFar.push({
-            name: cursor.programPart,
-            type: 'test',
-            parent: bequeathEval.parent
-          });
-        }
 
-        const left = evaluate(node.left, execLevel, modeBlocks);
-        const right = evaluate(node.right, execLevel, modeBlocks);
-
-        // testAndBlock = [left, right];
+        const left = evaluate(node.left, execLevel, parentBreadcrumbs);
+        const right = evaluate(node.right, execLevel, parentBreadcrumbs);
 
         _res = binaryOperatorMap[node.operator](left._res, right._res);
         break;
@@ -154,8 +124,8 @@ export function unspoolExecute(ast, program) {
       case 'AssignmentExpression':
         let varName = node.left.name;
 
-        const leftValue = evaluate(node.left, execLevel, modeBlocks)._res;
-        const rightValue = evaluate(node.right, execLevel, modeBlocks)._res;
+        const leftValue = evaluate(node.left, execLevel, parentBreadcrumbs)._res;
+        const rightValue = evaluate(node.right, execLevel, parentBreadcrumbs)._res;
 
         context[varName]['value'] = assignmentOperatorMap[node.operator](leftValue, rightValue);
         context[varName]['isPlaying'] = true; // active (updated) player
@@ -169,66 +139,32 @@ export function unspoolExecute(ast, program) {
         break;
 
       case 'IfStatement':
-        // I put my mark on you, all the node generated here in
-        // if you have already a mark, I put one yet after
-        // and then the spool sees a new mark, and so cocoons you
-        // until the mark is gone
-
-        // Or what ho, just make a json tree again
-        // just have children in this node itself
-        // Muuuuuuch easier
-
-        // WhileLoop will have to have a children grid
-
-        function ifTest() {
-          let ifTestEvalSpoolItem = evaluate(node.test, execLevel, modeBlocks, {
-            parent: 'IfStatement'
-          });
-          if (linearSpoolNodes.length) {
-            modeBlocks = linearSpoolNodes[linearSpoolNodes.length - 1]['modeBlocks'];
-          }
-
-          return ifTestEvalSpoolItem;
-        }
-
         let ifBlock;
-        let ifTestItem = ifTest();
+        let ifTestItem = evaluate(node.test, execLevel, parentBreadcrumbs);
+
         // of course, a literal If else
         if (ifTestItem._res) {
-          ifBlock = evaluate(node.consequent, execLevel, modeBlocks); // usually a block stmt
+          ifBlock = evaluate(node.consequent, execLevel, parentBreadcrumbs); // usually a block stmt
         } else if (node.alternate) {
-          ifBlock = evaluate(node.alternate, execLevel, modeBlocks); // usually a block stmt
+          ifBlock = evaluate(node.alternate, execLevel, parentBreadcrumbs); // usually a block stmt
         }
 
         testAndBlock.test = ifTestItem;
-
-        // Antipattern for AST: pass over of responsibility to the test node
-        testAndBlock.block = ifBlock;
+        testAndBlock.block = ifBlock; // Antipattern for AST: pass over of responsibility to the test node
 
         break;
 
       case 'WhileStatement':
-        function whileTest() {
-          let testEvalSpoolItem = evaluate(node.test, execLevel, modeBlocks, {
-            parent: 'WhileStatement'
-          });
-
-          if (linearSpoolNodes.length) {
-            modeBlocks = linearSpoolNodes[linearSpoolNodes.length - 1]['modeBlocks'];
-          }
-          return testEvalSpoolItem;
-        }
-
         let whileTestItem;
         let whileBlock;
-        let whileTestAndBlock;
-        // of course, a literal while loop
         let whileTestRes = true;
+
+        // of course, a literal while loop
         while (whileTestRes) {
-          whileTestItem = whileTest();
+          whileTestItem = evaluate(node.test, execLevel, parentBreadcrumbs);
           whileTestRes = whileTestItem._res;
           if (whileTestRes) {
-            whileBlock = evaluate(node.body, execLevel, modeBlocks);
+            whileBlock = evaluate(node.body, execLevel, parentBreadcrumbs);
 
             loopAndBlocks.testAndBlocks.push({
               test: whileTestItem,
@@ -241,7 +177,7 @@ export function unspoolExecute(ast, program) {
 
       case 'CallExpression':
         const callee = node.callee;
-        const args = node.arguments.map((arg) => evaluate(arg, execLevel, modeBlocks)._res);
+        const args = node.arguments.map((arg) => evaluate(arg, execLevel, parentBreadcrumbs)._res);
 
         if (callee.type === 'MemberExpression') {
           // get console.log() out of the way
@@ -249,7 +185,7 @@ export function unspoolExecute(ast, program) {
             break;
           }
 
-          const evalalala = evaluate(callee.object, execLevel, modeBlocks);
+          const evalalala = evaluate(callee.object, execLevel, parentBreadcrumbs);
           const object = evalalala._res;
           const property = callee.property.name;
 
@@ -262,9 +198,9 @@ export function unspoolExecute(ast, program) {
         break;
 
       case 'MemberExpression':
-        const object = evaluate(node.object, execLevel, modeBlocks)._res;
+        const object = evaluate(node.object, execLevel, parentBreadcrumbs)._res;
         const property = node.computed
-          ? evaluate(node.property, execLevel, modeBlocks)._res
+          ? evaluate(node.property, execLevel, parentBreadcrumbs)._res
           : node.property.name;
         _res = object[property];
         break;
@@ -273,12 +209,8 @@ export function unspoolExecute(ast, program) {
         throw new Error('Unsupported node type: ' + node.type + ' - ' + JSON.stringify(evalNode));
     }
 
-    if (astNodeTypesMeta[nodeType].linearSpoolPush === 'after') {
-      linearSpoolNodes.push(evalNode);
-    }
-
     if (anim) {
-      linearSpoolIds.push(evalNode);
+      linearSpoolNodes.push(evalNode);
     }
 
     evalNode._res = _res;
@@ -287,6 +219,6 @@ export function unspoolExecute(ast, program) {
 
   let justtheone = evaluate(ast);
 
-  return [justtheone, linearSpoolIds];
+  return [justtheone, linearSpoolNodes];
   // return [justtheone];
 }

@@ -1,5 +1,6 @@
 <script lang="ts">
-  export let wrappers: string[] = [];
+  export let wrappers;
+  console.log('========', wrappers);
 </script>
 
 {#if wrappers.length}
