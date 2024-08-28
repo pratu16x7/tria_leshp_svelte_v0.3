@@ -35,14 +35,11 @@
   <div class="top-row">
     <div class="box border">
       <FunctionPreview bind:program {cursor} />
-      <!-- <SpoolItem {...currSpoolItem} templateType="animation" {meta} /> -->
-
-      <p>{parentBreadcrumbs}, {_id}</p>
       <div class="box border">
         <SpoolItem
           {...justtheone}
           activeId={_id}
-          bind:activeParentBreadcrumbs={parentBreadcrumbs}
+          activeParentBreadcrumbs={parentBreadcrumbs}
           templateType="spool"
           {meta}
         />
@@ -52,7 +49,7 @@
       <SpoolItem
         {...justtheone}
         activeId={_id}
-        bind:activeParentBreadcrumbs={parentBreadcrumbs}
+        activeParentBreadcrumbs={parentBreadcrumbs}
         templateType="animation"
         {meta}
       />

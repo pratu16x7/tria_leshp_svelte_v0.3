@@ -1,33 +1,28 @@
 <script>
   import State from './State.svelte';
-  import LoopWrapper from './LoopWrapper.svelte';
 
-  export let _id;
   export let activeId;
   export let activeParentBreadcrumbs;
-  export let nodeType;
+
+  export let _id;
   export let execLevel;
+  export let parentBreadcrumbs;
+
+  export let nodeType;
+  export let cursor;
   export let context;
+
   export let testAndBlock = {
     test: {},
     block: { children: [] }
   };
-
   export let loopAndBlocks = {
     testAndBlocks: []
   };
-
-  export let meta;
-  export let cursor;
-  export let parentBreadcrumbs;
-  // export let cursor;  // Already used in program code editor to highlight
-  export let anim;
-  export let templateType;
-
   export let children = [];
 
-  let parent = 'test';
-  // console.log('========', parentBreadcrumbs);
+  export let meta;
+  export let templateType;
 </script>
 
 {#if templateType === 'animation'}
@@ -63,14 +58,11 @@
         <svelte:self {...spoolItem} {templateType} {meta} {activeParentBreadcrumbs} />
       {/each}
     {/if}
-    <!-- <p>{JSON.stringify(testAndBlock)} __ {JSON.stringify(blockChildren)}</p> -->
-    <!-- <p>{JSON.stringify(context)}</p> -->
   </div>
 {:else if templateType === 'spool'}
   <div
     class="border default-node"
     class:active={_id === activeId}
-    class:anim
     class:loop={loopAndBlocks.testAndBlocks.length > 0}
     class:test={testAndBlock.block.children.length > 0}
   >
@@ -100,8 +92,6 @@
         <svelte:self {...spoolItem} {templateType} {meta} {activeId} />
       {/each}
     {/if}
-    <!-- <p>{JSON.stringify(testAndBlock)} __ {JSON.stringify(blockChildren)}</p> -->
-    <!-- <p>{JSON.stringify(context)}</p> -->
   </div>
 {/if}
 

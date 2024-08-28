@@ -171,7 +171,7 @@ export function unspoolExecute(ast, program) {
               test: whileTestItem,
               block: whileBlock // Antipattern for AST: pass over of responsibility to the test node
             });
-          }
+          } // TODO: Add the last failed test as well
         }
 
         break;
