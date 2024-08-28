@@ -4,6 +4,7 @@
 
   export let _id;
   export let activeId;
+  export let activeParentBreadcrumbs;
   export let nodeType;
   export let execLevel;
   export let context;
@@ -30,25 +31,41 @@
 </script>
 
 {#if templateType === 'animation'}
-  <h4>id {_id}</h4>
-  {#if parentBreadcrumbs.length}
-    <div class="border {parent}">
-      <!-- <p>
-        {JSON.stringify(loopAndBlocks.testAndBlocks[0]['name'])}: {loopAndBlocks.testAndBlocks[0]['parent']}
-      </p> -->
-
-      <div class="anchor">
-        <LoopWrapper wrappers={parentBreadcrumbs} />
-        <div class="absolute">
-          <h4>{cursor.programPart}</h4>
-          <State {context} {meta} />
-        </div>
-      </div>
-    </div>
-  {:else}
-    <h4>{cursor.programPart}</h4>
+  <div
+    class="border default-node"
+    class:hide={!activeParentBreadcrumbs.includes(_id)}
+    class:loop={loopAndBlocks.testAndBlocks.length > 0}
+    class:test={testAndBlock.block.children.length > 0}
+  >
+    <h4>id {_id}</h4>
+    <h4>{nodeType} : {cursor.programPart}</h4>
     <State {context} {meta} />
-  {/if}
+    <p>{JSON.stringify(parentBreadcrumbs)}</p>
+
+    {#if loopAndBlocks.testAndBlocks.length}
+      <h3>Loop (WIP color coding spool Items)</h3>
+      {#each loopAndBlocks.testAndBlocks as testAndBlock, i}
+        <h3>Loop {i + 1} test</h3>
+        <svelte:self {...testAndBlock.test} {templateType} {meta} {activeParentBreadcrumbs} />
+        <h3>exec</h3>
+        {#each testAndBlock.block.children as spoolItem, i}
+          <svelte:self {...spoolItem} {templateType} {meta} {activeParentBreadcrumbs} />
+        {/each}
+      {/each}
+    {:else if testAndBlock.block.children.length}
+      <svelte:self {...testAndBlock.test} {templateType} {meta} {activeParentBreadcrumbs} />
+      <h3>Test</h3>
+      {#each testAndBlock.block.children as spoolItem, i}
+        <svelte:self {...spoolItem} {templateType} {meta} {activeParentBreadcrumbs} />
+      {/each}
+    {:else if nodeType === 'Program' && children.length}
+      {#each children as spoolItem, i}
+        <svelte:self {...spoolItem} {templateType} {meta} {activeParentBreadcrumbs} />
+      {/each}
+    {/if}
+    <!-- <p>{JSON.stringify(testAndBlock)} __ {JSON.stringify(blockChildren)}</p> -->
+    <!-- <p>{JSON.stringify(context)}</p> -->
+  </div>
 {:else if templateType === 'spool'}
   <div
     class="border default-node"
@@ -66,21 +83,21 @@
       <h3>Loop (WIP color coding spool Items)</h3>
       {#each loopAndBlocks.testAndBlocks as testAndBlock, i}
         <h3>Loop {i + 1} test</h3>
-        <svelte:self {...testAndBlock.test} templateType="spool" {meta} {activeId} />
+        <svelte:self {...testAndBlock.test} {templateType} {meta} {activeId} />
         <h3>exec</h3>
         {#each testAndBlock.block.children as spoolItem, i}
-          <svelte:self {...spoolItem} templateType="spool" {meta} {activeId} />
+          <svelte:self {...spoolItem} {templateType} {meta} {activeId} />
         {/each}
       {/each}
     {:else if testAndBlock.block.children.length}
-      <svelte:self {...testAndBlock.test} templateType="spool" {meta} {activeId} />
+      <svelte:self {...testAndBlock.test} {templateType} {meta} {activeId} />
       <h3>Test</h3>
       {#each testAndBlock.block.children as spoolItem, i}
-        <svelte:self {...spoolItem} templateType="spool" {meta} {activeId} />
+        <svelte:self {...spoolItem} {templateType} {meta} {activeId} />
       {/each}
     {:else if nodeType === 'Program' && children.length}
       {#each children as spoolItem, i}
-        <svelte:self {...spoolItem} templateType="spool" {meta} {activeId} />
+        <svelte:self {...spoolItem} {templateType} {meta} {activeId} />
       {/each}
     {/if}
     <!-- <p>{JSON.stringify(testAndBlock)} __ {JSON.stringify(blockChildren)}</p> -->
@@ -91,6 +108,14 @@
 <style>
   .anchor {
     position: relative;
+  }
+
+  .hide {
+    display: none;
+  }
+
+  .show {
+    display: none;
   }
 
   .absolute {

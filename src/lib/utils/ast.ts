@@ -33,7 +33,8 @@ export function unspoolExecute(ast, program) {
     let context = prevContext ? clearPlayerPlayingState(prevContext) : {}; // by reference, hence change reflect in object too
     parentBreadcrumbs = structuredClone(parentBreadcrumbs);
 
-    if (nodeType !== 'Program') parentBreadcrumbs.push(_id);
+    // if (nodeType !== 'Program') parentBreadcrumbs.push(_id);
+    parentBreadcrumbs.push(_id);
 
     let anim = astNodeTypesMeta[nodeType].anim ? true : false;
     let _res;

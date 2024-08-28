@@ -11,7 +11,7 @@
   $: ast = getAST(program);
   $: [justtheone, nodeEvalList] = unspoolExecute(ast, program);
   $: currSpoolItem = nodeEvalList[index];
-  $: ({ _id, cursor } = currSpoolItem);
+  $: ({ _id, cursor, parentBreadcrumbs } = currSpoolItem);
 
   let meta = {
     l: {
@@ -31,15 +31,31 @@
 
 <!-- wow bind works parent to child ... (go to Function preview) -->
 <Counter bind:count={index} line={cursor.programPart} />
-<!-- <h1>{programPart}</h1> -->
 <div class="container">
   <div class="top-row">
     <div class="box border">
       <FunctionPreview bind:program {cursor} />
-      <SpoolItem {...currSpoolItem} templateType="animation" {meta} />
+      <!-- <SpoolItem {...currSpoolItem} templateType="animation" {meta} /> -->
+
+      <p>{parentBreadcrumbs}, {_id}</p>
+      <div class="box border">
+        <SpoolItem
+          {...justtheone}
+          activeId={_id}
+          bind:activeParentBreadcrumbs={parentBreadcrumbs}
+          templateType="spool"
+          {meta}
+        />
+      </div>
     </div>
     <div class="box border">
-      <SpoolItem {...justtheone} activeId={_id} templateType="spool" {meta} />
+      <SpoolItem
+        {...justtheone}
+        activeId={_id}
+        bind:activeParentBreadcrumbs={parentBreadcrumbs}
+        templateType="animation"
+        {meta}
+      />
     </div>
   </div>
   <div class="border">
@@ -71,7 +87,7 @@
     padding: 1em;
     flex: 1;
     overflow: scroll;
-    height: 500px; /* with page zoom at 67%*/
+    height: 700px; /* with page zoom at 67%*/
   }
   .active {
     color: orange;
