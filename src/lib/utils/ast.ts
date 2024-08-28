@@ -67,7 +67,7 @@ export function unspoolExecute(ast, program) {
 
     let children = [];
 
-    let linearSpoolItem = {
+    let evalNode = {
       _id: getRandomId(),
       nodeType,
       execLevel,
@@ -82,7 +82,7 @@ export function unspoolExecute(ast, program) {
     };
 
     if (astNodeTypesMeta[nodeType].linearSpoolPush === 'before') {
-      linearSpool.push(linearSpoolItem);
+      linearSpool.push(evalNode);
     }
 
     switch (nodeType) {
@@ -106,7 +106,7 @@ export function unspoolExecute(ast, program) {
 
       case 'Program':
       case 'BlockStatement':
-        linearSpoolItem.children = node.body.map((node) => evaluate(node, execLevel, modeBlocks));
+        evalNode.children = node.body.map((node) => evaluate(node, execLevel, modeBlocks));
         break;
 
       case 'VariableDeclaration':
@@ -230,7 +230,6 @@ export function unspoolExecute(ast, program) {
         let whileTestRes = true;
         while (whileTestRes) {
           whileTestItem = whileTest();
-          // linearSpoolItem.testAndBlock.push(whileTestItem);
           whileTestRes = whileTestItem._res;
           if (whileTestRes) {
             whileBlock = evaluate(node.body, execLevel, modeBlocks);
@@ -251,7 +250,6 @@ export function unspoolExecute(ast, program) {
         if (callee.type === 'MemberExpression') {
           // get console.log() out of the way
           if (callee.object.name === 'console' && callee.property.name === 'log') {
-            linearSpool.push(linearSpoolItem);
             break;
           }
 
@@ -276,16 +274,15 @@ export function unspoolExecute(ast, program) {
         break;
 
       default:
-        linearSpool.push(linearSpoolItem);
-        throw new Error('Unsupported node type: ' + node.type);
+        throw new Error('Unsupported node type: ' + node.type + ' - ' + JSON.stringify(evalNode));
     }
 
     if (astNodeTypesMeta[nodeType].linearSpoolPush === 'after') {
-      linearSpool.push(linearSpoolItem);
+      linearSpool.push(evalNode);
     }
 
-    linearSpoolItem._res = _res;
-    return linearSpoolItem;
+    evalNode._res = _res;
+    return evalNode;
   }
 
   let justtheone = evaluate(ast);

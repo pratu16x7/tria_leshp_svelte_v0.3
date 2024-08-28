@@ -114,7 +114,7 @@ export const astNodeTypesMeta = {
 
   CallExpression: { linearSpoolPush: 'before', returns: true },
 
-  MemberExpression: {}
+  MemberExpression: { linearSpoolPush: 'after' }
 };
 
 export const unaryOperatorMap = {};
