@@ -2,9 +2,7 @@
   import FunctionPreview from '../lib/FunctionPreview.svelte';
   import SpoolItem from '../lib/components/SpoolItem.svelte';
   import TempCurrentSpoolItem from '../lib/components/TempCurrentSpoolItem.svelte';
-  import TreeNode from '../lib/components/TreeNode.svelte';
   import { getAST, unspoolExecute } from '../lib/utils/ast';
-  import sample_tree_ds from '../data/sample_tree_ds.json';
 
   export let program: string;
   $: index = 0;
@@ -63,7 +61,6 @@
       />
     </div>
     <div class="box border flex-2">
-      <TreeNode node={sample_tree_ds} />
       <SpoolItem
         {...justtheone}
         activeId={_id}

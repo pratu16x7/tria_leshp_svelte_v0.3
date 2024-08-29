@@ -25,7 +25,7 @@
   export let templateType;
 </script>
 
-{#if templateType === 'tree'}
+{#if templateType === 'animation'}
   <div
     class="border default-node {templateType}"
     class:hide={templateType === 'animation' && !activeParentBreadcrumbs.includes(_id)}
@@ -78,28 +78,52 @@
   </div>
 
   <!--  -->
-{:else if templateType === 'animation'}
-  <div
-    class="border default-node {templateType}"
-    class:hide={templateType === 'animation' && !activeParentBreadcrumbs.includes(_id)}
-    class:active={templateType === 'tree' && _id === activeId}
-    class:loop={loopAndBlocks.testAndBlocks.length > 0}
-    class:test={testAndBlock.block.children.length > 0}
-  >
-    <p class="tiny">{JSON.stringify(parentBreadcrumbs)} : {nodeType}: {cursor.programPart}</p>
-    <State {context} {meta} />
+{:else if templateType === 'tree'}
+  <div class="node-container">
+    <div
+      class="fixed-width border default-node {templateType}"
+      class:hide={templateType === 'animation' && !activeParentBreadcrumbs.includes(_id)}
+      class:active={templateType === 'tree' && _id === activeId}
+      class:loop={loopAndBlocks.testAndBlocks.length > 0}
+      class:test={testAndBlock.block.children.length > 0}
+    >
+      <p class="tiny">{JSON.stringify(parentBreadcrumbs)} : {nodeType}: {cursor.programPart}</p>
+      <State {context} {meta} />
+    </div>
+    <div class="flexible-width">
+      <!--  -->
+      {#each children as spoolItem, i}
+        <svelte:self {...spoolItem} {templateType} {meta} {activeId} {activeParentBreadcrumbs} />
+      {/each}
 
-    <!--  -->
-    {#each children as spoolItem, i}
-      <svelte:self {...spoolItem} {templateType} {meta} {activeId} {activeParentBreadcrumbs} />
-    {/each}
+      <!--  -->
+      {#if loopAndBlocks.testAndBlocks.length}
+        <h3>Loop (WIP color coding spool Items)</h3>
 
-    <!--  -->
-    {#if loopAndBlocks.testAndBlocks.length}
-      <h3>Loop (WIP color coding spool Items)</h3>
+        {#each loopAndBlocks.testAndBlocks as testAndBlock, i}
+          <h3>Loop {i + 1} test</h3>
+          <svelte:self
+            {...testAndBlock.test}
+            {templateType}
+            {meta}
+            {activeId}
+            {activeParentBreadcrumbs}
+          />
 
-      {#each loopAndBlocks.testAndBlocks as testAndBlock, i}
-        <h3>Loop {i + 1} test</h3>
+          <h3>exec</h3>
+          {#each testAndBlock.block.children as spoolItem}
+            <svelte:self
+              {...spoolItem}
+              {templateType}
+              {meta}
+              {activeId}
+              {activeParentBreadcrumbs}
+            />
+          {/each}
+        {/each}
+
+        <!--  -->
+      {:else if testAndBlock.block.children.length}
         <svelte:self
           {...testAndBlock.test}
           {templateType}
@@ -107,31 +131,39 @@
           {activeId}
           {activeParentBreadcrumbs}
         />
-
-        <h3>exec</h3>
+        <h3>Test</h3>
         {#each testAndBlock.block.children as spoolItem}
           <svelte:self {...spoolItem} {templateType} {meta} {activeId} {activeParentBreadcrumbs} />
         {/each}
-      {/each}
-
-      <!--  -->
-    {:else if testAndBlock.block.children.length}
-      <svelte:self
-        {...testAndBlock.test}
-        {templateType}
-        {meta}
-        {activeId}
-        {activeParentBreadcrumbs}
-      />
-      <h3>Test</h3>
-      {#each testAndBlock.block.children as spoolItem}
-        <svelte:self {...spoolItem} {templateType} {meta} {activeId} {activeParentBreadcrumbs} />
-      {/each}
-    {/if}
+      {/if}
+    </div>
   </div>
 {/if}
 
 <style>
+  .node-container {
+    display: flex;
+    align-items: center;
+    margin-left: 20px; /* Indentation for child nodes */
+  }
+
+  .fixed-width {
+    width: 250px;
+    flex-shrink: 0;
+    /* flex-grow: 1; */
+
+    /* aesthetic */
+    background-color: #f0f0f0;
+    /* padding: 10px;
+    box-sizing: border-box; */
+  }
+
+  .flexible-width {
+    flex-grow: 1;
+
+    /* aesthetic */
+    /* padding: 10px; */
+  }
   .anchor {
     position: relative;
   }
@@ -153,8 +185,9 @@
   }
 
   .spool {
-    margin-left: 320px;
-    width: 300px;
+    /* margin-left: 320px; */
+    /* width: 300px; */
+
     /* height: 200px; */
     /* margin-top: -100px; */
   }
