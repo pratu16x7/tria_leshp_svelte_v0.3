@@ -45,7 +45,7 @@
   }
 </script>
 
-<!-- wow bind works parent to child ... (go to Function preview) -->
+<!-- wow bind works parent to child ... (go to Function preview) ... oh it doesn't anymore with codemirror-->
 <!-- <Counter bind:count={index} line={cursor.programPart} /> -->
 <div class="container">
   <div class="top-row">
@@ -68,8 +68,6 @@
         templateType="tree"
         {meta}
       />
-
-      <!-- <div class="node"></div> -->
     </div>
   </div>
   <div>
@@ -82,23 +80,6 @@
 <svelte:window on:keydown={onKeyDown} />
 
 <style lang="scss">
-  // .node {
-  //   /* will have itslef and possibly children */
-  //   display: flex;
-
-  //   .core-container {
-  //     width: 120px;
-
-  //     .core {
-  //       width: 100px;
-  //       height: 50px;
-  //     }
-  //   }
-  //   .children-container {
-  //     .core
-  //   }
-  // }
-
   .top-row {
     display: flex;
   }
@@ -106,6 +87,7 @@
   .flex-1 {
     flex: 1; /* Takes 1 part of the available space */
   }
+
   .flex-2 {
     flex: 2; /* Takes 2 parts of the available space */
   }
@@ -115,6 +97,7 @@
     border-radius: 8px;
     margin: 1em;
   }
+
   .box {
     overflow: scroll;
     height: 900px; /* with page zoom at 67%*/
