@@ -2,6 +2,9 @@
   import { page } from '$app/stores';
   // import { programs } from '../../static/programs/sample_program.js';
   import Graph from '../../lib/components/Graph.svelte';
+  import jsonData from '../../data/data.canvas?raw';
+
+  let canvasData = JSON.parse(jsonData);
 
   let algorithmFamily: string = '';
 
@@ -16,4 +19,4 @@
 <!-- TODO: better incorrect route error handling -->
 <h1>{algorithmFamily} Island</h1>
 <a href={`/`}>Back home</a>
-<Graph />
+<Graph {canvasData} />

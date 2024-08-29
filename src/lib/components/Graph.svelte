@@ -1,9 +1,7 @@
 <script>
   import { onMount } from 'svelte';
 
-  import jsonData from '../../data/data.canvas?raw';
-
-  export let canvasData = JSON.parse(jsonData);
+  export let canvasData;
   let container;
   let canvasBounds = { minX: 0, minY: 0, maxX: 0, maxY: 0 };
   let canvasWidth = 0;
@@ -35,23 +33,25 @@
         overflow: auto;
         border: 1px solid #ccc;
         padding: 8px;
+        background-color: ${node.color || 'white'};
         box-sizing: border-box;
+        transition: width 0.2s ease-in-out;
+        transition: height 0.2s ease-in-out;
       `;
   }
 </script>
 
 <div class="canvas-container" bind:this={container}>
-  <!-- <div class="canvas" style="width: {canvasWidth}px; height: {canvasHeight}px;"> -->
   <div class="canvas">
     {#each canvasData.nodes as node (node.id)}
-      <div class="node {node.type}" style={getNodeStyle(node)}>
+      <a href="/test_programs/if" class="node {node.type}" style={getNodeStyle(node)}>
         {#if node.type === 'text'}
           <div class="text-content">{@html node.text}</div>
         {:else if node.type === 'link'}
           <iframe src={node.url} title="Embedded content" width="100%" height="100%" frameborder="0"
           ></iframe>
         {/if}
-      </div>
+      </a>
     {/each}
   </div>
 </div>
@@ -77,9 +77,20 @@
   .node {
     background-color: white;
     border-radius: 4px;
+    color: inherit;
+    text-decoration: none;
     box-shadow:
       0 1px 3px rgba(0, 0, 0, 0.12),
       0 1px 2px rgba(0, 0, 0, 0.24);
+    transition: box-shadow 0.2s ease-in-out;
+  }
+
+  .node:hover {
+    box-shadow:
+      0 3px 6px rgba(0, 0, 0, 0.16),
+      0 3px 6px rgba(0, 0, 0, 0.23);
+    width: 500px;
+    height: 500px;
   }
 
   .text-content {
