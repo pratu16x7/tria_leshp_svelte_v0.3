@@ -1,121 +1,88 @@
 <script>
   import { onMount } from 'svelte';
-  import { Canvas, Text, Rect, Group, IText } from 'fabric';
+
   import jsonData from '../../data/data.canvas?raw';
 
-  let canvas;
-  let { nodes, edges } = JSON.parse(jsonData);
+  export let canvasData = JSON.parse(jsonData);
+  let container;
+  let canvasBounds = { minX: 0, minY: 0, maxX: 0, maxY: 0 };
+  let canvasWidth = 0;
+  let canvasHeight = 0;
 
   onMount(() => {
-    canvas = new Canvas('graph-canvas', {
-      width: 1900,
-      height: 1000,
-      backgroundColor: '#f0f0f0',
-      selection: false,
-      perPixelTargetFind: true
-    });
-
-    canvas.forEachObject((obj) => {
-      obj.selectable = false;
-      obj.evented = false;
-    });
-
-    canvas.on('mouse:wheel', (opt) => {
-      if (opt.e.ctrlKey) {
-        var delta = opt.e.deltaY;
-        var zoom = canvas.getZoom();
-        zoom *= 0.99 ** delta;
-        if (zoom > 20) zoom = 20;
-        if (zoom < 0.1) zoom = 0.1;
-        canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
-      } else {
-        var deltaX = opt.e.deltaX * -1;
-        var deltaY = opt.e.deltaY * -1;
-        canvas.relativePan({ x: deltaX, y: deltaY });
-      }
-      opt.e.preventDefault();
-      opt.e.stopPropagation();
-    });
-
-    nodes.forEach((node) => {
-      switch (node.type) {
-        case 'text':
-          addTextNode(node);
-          break;
-        case 'link':
-          addLinkNode(node);
-          break;
-      }
-    });
+    calculateCanvasBounds();
   });
 
-  function addTextNode(node) {
-    const padding = 10;
+  function calculateCanvasBounds() {
+    if (canvasData.nodes.length === 0) return;
 
-    // Create a text object
-    const text = new IText(node.text, {
-      left: node.x + padding, // Adjust to add padding
-      top: node.y + padding,
-      fontSize: 14,
-      fill: 'black',
-      selectable: false,
-      hasControls: false,
-      hasBorders: false
-    });
+    canvasBounds.minX = Math.min(...canvasData.nodes.map((n) => n.x));
+    canvasBounds.minY = Math.min(...canvasData.nodes.map((n) => n.y));
+    canvasBounds.maxX = Math.max(...canvasData.nodes.map((n) => n.x + n.width));
+    canvasBounds.maxY = Math.max(...canvasData.nodes.map((n) => n.y + n.height));
 
-    // Create a rectangle with rounded corners behind the text
-    const rect = new Rect({
-      left: node.x,
-      top: node.y,
-      width: text.width + 2 * padding,
-      height: text.height + 2 * padding,
-      fill: '#f0f0f0', // Light grey fill
-      rx: 10, // Rounded corners
-      ry: 10,
-      stroke: '#ccc', // Light grey border
-      strokeWidth: 1
-    });
-
-    // Group the rectangle and text together
-    const group = new Group([rect, text], {
-      left: node.x,
-      top: node.y,
-      selectable: false,
-      hasControls: false,
-      hasBorders: false
-    });
-
-    canvas.add(group);
+    canvasWidth = canvasBounds.maxX - canvasBounds.minX;
+    canvasHeight = canvasBounds.maxY - canvasBounds.minY;
   }
 
-  function addLinkNode(node) {
-    const rect = new Rect({
-      left: node.x,
-      top: node.y,
-      width: node.width,
-      height: node.height,
-      fill: '#999'
-    });
-    const text = new IText('Link to Video', {
-      left: node.x,
-      top: node.y + node.height / 2,
-      fontSize: 14,
-      originX: 'center',
-      originY: 'center',
-      fill: 'white'
-    });
-    const group = new Group([rect, text], {
-      hasControls: false,
-      hasBorders: false,
-      selectable: true,
-      subTargetCheck: true,
-      url: node.url
-    });
-    group.on('mousedown', function () {
-      window.open(this.url);
-    });
-    canvas.add(group);
+  function getNodeStyle(node) {
+    return `
+        position: absolute;
+        left: ${node.x - canvasBounds.minX}px;
+        top: ${node.y - canvasBounds.minY}px;
+        width: ${node.width}px;
+        height: ${node.height}px;
+        overflow: auto;
+        border: 1px solid #ccc;
+        padding: 8px;
+        box-sizing: border-box;
+      `;
   }
 </script>
 
-<canvas id="graph-canvas"></canvas>
+<div class="canvas-container" bind:this={container}>
+  <!-- <div class="canvas" style="width: {canvasWidth}px; height: {canvasHeight}px;"> -->
+  <div class="canvas">
+    {#each canvasData.nodes as node (node.id)}
+      <div class="node {node.type}" style={getNodeStyle(node)}>
+        {#if node.type === 'text'}
+          <div class="text-content">{@html node.text}</div>
+        {:else if node.type === 'link'}
+          <iframe src={node.url} title="Embedded content" width="100%" height="100%" frameborder="0"
+          ></iframe>
+        {/if}
+      </div>
+    {/each}
+  </div>
+</div>
+
+<style>
+  .canvas-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 800px;
+    overflow: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f0f0;
+  }
+
+  .canvas {
+    position: relative;
+    background-color: white;
+  }
+
+  .node {
+    background-color: white;
+    border-radius: 4px;
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.12),
+      0 1px 2px rgba(0, 0, 0, 0.24);
+  }
+
+  .text-content {
+    white-space: pre-wrap;
+  }
+</style>
