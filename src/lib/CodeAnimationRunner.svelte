@@ -65,6 +65,13 @@
         {...justtheone}
         activeId={_id}
         activeParentBreadcrumbs={parentBreadcrumbs}
+        templateType="tree-minimap"
+        {meta}
+      />
+      <SpoolItem
+        {...justtheone}
+        activeId={_id}
+        activeParentBreadcrumbs={parentBreadcrumbs}
         templateType="tree"
         {meta}
       />
