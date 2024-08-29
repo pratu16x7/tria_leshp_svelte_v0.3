@@ -76,7 +76,7 @@
     style="transform: scale({scale}) translate({-originX}px, {-originY}px); transform-origin: 0 0;"
   >
     {#each canvasData.nodes as node (node.id)}
-      <a href="/test_programs/if" class="node {node.type}" style={getNodeStyle(node)}>
+      <a href="/test_programs/{node.text}" class="node {node.type}" style={getNodeStyle(node)}>
         {#if node.type === 'text'}
           <div class="text-content">{@html node.text}</div>
         {:else if node.type === 'link'}

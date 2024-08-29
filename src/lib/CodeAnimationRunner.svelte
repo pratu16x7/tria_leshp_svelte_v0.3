@@ -7,6 +7,8 @@
   import { getAST, unspoolExecute } from '../lib/utils/ast';
 
   export let program: string;
+
+  // WIP: Barricade, error handling, don't navigate beyond upper and lower indexes
   $: index = 0;
 
   $: ast = getAST(program);

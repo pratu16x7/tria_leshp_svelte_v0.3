@@ -95,19 +95,33 @@ console.log("foo");`
     // test uncompress raw code
     // test uncompress as function code
 
+    uncompress_test: {
+      text: `let s = "2t3o11g2s";
+let res = "";
+let i = 0;
+let j = 1;
+const digits = "0123456789";
+let num = parseInt(s.substring(i, j));
+// res += s[j].repeat(num);
+res += s[j];
+i = j + 1;
+j++;
+console.log("foo")`
+    },
     uncompress: {
       text: `let s = "2t3o11g2s";
-  let res = "";
-  let i = 0;
-  let j = 1;
-  const digits = "0123456789";
-  let num = parseInt(s.substring(i, j));
-  // res += s[j].repeat(num);
-  res += s[j];
-  i = j + 1;
-  j++;
-  console.log("foo")`
+let res = "";
+let i = 0;
+let j = 1;
+const digits = "0123456789";
+let num = parseInt(s.substring(i, j));
+// res += s[j].repeat(num);
+res += s[j];
+i = j + 1;
+j++;
+console.log("foo")`
     },
+
     uncompress_as_function: {
       text: `function uncompress(s) {
       let res = "";

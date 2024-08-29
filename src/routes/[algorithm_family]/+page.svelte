@@ -2,7 +2,7 @@
   import { page } from '$app/stores';
   // import { programs } from '../../static/programs/sample_program.js';
   import Graph from '../../lib/components/Graph.svelte';
-  import jsonData from '../../data/data.canvas?raw';
+  import jsonData from '../../data/islands/test_problems.canvas?raw';
 
   let canvasData = JSON.parse(jsonData);
 
