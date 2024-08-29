@@ -8,12 +8,10 @@
     {node.label}
   </div>
   <div class="flexible-width">
-    <div class="flexible-content">
-      <!-- Recursively render child nodes, if any -->
-      {#each node.children as child}
-        <svelte:self node={child} />
-      {/each}
-    </div>
+    <!-- Recursively render child nodes, if any -->
+    {#each node.children as child}
+      <svelte:self node={child} />
+    {/each}
   </div>
 </div>
 
@@ -27,19 +25,18 @@
   .fixed-width {
     width: 120px;
     flex-shrink: 0;
+    /* flex-grow: 1; */
+
+    /* aesthetic */
     background-color: #f0f0f0;
-    padding: 10px;
-    box-sizing: border-box;
+    /* padding: 10px;
+    box-sizing: border-box; */
   }
 
   .flexible-width {
     flex-grow: 1;
-    white-space: nowrap;
-    padding: 10px;
-    box-sizing: border-box;
-  }
 
-  .flexible-content {
-    display: inline-block;
+    /* aesthetic */
+    /* padding: 10px; */
   }
 </style>
