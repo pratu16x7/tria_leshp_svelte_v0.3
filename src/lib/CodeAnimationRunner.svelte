@@ -66,7 +66,7 @@
         {...justtheone}
         activeId={_id}
         activeParentBreadcrumbs={parentBreadcrumbs}
-        templateType="spool"
+        templateType="tree"
         {meta}
       />
     </div>
