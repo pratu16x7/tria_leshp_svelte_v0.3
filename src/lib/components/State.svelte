@@ -5,9 +5,10 @@
 
   export let context;
   export let meta;
+  export let scaleDown = false;
 </script>
 
-<div class="template">
+<div class="template" class:scale-down={scaleDown}>
   {#each Object.entries(context) as [player, playerState]}
     <!-- actually the safest way to check type here based on actual value -->
     {@const playerType = toType(playerState['value'])}
@@ -42,6 +43,11 @@
   .template {
     /* height: 200px; */
   }
+
+  .scale-down {
+    transform: scale(0.5);
+  }
+
   .margin {
     margin: 16px;
   }

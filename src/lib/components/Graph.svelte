@@ -1,5 +1,7 @@
 <script>
   import { onMount } from 'svelte';
+  import { getGraphic } from '../utils/graphics.ts';
+  import State from './State.svelte';
 
   export let canvasData;
   let container;
@@ -37,7 +39,8 @@
         overflow: auto;
         border: 1px solid #ccc;
         padding: 8px;
-        background-color: ${node.color || 'white'};
+        border-width: 2px;
+        border-color: ${node.color || 'white'};
         box-sizing: border-box;
         transition: width 0.2s ease-in-out;
         transition: height 0.2s ease-in-out;
@@ -76,12 +79,18 @@
     style="transform: scale({scale}) translate({-originX}px, {-originY}px); transform-origin: 0 0;"
   >
     {#each canvasData.nodes as node (node.id)}
+      <!-- TODO: rm hardcoding -->
       <a href="/test_programs/{node.text}" class="node {node.type}" style={getNodeStyle(node)}>
         {#if node.type === 'text'}
-          <div class="text-content">{@html node.text}</div>
-        {:else if node.type === 'link'}
+          {@const [context, meta] = getGraphic()}
+          <div class="text-content">
+            <!-- TODO: rm hardcoding -->
+            {@html node.text}<State {context} {meta} scaleDown={true} />
+          </div>
+
+          <!-- {:else if node.type === 'link'}
           <iframe src={node.url} title="Embedded content" width="100%" height="100%" frameborder="0"
-          ></iframe>
+          ></iframe> -->
         {/if}
       </a>
     {/each}

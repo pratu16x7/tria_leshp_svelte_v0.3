@@ -16,6 +16,7 @@
   $: currSpoolItem = nodeEvalList[index];
   $: ({ _id, cursor, parentBreadcrumbs } = currSpoolItem);
 
+  // TODO: Big WIP
   let meta = {
     l: {
       pointer_1: 'j'
