@@ -1,6 +1,11 @@
 import { parse } from 'acorn';
 import { getRandomId } from './_index';
-import { binaryOperatorMap, assignmentOperatorMap, astNodeTypesMeta } from './what-we-support';
+import {
+  binaryOperatorMap,
+  assignmentOperatorMap,
+  updateOperatorMap,
+  astNodeTypesMeta
+} from './what-we-support';
 
 export function getAST(program: string) {
   const ast = parse(program, { ecmaVersion: 2020 });
@@ -65,6 +70,8 @@ export function unspoolExecute(ast, program) {
       children
     };
 
+    let varName;
+
     switch (nodeType) {
       case 'Literal':
         _res = node.value;
@@ -91,7 +98,7 @@ export function unspoolExecute(ast, program) {
 
       case 'VariableDeclaration':
         node.declarations.map((declaration) => {
-          let varName = declaration.id.name;
+          varName = declaration.id.name;
           context[varName] = {
             value: evaluate(declaration.init, execLevel, parentBreadcrumbs)._res,
             isPlaying: true // persists, working
@@ -108,6 +115,7 @@ export function unspoolExecute(ast, program) {
         switch (node.operator) {
           case '!':
             _res = !arg;
+            break;
           default:
             throw new Error('Unsupported unary operator: ' + node.operator);
         }
@@ -123,7 +131,7 @@ export function unspoolExecute(ast, program) {
         break;
 
       case 'AssignmentExpression':
-        let varName = node.left.name;
+        varName = node.left.name;
 
         const leftValue = evaluate(node.left, execLevel, parentBreadcrumbs)._res;
         const rightValue = evaluate(node.right, execLevel, parentBreadcrumbs)._res;
@@ -148,6 +156,8 @@ export function unspoolExecute(ast, program) {
           ifBlock = evaluate(node.consequent, execLevel, parentBreadcrumbs); // usually a block stmt
         } else if (node.alternate) {
           ifBlock = evaluate(node.alternate, execLevel, parentBreadcrumbs); // usually a block stmt
+        } else {
+          ifBlock = { children: [] };
         }
 
         testAndBlock.test = ifTestItem;

@@ -84,8 +84,32 @@ console.log("foo");`
       text: `function example() {
   console.log('Hello, world!');
 }`
+    },
+
+    uncompress: {
+      text: `let s = "2t3o11g2s";
+let res = "";
+let i = 0;
+let j = 0;
+const digits = "0123456789";
+
+while (j < s.length) {
+    if (!digits.includes(s[j])) {
+        // Convert the substring from i to j into a number and repeat the character s[j]
+        const num = parseInt(s.substring(i, j));
+        res += s[j].repeat(num);
+        i = j + 1; // Move the start pointer past the current character
     }
-    //   functionCall: {},
+    j++;
+}`
+    },
+
+    nested_if_else: {
+      test: ``
+    },
+    nested_while_and_if: {
+      test: ``
+    }
     //   functionCall: {},
     //   functionCall: {},
     //   functionCall: {},}
@@ -112,14 +136,19 @@ console.log("foo")`
       text: `let s = "2t3o11g2s";
 let res = "";
 let i = 0;
-let j = 1;
+let j = 0;
 const digits = "0123456789";
-let num = parseInt(s.substring(i, j));
-// res += s[j].repeat(num);
-res += s[j];
-i = j + 1;
-j++;
-console.log("foo")`
+
+while (j < s.length) {
+    if (!digits.includes(s[j])) {
+        // Convert the substring from i to j into a number and repeat the character s[j]
+        const num = parseInt(s.substring(i, j));
+        res += s[j].repeat(num);
+        i = j + 1; // Move the start pointer past the current character
+    }
+    j++;
+}
+return res;`
     },
 
     uncompress_as_function: {

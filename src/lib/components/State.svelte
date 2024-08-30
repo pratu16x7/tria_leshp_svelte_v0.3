@@ -24,13 +24,13 @@
           active={playerState['isPlaying']}
         />
       {:else if playerType === 'array' || playerType === 'string'}
-        {@const pointer_1 = meta[player]['pointer_1']}
+        <!-- {@const pointer_1 = meta[player]['pointer_1']} -->
         <PlayerArray
           name={player}
           array={playerState['value']}
           active={playerState['isPlaying']}
-          pointerName={pointer_1}
-          pointerValue={context[pointer_1]['value']}
+          pointerName={'j'}
+          pointerValue={0}
         />
       {:else}
         <p>{player}, {playerState['value']}</p>
@@ -39,13 +39,18 @@
   {/each}
 </div>
 
+<!--
+pointerName={'pointer_1'}
+pointerValue={context[pointer_1]['value']} -->
+
 <style>
   .template {
     /* height: 200px; */
   }
 
+  /* TODO: shorten width instead, this does not reduce the width of container */
   .scale-down {
-    transform: scale(0.5);
+    /* transform: scale(0.5); */
   }
 
   .margin {

@@ -20,6 +20,9 @@
   let meta = {
     l: {
       pointer_1: 'j'
+    },
+    s: {
+      pointer_1: 'j'
     }
     // type: symbol array/string or numeric problem?
     // on second thoughr, just assume symbol array is a string

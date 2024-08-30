@@ -53,11 +53,9 @@
       const rect = container.getBoundingClientRect();
       const x = event.clientX - rect.left;
       const y = event.clientY - rect.top;
-
       const delta = -event.deltaY;
       const factor = 0.05;
       const newScale = scale * (1 + factor * Math.sign(delta));
-
       if (newScale >= 0.1 && newScale <= 5) {
         const dx = (x - originX) / scale;
         const dy = (y - originY) / scale;
@@ -82,11 +80,12 @@
       <!-- TODO: rm hardcoding -->
       <a href="/test_programs/{node.text}" class="node {node.type}" style={getNodeStyle(node)}>
         {#if node.type === 'text'}
+          <!-- TODO: rm hardcoding -->
           {@const [context, meta] = getGraphic()}
           <div class="text-content">
-            <!-- TODO: rm hardcoding -->
-            {@html node.text}<State {context} {meta} scaleDown={true} />
+            {@html node.text}
           </div>
+          <State {context} {meta} scaleDown={true} />
 
           <!-- {:else if node.type === 'link'}
           <iframe src={node.url} title="Embedded content" width="100%" height="100%" frameborder="0"
