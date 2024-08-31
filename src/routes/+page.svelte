@@ -1,31 +1,145 @@
 <script lang="ts">
-  // import { programs } from '../../static/programs/sample_program.js';
+  import { programs } from '../data/programs/sample_program.js';
   import Layout from './__layout.svelte';
+
+  import FunctionPreview from '../lib/FunctionPreview.svelte';
+  import SpoolItem from '../lib/components/SpoolItem.svelte';
+  import { getAST, unspoolExecute } from '../lib/utils/ast';
+  import Graph from '../lib/components/Graph.svelte';
+  import jsonData from '../data/islands/test_problems.canvas?raw';
+
+  let canvasData = JSON.parse(jsonData);
 
   // Example algorithm family and program
   const sampleFamily = 'test_programs';
   const sampleProgram = 'array_1';
+
+  export let program: string;
+
+  program = programs[sampleFamily][sampleProgram]['text'];
+
+  // WIP: Barricade, error handling, don't navigate beyond upper and lower indexes
+  $: index = 0;
+
+  $: ast = getAST(program);
+  $: [justtheone, nodeEvalList] = unspoolExecute(ast, program);
+  $: currSpoolItem = nodeEvalList[index];
+  $: ({ _id, cursor, parentBreadcrumbs } = currSpoolItem);
+
+  // TODO: Big WIP
+  let meta = {
+    l: {
+      pointer_1: 'j'
+    },
+    s: {
+      pointer_1: 'j'
+    }
+    // type: symbol array/string or numeric problem?
+    // on second thoughr, just assume symbol array is a string
+
+    // substring? -> assume yes is symbol array/string and two pointers?
+    // 1 substring and 1 value At? -> mayve let this be default
+    // two substrings?
+  };
+
+  $: astNode = ast.body;
+  $: currentAstNodeItem = astNode[index] || '';
+
+  function onKeyDown(e) {
+    switch (e.keyCode) {
+      case 38: // up
+        index -= 1;
+        break;
+      case 40: // down
+        index += 1;
+        break;
+      case 37: // left
+        index -= 1;
+        break;
+      case 39: // right
+        index += 1;
+        break;
+    }
+  }
 </script>
 
+<svelte:window on:keydown={onKeyDown} />
 <main class="story">
   <h1>Trialgo</h1>
-  <p class="subtitle">Visualize tiny programs as you write them.</p>
 
-  <div class="box"></div>
+  <!-- Both subtiltes have their own problems. See what's more important to you. -->
+  <p class="subtitle">Visualize tiny programs as you write them.</p>
+  <!-- <p class="subtitle">Visualize tiny programs as they run.</p> -->
+
+  <div class="box flex">
+    <!-- TODO:
+    - [ ] fix horizontal size
+    - [ ] fix animation size
+    - [ ] only program should show
+    - [ ] BIND THE PROGRAM
+    - [ ] syntax and support check
+    - [ ] animation progress bar
+    - [ ] arrow keys should only work on box that is in viewport
+  -->
+    <FunctionPreview bind:program {cursor} />
+    <SpoolItem
+      {...justtheone}
+      activeId={_id}
+      activeParentBreadcrumbs={parentBreadcrumbs}
+      templateType="animation"
+      {meta}
+    />
+  </div>
   <p class="box-caption">
-    Use arrow keys to move up and down the program.
+    Use arrow keys to move up and down the program. Edit and replay.
+    <!-- Use arrow keys to move up and down the program. <a href="/">Edit</a> and replay. -->
     <a href="/{sampleFamily}/{sampleProgram}">Sample Array Program</a>
   </p>
 
-  <div class="box"></div>
-  <p class="box-caption">Edit and replay. Or try a preset. Add comments to tell a story.</p>
+  <div class="box flex">
+    <!-- TODO:
+    - [ ] different program here
+    - [ ]
+  -->
+    <FunctionPreview bind:program {cursor} />
+    <SpoolItem
+      {...justtheone}
+      activeId={_id}
+      activeParentBreadcrumbs={parentBreadcrumbs}
+      templateType="animation"
+      {meta}
+    />
+  </div>
+  <p class="box-caption">Add comments to tell a story.</p>
 
-  <div class="box"></div>
-  <p class="box-caption">Bird's eye view of the full storyboard</p>
+  <div class="box large-box flex">
+    <div>
+      <FunctionPreview bind:program {cursor} />
+      <SpoolItem
+        {...justtheone}
+        activeId={_id}
+        activeParentBreadcrumbs={parentBreadcrumbs}
+        templateType="animation"
+        {meta}
+      />
+    </div>
+    <SpoolItem
+      {...justtheone}
+      activeId={_id}
+      activeParentBreadcrumbs={parentBreadcrumbs}
+      templateType="tree-minimap"
+      {meta}
+    />
+  </div>
+  <p class="box-caption">Bird's eye view of the full storyboard.</p>
 
-  <div class="box"></div>
+  <!--  Try an edge case preset. -->
+
+  <div class="box medium-box overflow">
+    <Graph {canvasData} canvasHeight={280} />
+  </div>
   <p class="box-caption">
-    Explore programs in different domains. See all: <a href="/world_map">World Map</a> ->
+    Explore programs in different domains. See the <a href="/world_map">World Map</a> ->
   </p>
 
   <section class="center">
@@ -102,7 +216,15 @@
     border-radius: 8px;
     padding: 20px;
     margin-bottom: 20px;
-    min-height: 300px;
+    height: 300px;
+  }
+
+  .medium-box {
+    height: 450px;
+  }
+
+  .large-box {
+    height: 600px;
   }
 
   .box-caption {
@@ -111,5 +233,13 @@
     margin-top: 10px;
     // color: #7c7c7c;
     margin-bottom: 5rem;
+  }
+
+  .flex {
+    display: flex;
+  }
+
+  .overflow {
+    overflow: scroll;
   }
 </style>

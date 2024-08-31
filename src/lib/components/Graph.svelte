@@ -7,7 +7,7 @@
   let container;
   let canvasBounds = { minX: 0, minY: 0, maxX: 0, maxY: 0 };
   let canvasWidth = 0;
-  let canvasHeight = 0;
+  export let canvasHeight = 700;
 
   let scale = 1;
   let originX = 0;
@@ -69,6 +69,7 @@
 
 <div
   class="canvas-container"
+  style={`min-height: ${canvasHeight}px;`}
   bind:this={container}
   on:wheel|stopPropagation|preventDefault={handleWheel}
 >
@@ -101,7 +102,6 @@
     position: relative;
     width: 100%;
     height: 100%;
-    min-height: 700px;
     overflow: auto;
     display: flex;
     justify-content: center;

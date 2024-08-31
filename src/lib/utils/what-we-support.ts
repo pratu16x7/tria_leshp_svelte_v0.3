@@ -154,4 +154,17 @@ export const updateOperatorMap = {
   '--': (value) => value - 1
 };
 
+// TODO: use
 export const functionsSupported = {};
+
+// TODO: use
+export const loopLimit = 20;
+
+// TODO: use
+export const arraySizeLimit = 20;
+
+// TODO: use
+export const varCountLimit = 7;
+
+// TODO: use
+export const callOrRecDepthLimit = 7;
