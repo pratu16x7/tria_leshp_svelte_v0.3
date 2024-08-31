@@ -7,96 +7,109 @@
   const sampleProgram = 'array_1';
 </script>
 
-<main>
+<main class="story">
   <h1>Trialgo</h1>
   <p class="subtitle">Visualize tiny programs as you write them.</p>
 
-  <div class="box">
-    <p class="box-caption">Use arrow keys to move up and down the program.</p>
-  </div>
+  <div class="box"></div>
+  <p class="box-caption">
+    Use arrow keys to move up and down the program.
+    <a href="/{sampleFamily}/{sampleProgram}">Sample Array Program</a>
+  </p>
 
-  <div class="box">
-    <p class="box-caption">Edit and replay. Or try a preset. Add comments to tell a story.</p>
-  </div>
+  <div class="box"></div>
+  <p class="box-caption">Edit and replay. Or try a preset. Add comments to tell a story.</p>
 
-  <div class="box">
-    <p class="box-caption">Bird's eye view of the full storyboard</p>
-  </div>
+  <div class="box"></div>
+  <p class="box-caption">Bird's eye view of the full storyboard</p>
 
-  <div class="box">
-    <p class="box-caption">Explore programs in different domains. See all -></p>
-  </div>
+  <div class="box"></div>
+  <p class="box-caption">
+    Explore programs in different domains. See all: <a href="/world_map">World Map</a> ->
+  </p>
 
-  <footer>
+  <section class="center">
     <p>More programs being worked upon! Hope to cover as many as I can.</p>
     <p>I feel studying/puzzling over new programs like this is very educational.</p>
-    <p>Very much WIP, still in active development and ask for feedback</p>
+    <p>Very much WIP, looking for feedback</p>
     <p>Is see if this is something that I should work on getting</p>
-    <p>cleaner, if not helping solve CS homework problems too.</p>
-    <p>It will be very slow as I also have a day job.</p>
-    <p>Some things I'd like to do...</p>
-    <p>Wait? - @ath0</p>
+    <p>personal project Made it for me, if it helps even one other folk I'd be glad :)</p>
+  </section>
+
+  <footer>
+    <p>
+      <a href="/why">Why?</a> ·
+      <a href="https://github.com/pratu16x7/tria_leshp_svelte_v0.3">Github</a>
+    </p>
     <p class="made-with">
       Made with love by <a href="https://github.com/pratu16x7">Prateeksha</a>.
     </p>
   </footer>
-
-  <nav>
-    <ul>
-      <li><a href="/{sampleFamily}">Island</a></li>
-      <li><a href="/world_map">World Map</a></li>
-      <li><a href="/why">Why?</a></li>
-      <!-- <li><a href="/settings">Settings</a></li> -->
-      <a href="/{sampleFamily}/{sampleProgram}">Run Sample Array Program</a>
-    </ul>
-  </nav>
 </main>
 
-<style>
+<style lang="scss">
+  /* TODO:
+  - [ ] 0.8 font size
+  - [ ] download font locally
+  */
   @import url('https://fonts.googleapis.com/css2?family=Fira+Mono&display=swap');
 
   :global(body) {
     font-family: 'Fira Mono', monospace;
-    max-width: 800px;
     margin: 0 auto;
     padding: 20px;
     background-color: white;
-    color: black;
+    color: rgb(44, 44, 44);
+  }
+
+  :global(.story) {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  :global(.center) {
+    text-align: center;
+
+    font-size: 0.8em;
+    margin-top: 5em; /* rm */
+  }
+
+  :global(footer) {
+    margin-top: 40px;
+    font-size: 0.8em;
+    text-align: center;
+  }
+
+  :global(.made-with) {
+    margin-top: 20px;
+    /* font-style: italic; */
   }
 
   h1 {
     font-size: 5em;
     text-align: center;
-    margin-bottom: 0;
+    margin-top: 5rem;
+    // margin-bottom: 1rem;
   }
-
   .subtitle {
     text-align: center;
     margin-top: 5px;
-    margin-bottom: 30px;
+    margin-bottom: 5rem;
   }
 
   .box {
-    border: 1px solid black;
+    border: 1px solid #e3e3e3;
+    border-radius: 8px;
     padding: 20px;
     margin-bottom: 20px;
-    min-height: 100px;
+    min-height: 300px;
   }
 
   .box-caption {
     font-size: 0.8em;
     text-align: center;
     margin-top: 10px;
-  }
-
-  footer {
-    margin-top: 40px;
-    font-size: 0.8em;
-    text-align: center;
-  }
-
-  .made-with {
-    margin-top: 20px;
-    /* font-style: italic; */
+    // color: #7c7c7c;
+    margin-bottom: 5rem;
   }
 </style>
