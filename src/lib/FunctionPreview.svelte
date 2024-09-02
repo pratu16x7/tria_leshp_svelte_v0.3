@@ -1,10 +1,10 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { EditorView, basicSetup } from 'codemirror';
+  import { EditorView, basicSetup, minimalSetup } from 'codemirror';
   import { javascript } from '@codemirror/lang-javascript';
-  import { EditorState, StateField, StateEffect, Range } from '@codemirror/state';
+  import { EditorState, StateField, StateEffect, Range, Compartment } from '@codemirror/state';
   import { SearchCursor } from '@codemirror/search';
-  import { Decoration } from '@codemirror/view';
+  import { Decoration, gutter, lineNumbers } from '@codemirror/view';
 
   export let program: string;
 
@@ -30,16 +30,23 @@
   });
 
   const highlight_decoration = Decoration.mark({
-    attributes: { style: 'background-color: yellow' }
+    attributes: { style: 'background-color: aquamarine;' }
   });
 
+  let tabSize = new Compartment();
+
   onMount(() => {
-    let state = EditorState.create({ /* ... */ extensions: [highlight_extension] });
+    let state = EditorState.create({
+      /* ... */ extensions: [
+        highlight_extension
+        // tabSize.of(EditorState.tabSize.of(8)),
+      ]
+    });
 
     let editorView = new EditorView({
       state,
       doc: program,
-      // extensions: [basicSetup, javascript(), highlight_extension],
+      // extensions: [minimalSetup, javascript(), highlight_extension],
       extensions: [highlight_extension],
       parent: editorContainer
     });
@@ -58,15 +65,16 @@
   });
 
   $: if (editorContainer) {
+    console.log('minimalSetup', minimalSetup);
     editorContainer.innerHTML = '';
     let editorView = new EditorView({
       doc: program,
-      extensions: [basicSetup, javascript(), highlight_extension],
+      extensions: [minimalSetup, javascript(), highlight_extension],
       // extensions: [],
       parent: editorContainer
     });
 
-    // console.log('========cursor', cursor);
+    // here is where stuff actually happens
 
     editorView.dispatch({
       changes: { from: 0, to: editorView.state.doc.length, insert: program },
@@ -80,29 +88,45 @@
 <!-- <p>okay not sure anymore how to bind, but we don't need it yet</p> -->
 <div bind:this={editorContainer} class="editor"></div>
 
-<!--<script lang="ts">
-  export let program: string;
-</script>
+<!-- <textarea bind:value={program} /> -->
 
-<div>
-  <p> wow bind works child to parent ... (go to +page.svelte) </p>
-  <textarea bind:value={program} />
-</div>
-
-<style>
-  textarea {
-    width: 300px;
-    height: 150px;
-  }
-</style> -->
-
-<style>
+<style lang="scss">
   .editor {
     /* height: 100%; */
-    width: 100%;
-    border: 1px solid #ddd;
+    /* width: 100%; */
+    /* border: 1px solid #ddd; */
+
+    width: 300px;
+    font-size: 1.1rem;
+
+    .cm-editor.cm-focused {
+      outline: none !important;
+    }
+    .c1.cm-focused {
+      outline: none !important;
+    }
+
+    .cm-editor.cm-focused.ͼ1.ͼ2.ͼ4 {
+      outline: none !important;
+
+      .cm-gutters {
+        display: none !important;
+        position: relative !important;
+      }
+
+      .cm-scroller .cm-gutters {
+        display: none !important;
+        position: relative !important;
+      }
+
+      .cm-gutters {
+        display: none !important;
+        position: relative !important;
+      }
+
+      .cm-gutter.cm-mygutter {
+        display: none !important;
+      }
+    }
   }
-  /* .CodeMirror {
-    height: 100%;
-  } */
 </style>

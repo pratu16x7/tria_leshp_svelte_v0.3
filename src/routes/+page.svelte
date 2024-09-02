@@ -116,6 +116,7 @@
     <!-- TODO:
     - [ ] different program here
     - [ ] arrow keys should only work on box that is in viewport
+      - [ ] arrow keys should not cause page to scroll
   -->
     <FunctionPreview bind:program {cursor} />
     <SpoolItem
