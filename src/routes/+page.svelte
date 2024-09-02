@@ -79,7 +79,13 @@
     - [x] simplify implementation: move into onmount, rm dead code
     - [ ] HARD editable program: BIND THE PROGRAM, so when we change it, things happen:
         - [x] oh okay the obchange thingy worked
-        - [x] svelte doesn't need deboucing right?
+        - OKAY THIS IS THE CORE OF TRIALGO, think think the UX ...
+            - Actually, no not necessary to get it bang the first go you can keep improving it. But good to realize the enormity nonetheless.
+            - [x] svelte doesn't need deboucing right?
+            - [ ] UX not performance: debounce vs constantly refreshing with each key stroke- I think debounce will look nicer.
+                - [ ] Yeah something like Copepen also agrees. And what do we want to show them? just the old animation perhaps.
+            - [ ] Saying something like "Waiting for program input"
+            - [ ] setting up two levels of handlers
         - [ ] but you will have certain period when the program in invalid, so you need to debounce
         - [ ] add a pipeline in the middle that checks the code
           - [ ] and if program invalid:
