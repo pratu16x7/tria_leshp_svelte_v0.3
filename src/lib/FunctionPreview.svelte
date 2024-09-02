@@ -6,10 +6,10 @@
   import { Decoration } from '@codemirror/view';
 
   export let program: string;
-
   export let cursor;
+  let editorView;
 
-  let editorContainer: Element;
+  let editorContainer: Element; // so no need to clear innerHTML;
   const highlight_effect = StateEffect.define<Range<Decoration>[]>();
 
   const highlight_extension = StateField.define({
@@ -32,9 +32,8 @@
     attributes: { style: 'background-color: aquamarine;' }
   });
 
-  $: if (editorContainer) {
-    editorContainer.innerHTML = '';
-    let editorView = new EditorView({
+  onMount(() => {
+    editorView = new EditorView({
       doc: program,
       extensions: [
         basicSetup,
@@ -49,7 +48,9 @@
       // extensions: [],
       parent: editorContainer
     });
+  });
 
+  $: if (editorView) {
     // here is where stuff actually happens
 
     editorView.dispatch({
