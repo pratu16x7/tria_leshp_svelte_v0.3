@@ -71,16 +71,32 @@
   <p class="subtitle">Visualize tiny programs as you write them.</p>
   <!-- <p class="subtitle">Visualize tiny programs as they run.</p> -->
 
+  <!-- TODO:
+    - [ ] meta work
+    - [ ] multiple pointers work
+    - [ ] substring work
+    - [ ] more player components
+  -->
+
   <div class="box flex">
     <!-- TODO:
-    - [ ] fix horizontal size
-    - [ ] fix animation size
-    - [ ] only program should show
-    - [ ] BIND THE PROGRAM
+    - [x] Dump all
+    - [ ] select a program: maybe uncompress
+    - [ ] more style: only program should show, fix horizontal size
+    - [ ] HARD fix animation
+        - [ ] make it absolutely positioned
+        - [ ]
+        - [ ] rm headings, better loop representation
+        - [ ] juudge the number of loops
+        - [ ] ...list more edge cases to test later
+        - [ ] list more
+    - [ ] editable program: BIND THE PROGRAM and
+        - [ ] rerun automatically with svelte react. GO SVELTE TRULY REACTIVE!
     - [ ] syntax and support check
     - [ ] animation progress bar
-    - [ ] arrow keys should only work on box that is in viewport
+    - [ ]
   -->
+
     <FunctionPreview bind:program {cursor} />
     <SpoolItem
       {...justtheone}
@@ -99,7 +115,7 @@
   <div class="box flex">
     <!-- TODO:
     - [ ] different program here
-    - [ ]
+    - [ ] arrow keys should only work on box that is in viewport
   -->
     <FunctionPreview bind:program {cursor} />
     <SpoolItem
@@ -113,6 +129,11 @@
   <p class="box-caption">Add comments to tell a story.</p>
 
   <div class="box large-box flex">
+    <!-- TODO:
+    - [ ] island page routing work
+    - [ ] world map decide
+    - [ ]
+  -->
     <div>
       <FunctionPreview bind:program {cursor} />
       <SpoolItem
@@ -143,7 +164,9 @@
   </p>
 
   <section class="center">
-    <p>More programs being worked upon! Hope to cover as many as I can.</p>
+    <p>
+      More programs being worked upon! Hope to cover as many as I can. Only JS supported for now.
+    </p>
     <p>I feel studying/puzzling over new programs like this is very educational.</p>
     <p>Very much WIP, looking for feedback</p>
     <p>Is see if this is something that I should work on getting</p>
