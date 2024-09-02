@@ -65,11 +65,21 @@
   });
 
   $: if (editorContainer) {
-    console.log('minimalSetup', minimalSetup);
     editorContainer.innerHTML = '';
     let editorView = new EditorView({
       doc: program,
-      extensions: [minimalSetup, javascript(), highlight_extension],
+      extensions: [
+        basicSetup,
+        javascript(),
+        highlight_extension,
+        // EditorState.tabSize.of(4),
+        // EditorView.lineWrapping,
+        EditorView.theme({
+          '&.cm-focused': { outline: 'none' },
+          '.cm-gutters': { display: 'none' },
+          '.cm-scroller': { paddingLeft: '4px' }
+        })
+      ],
       // extensions: [],
       parent: editorContainer
     });
