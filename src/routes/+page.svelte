@@ -71,18 +71,25 @@
   <p class="subtitle">Visualize tiny programs as you write them.</p>
   <!-- <p class="subtitle">Visualize tiny programs as they run.</p> -->
 
-  <!-- TODO:
-    - [ ] meta work
-    - [ ] multiple pointers work
-    - [ ] substring work
-    - [ ] more player components
-  -->
-
   <div class="box flex">
     <!-- TODO:
     - [x] Dump all
-    - [ ] select a program: maybe uncompress
-    - [ ] more style: only program should show, fix horizontal size
+    - [x] more style: only program should show, fix horizontal size
+        - [x] more style fixes, ask claude for help
+    - [x] simplify implementation: move into onmount, rm dead code
+    - [ ] HARD editable program: BIND THE PROGRAM, so when we change it, things happen:
+        - [x] oh okay the obchange thingy worked
+        - [x] svelte doesn't need deboucing right?
+        - [ ] but you will have certain period when the program in invalid, so you need to debounce
+        - [ ] add a pipeline in the middle that checks the code
+          - [ ] and if program invalid:
+             - [ ] Show error and link for mor einfor
+             - [ ] disables the animation
+          - [ ] if valid
+             - [ ] makes a new AST
+             - [ ] rerenders and restarts animation from the start
+        - [ ] rerun automatically with svelte react. GO SVELTE TRULY REACTIVE!
+        - [ ] Reset button that appears when program changed
     - [ ] HARD fix animation
         - [ ] make it absolutely positioned
         - [ ]
@@ -90,11 +97,13 @@
         - [ ] juudge the number of loops
         - [ ] ...list more edge cases to test later
         - [ ] list more
-    - [ ] editable program: BIND THE PROGRAM and
-        - [ ] rerun automatically with svelte react. GO SVELTE TRULY REACTIVE!
+            - [ ] meta work
+            - [ ] multiple pointers work
+            - [ ] substring work
+            - [ ] more player components
+    - [ ] select a program: maybe uncompress
     - [ ] syntax and support check
     - [ ] animation progress bar
-    - [ ]
   -->
 
     <FunctionPreview bind:program {cursor} />
@@ -106,6 +115,7 @@
       {meta}
     />
   </div>
+  <p>{program}</p>
   <p class="box-caption">
     Use arrow keys to move up and down the program. Edit and replay.
     <!-- Use arrow keys to move up and down the program. <a href="/">Edit</a> and replay. -->
@@ -166,11 +176,15 @@
 
   <section class="center">
     <p>
+      Intended for tiny programs, upto 20 lines: I think it's important to grok the basic (and yet
+      quite complex ones like DP) before going for elaborate, which are usually just variants.
+    </p>
+    <p>
       More programs being worked upon! Hope to cover as many as I can. Only JS supported for now.
     </p>
-    <p>I feel studying/puzzling over new programs like this is very educational.</p>
+    <p>I feel breaking/puzzling/studying new programs like this is very educational.</p>
     <p>Very much WIP, looking for feedback</p>
-    <p>Is see if this is something that I should work on getting</p>
+    <p>Will see if this is something that I should work on getting</p>
     <p>personal project Made it for me, if it helps even one other folk I'd be glad :)</p>
   </section>
 

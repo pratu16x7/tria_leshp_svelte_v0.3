@@ -1,15 +1,16 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import { EditorView, basicSetup, minimalSetup } from 'codemirror';
+  import { onMount, afterUpdate } from 'svelte';
+  import { EditorView, basicSetup } from 'codemirror';
   import { javascript } from '@codemirror/lang-javascript';
   import { StateField, StateEffect, Range } from '@codemirror/state';
   import { Decoration } from '@codemirror/view';
 
   export let program: string;
-  export let cursor;
-  let editorView;
+  export let cursor: { start: number; end: number };
+  let editorView: EditorView;
+  let editorContainer: HTMLElement;
+  let previousProgram = program;
 
-  let editorContainer: Element; // so no need to clear innerHTML;
   const highlight_effect = StateEffect.define<Range<Decoration>[]>();
 
   const highlight_extension = StateField.define({
@@ -43,9 +44,16 @@
           '&.cm-focused': { outline: 'none' },
           '.cm-gutters': { display: 'none' },
           '.cm-scroller': { paddingLeft: '4px' }
+        }),
+
+        EditorView.updateListener.of((update) => {
+          if (update.docChanged) {
+            console.log('laaaaaaa');
+            program = update.state.doc.toString();
+            previousProgram = program;
+          }
         })
       ],
-      // extensions: [],
       parent: editorContainer
     });
   });
@@ -60,9 +68,6 @@
   }
 </script>
 
-<!-- okay not sure anymore how to bind, but we don't need it yet -->
-<!-- <textarea bind:value={program} /> -->
-<!-- Okay now we do -->
 <div bind:this={editorContainer} class="editor"></div>
 
 <style lang="scss">
