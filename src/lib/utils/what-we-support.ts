@@ -168,3 +168,6 @@ export const varCountLimit = 7;
 
 // TODO: use
 export const callOrRecDepthLimit = 7;
+
+// TODO: use
+export const codeLinesLimit = 20;
