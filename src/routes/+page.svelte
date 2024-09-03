@@ -257,6 +257,14 @@ OKAYYYYY:
     <p>Very much WIP, looking for feedback</p>
     <p>Will see if this is something that I should work on getting</p>
     <p>personal project Made it for me, if it helps even one other folk I'd be glad :)</p>
+    <p>
+      My rule is to never automate until I have done it atleast 10 times manually. Well I did, so it
+      was time
+    </p>
+    <p>
+      Thank you <a href="https://marijnhaverbeke.nl/">Marijn Haverbeke</a> (acorn, codemirror) and other
+      awesome folks whose worked on these projects on which this heavily depends on
+    </p>
   </section>
 
   <footer>
