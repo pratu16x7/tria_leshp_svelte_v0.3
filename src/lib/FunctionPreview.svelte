@@ -11,6 +11,14 @@
   let editorContainer: HTMLElement;
   let previousProgram = program;
 
+  let timer;
+  const debouncedProgramUpdate = (new_value) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      program = new_value;
+    }, 500);
+  };
+
   const highlight_effect = StateEffect.define<Range<Decoration>[]>();
 
   const highlight_extension = StateField.define({
@@ -52,13 +60,10 @@
         EditorView.updateListener.of((update) => {
           if (update.docChanged) {
             console.log('laaaaaaa');
-            program = update.state.doc.toString();
+            // program = update.state.doc.toString();
+            debouncedProgramUpdate(update.state.doc.toString());
             previousProgram = program;
           }
-          // TODO cursor moves to start after update, even when removing bind from parent, will have to make it a single flow from the top
-          // - [x] try rm bind:  not working
-          // - [x] okay rm the changes dispatch, rm it, and don't rm bind. Typing Cursor doesn't reset now, woo!
-          // - [x] but now the highlight persists, rm it, asked Claude, works now, Just a tiny None!
         })
       ],
       parent: editorContainer

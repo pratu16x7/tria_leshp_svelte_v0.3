@@ -81,26 +81,38 @@
   - OKAY THIS IS THE CORE OF TRIALGO, think think the UX ...
     - Actually, no not necessary to get it bang the first go you can keep improving it. But good to realize the enormity nonetheless.
     - [x] svelte doesn't need deboucing right?
-    - [ ] oh wait first fix typing cursor issue
-    - [ ] UX not performance: debounce vs constantly refreshing with each key stroke- I think debounce will look nicer.
+    - [x] oh wait first fix typing cursor issue
+      - TODO cursor moves to start after update, even when removing bind from parent, will have to make it a single flow from the top
+      - [x] try rm bind:  not working
+      - [x] okay rm the changes dispatch, rm it, and don't rm bind. Typing Cursor doesn't reset now, woo!
+      - [x] but now the highlight persists, rm it, asked Claude, works now, Just a tiny None!
+    - UX not performance: debounce vs constantly refreshing with each key stroke- I think debounce will look nicer.
       - Yeah something like Copepen also agrees. And what do we want to show them?
         -  just the last animation during the debounce period of course
-        - [ ] Implemement Debounce: where the three levels of handlers aren't even started
-        -  ANd when you have or still have an error, what does codepen do? It has nice html css still so it doesn't need to worry
-        - we on the other hand, need to show something in the animation pane on an error, and just have the last animation
-        - [ ] Let go with an empty state instead of old animation, and we'll think what to fill in it later
-            - Saying something like "Waiting for program input" probably ain't it
-        - [ ] and show something in the program pane to indicate error using codemirror's diagnostic. Thank god for codemirror.
-  - [ ] setting up three levels of handlers
-    - [ ] but you will have certain period when the program in invalid, so you need to debounce
-    - [ ] add a pipeline in the middle that checks the code
-      - [ ] and if program invalid:
-        - [ ] Show error and link for mor einfor
-        - [ ] disables the animation
-      - [ ] if valid
+        - [x] Implemement Debounce: where the three levels of handlers aren't even started
+  - Set up FOUR levels of handlers:
+    - [ ] 1. debounce state(done),
+      -  ANd when you have or still have an error, what does codepen do? It has nice html css still so it doesn't need to worry
+      - we on the other hand, need to show something in the animation pane on an error, and just have the last animation
+      - [ ] Let go with an empty state instead of old animation, and we'll think what to fill in it later
+          - Saying something like "Waiting for program input" probably ain't it
+      - [ ] and show something in the program pane to indicate error using codemirror's diagnostic. Thank god for codemirror.
+
+    - [ ] 2. syntax wrong state, program invalid:
+      - [ ] Show error and link for mor einfor
+      - [ ] disables the animation
+
+    - [ ] 3. not supported/guardrail state,
+      - [ ] Show error (different color probably, like pink) and link for mor einfor
+      - [ ] disables the animation
+
+    - [ ] 4. and if all prev passes: finally new program updated state (this mostly already works, just test agreessively)
         - [ ] makes a new AST
         - [ ] rerenders and restarts animation from the start
-    - [ ] rerun automatically with svelte react. GO SVELTE TRULY REACTIVE!
+        - [ ] rerun automatically with svelte react. GO SVELTE TRULY REACTIVE!
+        - [ ] reset highlight
+        - [ ] test aggressively, note test cases
+          - [ ] test case 1: does the highlight reset?
     - [ ] Reset button that appears when program changed
 - [ ] HARD fix animation
     - [ ] make it absolutely positioned
@@ -114,7 +126,12 @@
       - [ ] substring work
       - [ ] more player components
 - [ ] select a program: maybe uncompress
-- [ ] syntax and support check
+- implement the syntax and support check
+  - [ ] syntax check
+    - [ ] show excatly what the error is
+  - [ ] support check
+    - [ ] handle supports
+    - [ ] show excatly what the error is
 - [ ] animation progress bar
   -->
 
