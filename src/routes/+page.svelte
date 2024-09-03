@@ -73,43 +73,49 @@
 
   <div class="box flex">
     <!-- TODO:
-    - [x] Dump all
-    - [x] more style: only program should show, fix horizontal size
-        - [x] more style fixes, ask claude for help
-    - [x] simplify implementation: move into onmount, rm dead code
-    - [ ] HARD editable program: BIND THE PROGRAM, so when we change it, things happen:
-        - [x] oh okay the obchange thingy worked
-        - OKAY THIS IS THE CORE OF TRIALGO, think think the UX ...
-            - Actually, no not necessary to get it bang the first go you can keep improving it. But good to realize the enormity nonetheless.
-            - [x] svelte doesn't need deboucing right?
-            - [ ] UX not performance: debounce vs constantly refreshing with each key stroke- I think debounce will look nicer.
-                - [ ] Yeah something like Copepen also agrees. And what do we want to show them? just the old animation perhaps.
-            - [ ] Saying something like "Waiting for program input"
-            - [ ] setting up two levels of handlers
-        - [ ] but you will have certain period when the program in invalid, so you need to debounce
-        - [ ] add a pipeline in the middle that checks the code
-          - [ ] and if program invalid:
-             - [ ] Show error and link for mor einfor
-             - [ ] disables the animation
-          - [ ] if valid
-             - [ ] makes a new AST
-             - [ ] rerenders and restarts animation from the start
-        - [ ] rerun automatically with svelte react. GO SVELTE TRULY REACTIVE!
-        - [ ] Reset button that appears when program changed
-    - [ ] HARD fix animation
-        - [ ] make it absolutely positioned
-        - [ ]
-        - [ ] rm headings, better loop representation
-        - [ ] juudge the number of loops
-        - [ ] ...list more edge cases to test later
-        - [ ] list more
-            - [ ] meta work
-            - [ ] multiple pointers work
-            - [ ] substring work
-            - [ ] more player components
-    - [ ] select a program: maybe uncompress
-    - [ ] syntax and support check
-    - [ ] animation progress bar
+- [x] Dump all
+- [x] more style: only program should show, fix horizontal size
+  - [x] more style fixes, ask claude for help
+- [x] simplify implementation: move into onmount, rm dead code
+- [ ] HARD editable program: BIND THE PROGRAM, so when we change it, things happen:
+  - [x] oh okay the obchange thingy worked
+  - OKAY THIS IS THE CORE OF TRIALGO, think think the UX ...
+    - Actually, no not necessary to get it bang the first go you can keep improving it. But good to realize the enormity nonetheless.
+    - [x] svelte doesn't need deboucing right?
+    - [ ] UX not performance: debounce vs constantly refreshing with each key stroke- I think debounce will look nicer.
+      - Yeah something like Copepen also agrees. And what do we want to show them?
+        -  just the last animation during the debounce period of course
+        - [ ] Implemement Debounce: where the three levels of handlers aren't even started
+        -  ANd when you have or still have an error, what does codepen do? It has nice html css still so it doesn't need to worry
+        - we on the other hand, need to show something in the animation pane on an error, and just have the last animation
+        - [ ] Let go with an empty state instead of old animation, and we'll think what to fill in it later
+            - Saying something like "Waiting for program input" probably ain't it
+        - [ ] and show something in the program pane to indicate error using codemirror's diagnostic. Thank god for codemirror.
+  - [ ] setting up three levels of handlers
+    - [ ] but you will have certain period when the program in invalid, so you need to debounce
+    - [ ] add a pipeline in the middle that checks the code
+      - [ ] and if program invalid:
+        - [ ] Show error and link for mor einfor
+        - [ ] disables the animation
+      - [ ] if valid
+        - [ ] makes a new AST
+        - [ ] rerenders and restarts animation from the start
+    - [ ] rerun automatically with svelte react. GO SVELTE TRULY REACTIVE!
+    - [ ] Reset button that appears when program changed
+- [ ] HARD fix animation
+    - [ ] make it absolutely positioned
+    - [ ]
+    - [ ] rm headings, better loop representation
+    - [ ] juudge the number of loops
+    - [ ] ...list more edge cases to test later
+    - [ ] list more
+      - [ ] meta work
+      - [ ] multiple pointers work
+      - [ ] substring work
+      - [ ] more player components
+- [ ] select a program: maybe uncompress
+- [ ] syntax and support check
+- [ ] animation progress bar
   -->
 
     <FunctionPreview bind:program {cursor} />
@@ -133,6 +139,7 @@
     - [ ] different program here
     - [ ] arrow keys should only work on box that is in viewport
       - [ ] arrow keys should not cause page to scroll
+      - [ ] HARD: decide arrow keys behaviour with text focus inside editor
   -->
     <FunctionPreview bind:program {cursor} />
     <SpoolItem
