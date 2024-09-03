@@ -54,6 +54,8 @@
           }
           // TODO cursor moves to start after update, even when removing bind from parent, will have to make it a single flow from the top
           // - [x] try rm bind:  not working
+          // - [x] okay rm the changes dispatch, rm it, and don't rm bind. Typing Cursor doesn't reset now, woo!
+          // - [ ] but now the highlight persists, rm it
           // - [ ]
         })
       ],
@@ -65,7 +67,6 @@
     // here is where stuff actually happens
 
     editorView.dispatch({
-      changes: { from: 0, to: editorView.state.doc.length, insert: program },
       effects: highlight_effect.of([highlight_decoration.range(cursor.start, cursor.end)])
     });
   }
