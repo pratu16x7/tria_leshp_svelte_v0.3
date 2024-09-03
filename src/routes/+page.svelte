@@ -118,7 +118,7 @@
 - [ ] animation progress bar
   -->
 
-    <FunctionPreview bind:program {cursor} />
+    <FunctionPreview {program} {cursor} />
     <SpoolItem
       {...justtheone}
       activeId={_id}

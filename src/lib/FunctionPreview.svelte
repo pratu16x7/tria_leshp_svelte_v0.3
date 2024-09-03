@@ -52,6 +52,9 @@
             program = update.state.doc.toString();
             previousProgram = program;
           }
+          // TODO cursor moves to start after update, even when removing bind from parent, will have to make it a single flow from the top
+          // - [x] try rm bind:  not working
+          // - [ ]
         })
       ],
       parent: editorContainer
