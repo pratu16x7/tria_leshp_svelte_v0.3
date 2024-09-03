@@ -13,15 +13,15 @@
   const sampleFamily = 'test_programs';
   const sampleProgram = 'array_1';
 
-  export let program: string;
+  export let program_1: string;
 
-  program = programs[sampleFamily][sampleProgram]['text'];
+  program_1 = programs[sampleFamily][sampleProgram]['text'];
 
   // WIP: Barricade, error handling, don't navigate beyond upper and lower indexes
   $: index = 0;
 
-  $: ast = getAST(program);
-  $: [justtheone, nodeEvalList] = unspoolExecute(ast, program);
+  $: ast = getAST(program_1);
+  $: [justtheone, nodeEvalList] = unspoolExecute(ast, program_1);
   $: currSpoolItem = nodeEvalList[index];
   $: ({ _id, cursor, parentBreadcrumbs } = currSpoolItem);
 
@@ -133,9 +133,23 @@
     - [ ] handle supports
     - [ ] show excatly what the error is
 - [ ] animation progress bar
+
+
+OKAYYYYY:
+- HARD Recursion
+  - [ ] _
+  - [ ] _
+- tree programs, implemement the DS then check if the map works
+  - [ ] _
+  - [ ] _
+- DP
+  - [ ] _
+  - [ ] _
+- [ ]
+
   -->
 
-    <FunctionPreview bind:program {cursor} />
+    <FunctionPreview bind:program={program_1} {cursor} />
     <SpoolItem
       {...justtheone}
       activeId={_id}
@@ -144,7 +158,7 @@
       {meta}
     />
   </div>
-  <p>{program}</p>
+  <p>{program_1}</p>
   <p class="box-caption">
     Use arrow keys to move up and down the program. Edit and replay.
     <!-- Use arrow keys to move up and down the program. <a href="/">Edit</a> and replay. -->
@@ -157,6 +171,14 @@
     - [ ] arrow keys should only work on box that is in viewport
       - [ ] arrow keys should not cause page to scroll
       - [ ] HARD: decide arrow keys behaviour with text focus inside editor
+    - can acorn read comments, it can but not in the AST, so collect them like this: https://github.com/acornjs/acorn/issues/753#issuecomment-1120222466
+    - [ ] decide what you want the demo to do with comments
+      - [ ] then decide the contract
+    - [ ] write the comment collection code
+      - [ ] _
+      - [ ] _
+    - [ ] test, debug
+    - [ ] sample comment buttons
   -->
     <!-- <FunctionPreview bind:program {cursor} /> -->
     <SpoolItem
@@ -171,9 +193,17 @@
 
   <div class="box large-box flex">
     <!-- TODO:
-    - [ ] island page routing work
-    - [ ] world map decide
-    - [ ]
+    - [ ] minimap fix heights
+      - [ ] _
+      - [ ] _
+    - [ ] minimap fix color correlation as there's not much else
+      - [ ] _
+      - [ ] _
+    - [ ] mega map format
+      - [ ] _
+      - [ ] _
+    - [ ] _
+
   -->
     <div>
       <!-- <FunctionPreview bind:program {cursor} /> -->
@@ -198,6 +228,17 @@
   <!--  Try an edge case preset. -->
 
   <div class="box medium-box overflow">
+    <!-- TODO:
+    - [ ] island page routing work
+      - [ ] _
+      - [ ] _
+    - [ ] world map decide
+      - [ ] _
+      - [ ] _
+      - [ ] _
+      - [ ] _
+    - [ ]
+  -->
     <Graph {canvasData} canvasHeight={280} />
   </div>
   <p class="box-caption">

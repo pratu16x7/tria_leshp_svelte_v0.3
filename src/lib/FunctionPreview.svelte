@@ -30,7 +30,7 @@
 
       for (let effect of transaction.effects) {
         if (effect.is(highlight_effect)) {
-          // Clear previous highlights and add new ones
+          // Clear previous highlights (.none) and add new ones
           value = Decoration.none.update({ add: effect.value, sort: true });
         }
       }
