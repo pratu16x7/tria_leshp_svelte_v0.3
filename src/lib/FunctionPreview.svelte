@@ -21,7 +21,10 @@
       value = value.map(transaction.changes);
 
       for (let effect of transaction.effects) {
-        if (effect.is(highlight_effect)) value = value.update({ add: effect.value, sort: true });
+        if (effect.is(highlight_effect)) {
+          // Clear previous highlights and add new ones
+          value = Decoration.none.update({ add: effect.value, sort: true });
+        }
       }
 
       return value;
@@ -55,8 +58,7 @@
           // TODO cursor moves to start after update, even when removing bind from parent, will have to make it a single flow from the top
           // - [x] try rm bind:  not working
           // - [x] okay rm the changes dispatch, rm it, and don't rm bind. Typing Cursor doesn't reset now, woo!
-          // - [ ] but now the highlight persists, rm it
-          // - [ ]
+          // - [x] but now the highlight persists, rm it, asked Claude, works now, Just a tiny None!
         })
       ],
       parent: editorContainer
