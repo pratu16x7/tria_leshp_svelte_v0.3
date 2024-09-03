@@ -7,6 +7,7 @@
 
   export let program: string;
   export let cursor: { start: number; end: number };
+  export let debounceState = false;
   let editorView: EditorView;
   let editorContainer: HTMLElement;
   let previousProgram = program;
@@ -16,6 +17,7 @@
     clearTimeout(timer);
     timer = setTimeout(() => {
       program = new_value;
+      debounceState = false;
     }, 500);
   };
 
@@ -61,6 +63,7 @@
           if (update.docChanged) {
             console.log('laaaaaaa');
             // program = update.state.doc.toString();
+            debounceState = true;
             debouncedProgramUpdate(update.state.doc.toString());
             previousProgram = program;
           }
