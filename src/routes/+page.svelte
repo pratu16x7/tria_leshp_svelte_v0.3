@@ -1,6 +1,5 @@
 <script lang="ts">
   import { programs } from '../data/programs/sample_program.js';
-  import Layout from './__layout.svelte';
 
   import FunctionPreview from '../lib/FunctionPreview.svelte';
   import SpoolItem from '../lib/components/SpoolItem.svelte';
@@ -82,6 +81,7 @@
   - OKAY THIS IS THE CORE OF TRIALGO, think think the UX ...
     - Actually, no not necessary to get it bang the first go you can keep improving it. But good to realize the enormity nonetheless.
     - [x] svelte doesn't need deboucing right?
+    - [ ] oh wait first fix typing cursor issue
     - [ ] UX not performance: debounce vs constantly refreshing with each key stroke- I think debounce will look nicer.
       - Yeah something like Copepen also agrees. And what do we want to show them?
         -  just the last animation during the debounce period of course
@@ -141,7 +141,7 @@
       - [ ] arrow keys should not cause page to scroll
       - [ ] HARD: decide arrow keys behaviour with text focus inside editor
   -->
-    <FunctionPreview bind:program {cursor} />
+    <!-- <FunctionPreview bind:program {cursor} /> -->
     <SpoolItem
       {...justtheone}
       activeId={_id}
@@ -159,7 +159,7 @@
     - [ ]
   -->
     <div>
-      <FunctionPreview bind:program {cursor} />
+      <!-- <FunctionPreview bind:program {cursor} /> -->
       <SpoolItem
         {...justtheone}
         activeId={_id}
