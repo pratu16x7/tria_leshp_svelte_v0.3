@@ -2,7 +2,7 @@
   import { onMount, afterUpdate } from 'svelte';
   import { EditorView, basicSetup } from 'codemirror';
   import { esLint, javascript } from '@codemirror/lang-javascript';
-  import { StateField, StateEffect, Range } from '@codemirror/state';
+  import { EditorState, StateField, StateEffect, Range } from '@codemirror/state';
   import { Decoration } from '@codemirror/view';
   import { linter, lintGutter } from '@codemirror/lint';
   import Linter from 'eslint4b-prebuilt';
@@ -11,6 +11,7 @@
   export let cursor: { start: number; end: number };
   export let debounceState = false;
   let editorView: EditorView;
+  let startState: EditorState;
   let editorContainer: HTMLElement;
   let previousProgram = program;
 
@@ -48,30 +49,33 @@
     attributes: { style: 'background-color: aquamarine;' }
   });
 
+  startState = EditorState.create({
+    doc: program,
+    extensions: [
+      basicSetup,
+      javascript(),
+      highlight_extension,
+      EditorView.theme({
+        '&.cm-focused': { outline: 'none' },
+        '.cm-gutters': { display: 'none' },
+        '.cm-scroller': { paddingLeft: '4px' }
+      }),
+      // lintGutter(),
+      linter(esLint(new Linter())),
+      EditorView.updateListener.of((update) => {
+        if (update.docChanged) {
+          // program = update.state.doc.toString();
+          debounceState = true;
+          debouncedProgramUpdate(update.state.doc.toString());
+          previousProgram = program;
+        }
+      })
+    ]
+  });
+
   onMount(() => {
     editorView = new EditorView({
-      doc: program,
-      extensions: [
-        basicSetup,
-        javascript(),
-        highlight_extension,
-        EditorView.theme({
-          '&.cm-focused': { outline: 'none' },
-          '.cm-gutters': { display: 'none' },
-          '.cm-scroller': { paddingLeft: '4px' }
-        }),
-        // lintGutter(),
-        linter(esLint(new Linter())),
-        EditorView.updateListener.of((update) => {
-          if (update.docChanged) {
-            console.log('laaaaaaa');
-            // program = update.state.doc.toString();
-            debounceState = true;
-            debouncedProgramUpdate(update.state.doc.toString());
-            previousProgram = program;
-          }
-        })
-      ],
+      state: startState,
       parent: editorContainer
     });
   });
