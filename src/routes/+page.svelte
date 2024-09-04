@@ -1,7 +1,7 @@
 <script lang="ts">
   import { programs } from '../data/programs/sample_program.js';
 
-  import FunctionPreview from '../lib/FunctionPreview.svelte';
+  import FunctionPreview from '../lib/components/FunctionPreview.svelte';
   import SpoolItem from '../lib/components/SpoolItem.svelte';
   import { getAST, unspoolExecute } from '../lib/utils/ast';
   import Graph from '../lib/components/Graph.svelte';

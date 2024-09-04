@@ -1,5 +1,5 @@
 <script lang="ts">
-  import FunctionPreview from '../lib/FunctionPreview.svelte';
+  import FunctionPreview from './components/FunctionPreview.svelte';
   import SpoolItem from '../lib/components/SpoolItem.svelte';
   import TreeNodeVertical from './components/players/TreeNodeVertical.svelte';
   import treeData from '../data/sample_tree_ds.json';
