@@ -15,11 +15,30 @@
   let editorContainer: HTMLElement;
   let previousProgram = program;
 
+  // one more linter apart from the one passed to codemirror below,
+  // Just for getting the errors easily, instead of having to go into the
+  // state and view of the editor.
+  // BECAUSE => Wasn't able to get diagnostics with an external editor
+  const eslint = new Linter();
+
   let timer;
   const debouncedProgramUpdate = (new_value) => {
     clearTimeout(timer);
     timer = setTimeout(() => {
+      previousProgram = program;
       program = new_value;
+
+      let messages = eslint.verify(new_value, {
+        env: {
+          es6: true,
+          browser: true
+        },
+        rules: {
+          semi: 2
+        }
+      });
+      console.log('heheh got you, you errors: ', messages);
+
       debounceState = false;
     }, 500);
   };
@@ -66,8 +85,8 @@
         if (update.docChanged) {
           // program = update.state.doc.toString();
           debounceState = true;
-          debouncedProgramUpdate(update.state.doc.toString());
-          previousProgram = program;
+          let newProgram = update.state.doc.toString();
+          debouncedProgramUpdate(newProgram);
         }
       })
     ]
