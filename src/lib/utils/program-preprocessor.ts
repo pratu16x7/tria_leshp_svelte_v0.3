@@ -22,7 +22,7 @@
 // _
 // _
 
-import { astNodeTypes, binaryOperatorMap, assignmentOperatorMap } from './utils/what-we-support';
+import { astNodeTypes, binaryOperatorMap, assignmentOperatorMap } from './what-we-support';
 
 export function getMetaFromLastContextInSpool(context) {}
 

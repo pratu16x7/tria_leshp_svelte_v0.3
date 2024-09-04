@@ -1,8 +1,7 @@
 <script lang="ts">
   import FunctionPreview from '../lib/FunctionPreview.svelte';
   import SpoolItem from '../lib/components/SpoolItem.svelte';
-  import TempCurrentSpoolItem from '../lib/components/TempCurrentSpoolItem.svelte';
-  import TreeNodeVertical from '../lib/components/TreeNodeVertical.svelte';
+  import TreeNodeVertical from './components/players/TreeNodeVertical.svelte';
   import treeData from '../data/sample_tree_ds.json';
   import { getAST, unspoolExecute } from '../lib/utils/ast';
 
@@ -88,8 +87,8 @@
   </div>
   <div>
     <h3>astNode Item</h3>
-    <TempCurrentSpoolItem ast={JSON.stringify(currSpoolItem)} />
-    <TempCurrentSpoolItem ast={JSON.stringify(currentAstNodeItem)} />
+    <p>{JSON.stringify(currSpoolItem)}</p>
+    <p>{JSON.stringify(currentAstNodeItem)}</p>
   </div>
 </div>
 

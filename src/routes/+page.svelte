@@ -105,8 +105,15 @@
             - those few milliseconds are not the place to give any feedback, that would be too overwhelming.
               - Not worth it, not interesting and just overheady
 
+You have to start making a component of this now btw
+- [ ] take out this first one, and change program1 -> program
+- [ ] _
+- [ ] _
+
+
     - 2. syntax wrong state, program invalid:
-      - [ ] okay first: is there an error? boolean state to bubble up
+      - okay first: is there an error? boolean state to bubble up
+          - [ ] Okay you can't: https://discuss.codemirror.net/t/best-way-to-check-if-a-syntax-tree-contains-errors/7441
           - [ ] disables the animation
       - [ ] second, what is the error? No need to bubble up just show below program itself and link for mor einfor
         - [ ] and show something in the program pane to indicate error using codemirror's diagnostic. Thank god for codemirror.
