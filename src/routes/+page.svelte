@@ -1,7 +1,7 @@
 <script lang="ts">
   import { programs } from '../data/programs/sample_program.js';
 
-  import FunctionPreview from '../lib/components/FunctionPreview.svelte';
+  import Demo1 from '../lib/Demo1.svelte';
   import SpoolItem from '../lib/components/SpoolItem.svelte';
   import { getAST, unspoolExecute } from '../lib/utils/ast';
   import Graph from '../lib/components/Graph.svelte';
@@ -71,89 +71,15 @@
   <p class="subtitle">Visualize tiny programs as you write them.</p>
   <!-- <p class="subtitle">Visualize tiny programs as they run.</p> -->
 
+  <Demo1 />
+  <p class="box-caption">
+    Use arrow keys to move up and down the program. Edit and replay.
+    <!-- Use arrow keys to move up and down the program. <a href="/">Edit</a> and replay. -->
+    <a href="/test_programs/array_1">Sample Array Program</a>
+  </p>
+
   <div class="box flex">
     <!-- TODO:
-- [x] Dump all
-- [x] more style: only program should show, fix horizontal size
-  - [x] more style fixes, ask claude for help
-- [x] simplify implementation: move into onmount, rm dead code
-
-- [ ] HARD editable program: BIND THE PROGRAM, so when we change it, things happen:
-  - [x] oh okay the obchange thingy worked
-  - OKAY THIS IS THE CORE OF TRIALGO, think think the UX ...
-    - Actually, no not necessary to get it bang the first go you can keep improving it. But good to realize the enormity nonetheless.
-    - [x] svelte doesn't need deboucing right?
-    - [x] oh wait first fix typing cursor issue
-      - TODO cursor moves to start after update, even when removing bind from parent, will have to make it a single flow from the top
-      - [x] try rm bind:  not working
-      - [x] okay rm the changes dispatch, rm it, and don't rm bind. Typing Cursor doesn't reset now, woo!
-      - [x] but now the highlight persists, rm it, asked Claude, works now, Just a tiny None!
-    - UX not performance: debounce vs constantly refreshing with each key stroke- I think debounce will look nicer.
-      - Yeah something like Copepen also agrees. And what do we want to show them?
-        -  just the last animation during the debounce period of course
-        - [x] Implemement Debounce: where the three levels of handlers aren't even started
-
-  - Set up FOUR levels of handlers:
-    - 1. debounce state(done),
-      -  ANd when you have or still have an error, what does codepen do? It has nice html css still so it doesn't need to worry
-      - we on the other hand, need to show something in the animation pane on an error, and just have the last animation
-      - Let go with an empty state instead of old animation, and we'll think what to fill in it later
-          - Saying something like "Waiting for program input" probably ain't it
-          - [x] add debounce state variable
-          - and then, well, do nothing, just keep anim at the prev state for those few milliseconds
-            - like codemirror does and if things don't get better only then do something
-            - those few milliseconds are not the place to give any feedback, that would be too overwhelming.
-              - Not worth it, not interesting and just overheady
-
-You have to start making a component of this now btw
-- [ ] take out this first one, and change program1 -> program
-- [ ] _
-- [ ] _
-
-
-    - 2. syntax wrong state, program invalid:
-      - okay first: is there an error? boolean state to bubble up
-          - [ ] Okay you can't: https://discuss.codemirror.net/t/best-way-to-check-if-a-syntax-tree-contains-errors/7441
-          - [ ] disables the animation
-      - [ ] second, what is the error? No need to bubble up just show below program itself and link for mor einfor
-        - [ ] and show something in the program pane to indicate error using codemirror's diagnostic. Thank god for codemirror.
-          - [ ] _
-          - [ ] _
-            - [ ] lvl2: detailed erorr messages using external linter:
-              - https://discuss.codemirror.net/t/codemirror-6-customize-linter/8211, https://discuss.codemirror.net/t/handling-error-states/2551/9
-
-    - [ ] 3. not supported/guardrail state,
-      - [ ] Show error (different color probably, like pink) and link for mor einfor
-      - [ ] disables the animation
-
-    - [ ] 4. and if all prev passes: finally new program updated state (this mostly already works, just test agreessively)
-        - [ ] makes a new AST
-        - [ ] rerenders and restarts animation from the start
-        - [ ] rerun automatically with svelte react. GO SVELTE TRULY REACTIVE!
-        - [ ] reset highlight
-        - [ ] test aggressively, note test cases
-          - [ ] test case 1: does the highlight reset?
-    - [ ] Reset button that appears when program changed
-
-- [ ] HARD fix animation
-    - [ ] make it absolutely positioned
-    - [ ]
-    - [ ] rm headings, better loop representation
-    - [ ] juudge the number of loops
-    - [ ] ...list more edge cases to test later
-    - [ ] list more
-      - [ ] meta work
-      - [ ] multiple pointers work
-      - [ ] substring work
-      - [ ] more player components
-- [ ] select a program: maybe uncompress
-- implement the syntax and support check
-  - [ ] syntax check
-    - [ ] show excatly what the error is
-  - [ ] support check
-    - [ ] handle supports
-    - [ ] show excatly what the error is
-- [ ] animation progress bar
 
 
 OKAYYYYY:
@@ -168,26 +94,8 @@ OKAYYYYY:
   - [ ] _
 - [ ]
 
-  -->
 
-    <FunctionPreview bind:program={program1} {cursor} bind:debounceState={debounceState1} />
-    <SpoolItem
-      {...justtheone}
-      activeId={_id}
-      activeParentBreadcrumbs={parentBreadcrumbs}
-      templateType="animation"
-      {meta}
-    />
-  </div>
-  <p>{debounceState1}, {program1}</p>
-  <p class="box-caption">
-    Use arrow keys to move up and down the program. Edit and replay.
-    <!-- Use arrow keys to move up and down the program. <a href="/">Edit</a> and replay. -->
-    <a href="/{sampleFamily1}/{sampleProgram1}">Sample Array Program</a>
-  </p>
 
-  <div class="box flex">
-    <!-- TODO:
     - [ ] different program here
     - [ ] arrow keys should only work on box that is in viewport
       - [ ] arrow keys should not cause page to scroll
@@ -349,6 +257,8 @@ OKAYYYYY:
     margin-bottom: 5rem;
   }
 
+  // okay from here on in demo files
+
   .box {
     border: 1px solid #e3e3e3;
     border-radius: 8px;
@@ -373,11 +283,11 @@ OKAYYYYY:
     margin-bottom: 5rem;
   }
 
-  .flex {
+  :global(.flex) {
     display: flex;
   }
 
-  .overflow {
+  :global(.overflow) {
     overflow: scroll;
   }
 </style>
