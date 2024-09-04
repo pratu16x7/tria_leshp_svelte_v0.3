@@ -1,9 +1,11 @@
 <script lang="ts">
   import { onMount, afterUpdate } from 'svelte';
   import { EditorView, basicSetup } from 'codemirror';
-  import { javascript } from '@codemirror/lang-javascript';
+  import { esLint, javascript } from '@codemirror/lang-javascript';
   import { StateField, StateEffect, Range } from '@codemirror/state';
   import { Decoration } from '@codemirror/view';
+  import { linter, lintGutter } from '@codemirror/lint';
+  import Linter from 'eslint4b-prebuilt';
 
   export let program: string;
   export let cursor: { start: number; end: number };
@@ -58,7 +60,8 @@
           '.cm-gutters': { display: 'none' },
           '.cm-scroller': { paddingLeft: '4px' }
         }),
-
+        // lintGutter(),
+        linter(esLint(new Linter())),
         EditorView.updateListener.of((update) => {
           if (update.docChanged) {
             console.log('laaaaaaa');

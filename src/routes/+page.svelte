@@ -94,7 +94,7 @@
         - [x] Implemement Debounce: where the three levels of handlers aren't even started
 
   - Set up FOUR levels of handlers:
-    - [x] 1. debounce state(done),
+    - 1. debounce state(done),
       -  ANd when you have or still have an error, what does codepen do? It has nice html css still so it doesn't need to worry
       - we on the other hand, need to show something in the animation pane on an error, and just have the last animation
       - Let go with an empty state instead of old animation, and we'll think what to fill in it later
@@ -105,12 +105,15 @@
             - those few milliseconds are not the place to give any feedback, that would be too overwhelming.
               - Not worth it, not interesting and just overheady
 
-    - [ ] 2. syntax wrong state, program invalid:
-      - [ ] Show error and link for mor einfor
-      - [ ] disables the animation
-      - [ ] and show something in the program pane to indicate error using codemirror's diagnostic. Thank god for codemirror.
-        - [ ] _
-        - [ ] _
+    - 2. syntax wrong state, program invalid:
+      - [ ] okay first: is there an error? boolean state to bubble up
+          - [ ] disables the animation
+      - [ ] second, what is the error? No need to bubble up just show below program itself and link for mor einfor
+        - [ ] and show something in the program pane to indicate error using codemirror's diagnostic. Thank god for codemirror.
+          - [ ] _
+          - [ ] _
+            - [ ] lvl2: detailed erorr messages using external linter:
+              - https://discuss.codemirror.net/t/codemirror-6-customize-linter/8211, https://discuss.codemirror.net/t/handling-error-states/2551/9
 
     - [ ] 3. not supported/guardrail state,
       - [ ] Show error (different color probably, like pink) and link for mor einfor
