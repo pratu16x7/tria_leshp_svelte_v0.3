@@ -120,9 +120,27 @@ You have to start making a component of this now btw
           - [x] lvl2: detailed erorr messages using external linter ... DONE using external linter!
               - https://discuss.codemirror.net/t/codemirror-6-customize-linter/8211, https://discuss.codemirror.net/t/handling-error-states/2551/9
 
+	work on 3, 4 point later, much of the main framework in place likely
+
+- [ ] HARD fix animation
+	- [ ] meta work
+      - [ ] multiple pointers work
+      - [ ] substring work
+    - [ ] make it absolutely positioned
+    - [ ] _
+    - [ ] rm headings, better loop representation
+    - [ ] juudge the number of loops
+    - [ ] ...list more edge cases to test later
+    - [ ] list more
+      - [ ] more player components
+- [ ] select a program: maybe uncompress
+
+
     - [ ] 3. not supported/guardrail state,
       - [ ] Show error (different color probably, like pink) and link for mor einfor
-      - [ ] disables the animation
+		- [ ] disables the animation
+	  - [ ] handle supports
+		- [ ] show excatly what the error is
 
     - [ ] 4. and if all prev passes: finally new program updated state (this mostly already works, just test agreessively)
         - [ ] makes a new AST
@@ -133,24 +151,6 @@ You have to start making a component of this now btw
           - [ ] test case 1: does the highlight reset?
     - [ ] Reset button that appears when program changed
 
-- [ ] HARD fix animation
-    - [ ] make it absolutely positioned
-    - [ ]
-    - [ ] rm headings, better loop representation
-    - [ ] juudge the number of loops
-    - [ ] ...list more edge cases to test later
-    - [ ] list more
-      - [ ] meta work
-      - [ ] multiple pointers work
-      - [ ] substring work
-      - [ ] more player components
-- [ ] select a program: maybe uncompress
-- implement the syntax and support check
-  - [ ] syntax check
-    - [ ] show excatly what the error is
-  - [ ] support check
-    - [ ] handle supports
-    - [ ] show excatly what the error is
 - [ ] animation progress bar
 - [ ] bound check for the index
 
