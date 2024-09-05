@@ -41,7 +41,7 @@
     class:loop={loopAndBlocks.testAndBlocks.length > 0}
     class:test={testAndBlock.block.children.length > 0}
   >
-    <p class="tiny">{JSON.stringify(parentBreadcrumbs)} : {nodeType}: {cursor.programPart}</p>
+    <!-- <p class="tiny">{JSON.stringify(parentBreadcrumbs)} : {nodeType}: {cursor.programPart}</p> -->
 
     <!-- This should only be one instance across the entire tree-->
     <State context={activeContext} {meta} hide={_id !== activeId} />

@@ -115,7 +115,7 @@ You have to start making a component of this now btw
 	- [x] the whole root to leaf path shows animation, just show it at active node
     - [ ] The animation in just one place, hmm ...
     - [ ] okay, let's first rm the headings here
-    - [ ] let's limit/fix parent and animation's height
+    - [ ] let's limit/fix parent and animation's height. Okay recursive makes this a problem too.
     - [ ] let make the every level between these two behave for atleast 3 layers.
 	- [ ] _
     - [ ] _ make it absolutely positioned?
