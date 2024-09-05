@@ -113,9 +113,11 @@ You have to start making a component of this now btw
 	- [x] single instance of animation
 	- [x] okay multiple instances of animation but pass the current active context to make data flow in them
 	- [x] the whole root to leaf path shows animation, just show it at active node
-    - [ ] The animation in just one place, hmm ...
-    - [ ] okay, let's first rm the headings here
-    - [ ] let's limit/fix parent and animation's height. Okay recursive makes this a problem too.
+    - [x] The animation in just one place, hmm ...
+    - [x] okay, let's first rm the headings here  ... woah that alone makes such a difference!
+    - [ ] let's limit/fix parent and animation's height.
+		- [x] Okay recursive makes this a problem too ... what else can we try ...
+		- [ ] how to set height for only program? maybe conditional class based on level?
     - [ ] let make the every level between these two behave for atleast 3 layers.
 	- [ ] _
     - [ ] _ make it absolutely positioned?

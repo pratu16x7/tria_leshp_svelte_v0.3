@@ -9,7 +9,7 @@
   export let hide = false;
 </script>
 
-<div class="template" class:scale-down={scaleDown} class:hide>
+<div class="state-box" class:scale-down={scaleDown} class:hide>
   {#each Object.entries(context) as [player, playerState]}
     <!-- actually the safest way to check type here based on actual value -->
     {@const playerType = toType(playerState['value'])}
@@ -45,8 +45,8 @@
 pointerName={'pointer_1'}
 pointerValue={context[pointer_1]['value']} -->
 
-<style>
-  .template {
+<style lang="scss">
+  .state-box {
     /* height: 200px; */
   }
 

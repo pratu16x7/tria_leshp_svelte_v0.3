@@ -35,7 +35,7 @@
 <!-- Furled: same as spool, hiding anything other than parents. Hence, no need of active node -->
 {#if templateType === 'animation'}
   <div
-    class="border default-node {templateType}"
+    class="border default-node expand {templateType} {`level-${parentBreadcrumbs.length}`}"
     class:hide={templateType === 'animation' && !activeParentBreadcrumbs.includes(_id)}
     class:active={templateType === 'tree' && _id === activeId}
     class:loop={loopAndBlocks.testAndBlocks.length > 0}
@@ -313,6 +313,26 @@
     border-radius: 8px;
     margin: 1em;
     margin-left: 3em;
+  }
+
+  .level-1 {
+    width: 500px;
+    height: 400px;
+  }
+
+  .level-2 {
+    width: 450px;
+    height: 350px;
+  }
+
+  .level-3 {
+    width: 400px;
+    height: 300px;
+  }
+
+  .level-4 {
+    width: 350px;
+    height: 250px;
   }
 
   .tree-minimap {

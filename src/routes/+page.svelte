@@ -35,6 +35,9 @@
 
 
 OKAYYYYY:
+- 1 array program
+  - [ ] _
+  - [ ] _
 - HARD Recursion
   - [ ] _
   - [ ] _
@@ -61,9 +64,8 @@ OKAYYYYY:
     - [ ] test, debug
     - [ ] sample comment buttons
   -->
-  <!-- <FunctionPreview bind:program {cursor} /> -->
-  <Demo1 program={program1} demoType="minimap" />
-  <p class="box-caption">Add comments to tell a story.</p>
+  <!-- <Demo1 program={program1} demoType="minimap" />
+  <p class="box-caption">Add comments to tell a story.</p> -->
 
   <!-- TODO:
     - [ ] minimap fix heights
@@ -79,8 +81,8 @@ OKAYYYYY:
 
   -->
 
-  <Demo1 program={program1} demoType="minimap" />
-  <p class="box-caption">Bird's eye view of the full storyboard.</p>
+  <!-- <Demo1 program={program1} demoType="minimap" />
+  <p class="box-caption">Bird's eye view of the full storyboard.</p> -->
 
   <!--  Try an edge case preset. -->
 
