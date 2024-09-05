@@ -59,10 +59,11 @@
 
     <!--  -->
     {#if loopAndBlocks.testAndBlocks.length}
-      <h3>Loop (WIP color coding spool Items)</h3>
+      <!-- <h3>Loop (WIP color coding spool Items)</h3> -->
 
       {#each loopAndBlocks.testAndBlocks as testAndBlock, i}
-        <h3>Loop {i + 1} test</h3>
+        <!-- <h3>Loop {i + 1} test</h3> -->
+        <!-- make test part colored instead ... -->
         <svelte:self
           {...testAndBlock.test}
           {templateType}
@@ -72,7 +73,7 @@
           {activeContext}
         />
 
-        <h3>exec</h3>
+        <!-- <h3>exec</h3> -->
         {#each testAndBlock.block.children as spoolItem}
           <svelte:self
             {...spoolItem}
@@ -82,6 +83,7 @@
             {activeParentBreadcrumbs}
             {activeContext}
           />
+          <!-- and add a numbered bar here -->
         {/each}
       {/each}
 
@@ -95,7 +97,7 @@
         {activeParentBreadcrumbs}
         {activeContext}
       />
-      <h3>Test</h3>
+      <!-- <h3>Test</h3> -->
       {#each testAndBlock.block.children as spoolItem}
         <svelte:self
           {...spoolItem}
