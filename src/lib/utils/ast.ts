@@ -19,6 +19,12 @@ function clearPlayerPlayingState(context) {
   return context;
 }
 
+const globalFn = {
+  parseInt: parseInt,
+  parseFloat: parseFloat
+  // Add other globalFn functions you want to support
+};
+
 export function unspoolExecute(ast, program) {
   let linearSpoolNodes = [];
 
@@ -190,8 +196,15 @@ export function unspoolExecute(ast, program) {
         const callee = node.callee;
         const args = node.arguments.map((arg) => evaluate(arg, execLevel, parentBreadcrumbs)._res);
 
-        if (callee.type === 'MemberExpression') {
-          // get console.log() out of the way
+        if (callee.type === 'Identifier') {
+          // Handle globalFn function calls
+          if (typeof globalFn[callee.name] === 'function') {
+            _res = globalFn[callee.name](...args);
+          } else {
+            throw new Error('Unsupported globalFn function: ' + callee.name);
+          }
+        } else if (callee.type === 'MemberExpression') {
+          // Handle method calls (existing code)
           if (callee.object.name === 'console' && callee.property.name === 'log') {
             break;
           }
@@ -205,6 +218,8 @@ export function unspoolExecute(ast, program) {
           } else {
             throw new Error('Unsupported method: ' + property);
           }
+        } else {
+          throw new Error('Unsupported callee type: ' + callee.type);
         }
         break;
 
