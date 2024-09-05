@@ -38,7 +38,7 @@
     <p class="tiny">{JSON.stringify(parentBreadcrumbs)} : {nodeType}: {cursor.programPart}</p>
 
     <!-- This should only be one instance across the entire tree-->
-
+    <slot></slot>
     <!--  -->
     {#each children as spoolItem, i}
       <svelte:self {...spoolItem} {templateType} {meta} {activeId} {activeParentBreadcrumbs} />

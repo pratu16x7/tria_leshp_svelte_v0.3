@@ -145,14 +145,13 @@ You have to start making a component of this now btw
     <FunctionPreview bind:program {cursor} bind:debounceState bind:syntaxErrorsMessages />
 
     <div>
-      <State {context} {meta} />
       <SpoolItem
         {...justtheone}
         activeId={_id}
         activeParentBreadcrumbs={parentBreadcrumbs}
         templateType="animation"
-        {meta}
-      />
+        {meta}><State {context} {meta} /></SpoolItem
+      >
     </div>
   {:else}
     <div>
