@@ -149,9 +149,10 @@ You have to start making a component of this now btw
         {...justtheone}
         activeId={_id}
         activeParentBreadcrumbs={parentBreadcrumbs}
+        activeContext={context}
         templateType="animation"
-        {meta}><State {context} {meta} /></SpoolItem
-      >
+        {meta}
+      ></SpoolItem>
     </div>
   {:else}
     <div>
@@ -160,6 +161,7 @@ You have to start making a component of this now btw
         {...justtheone}
         activeId={_id}
         activeParentBreadcrumbs={parentBreadcrumbs}
+        activeContext={context}
         templateType="animation"
         {meta}
       />
@@ -168,6 +170,7 @@ You have to start making a component of this now btw
       {...justtheone}
       activeId={_id}
       activeParentBreadcrumbs={parentBreadcrumbs}
+      activeContext={context}
       templateType="tree-minimap"
       {meta}
     />

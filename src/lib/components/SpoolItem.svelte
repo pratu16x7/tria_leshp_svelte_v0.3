@@ -1,9 +1,11 @@
 <script>
+  import Page from '../../routes/+page.svelte';
   import State from './State.svelte';
 
   // Broadcasted to every child
   export let activeId;
   export let activeParentBreadcrumbs;
+  export let activeContext;
 
   export let _id;
   export let execLevel;
@@ -24,6 +26,10 @@
 
   export let meta;
   export let templateType;
+
+  $: if (!activeContext) {
+    activeContext = context;
+  }
 </script>
 
 <!-- Furled: same as spool, hiding anything other than parents. Hence, no need of active node -->
@@ -38,10 +44,17 @@
     <p class="tiny">{JSON.stringify(parentBreadcrumbs)} : {nodeType}: {cursor.programPart}</p>
 
     <!-- This should only be one instance across the entire tree-->
-    <slot></slot>
+    <State context={activeContext} {meta} />
     <!--  -->
     {#each children as spoolItem, i}
-      <svelte:self {...spoolItem} {templateType} {meta} {activeId} {activeParentBreadcrumbs} />
+      <svelte:self
+        {...spoolItem}
+        {templateType}
+        {meta}
+        {activeId}
+        {activeParentBreadcrumbs}
+        {activeContext}
+      />
     {/each}
 
     <!--  -->
@@ -56,11 +69,19 @@
           {meta}
           {activeId}
           {activeParentBreadcrumbs}
+          {activeContext}
         />
 
         <h3>exec</h3>
         {#each testAndBlock.block.children as spoolItem}
-          <svelte:self {...spoolItem} {templateType} {meta} {activeId} {activeParentBreadcrumbs} />
+          <svelte:self
+            {...spoolItem}
+            {templateType}
+            {meta}
+            {activeId}
+            {activeParentBreadcrumbs}
+            {activeContext}
+          />
         {/each}
       {/each}
 
@@ -72,10 +93,18 @@
         {meta}
         {activeId}
         {activeParentBreadcrumbs}
+        {activeContext}
       />
       <h3>Test</h3>
       {#each testAndBlock.block.children as spoolItem}
-        <svelte:self {...spoolItem} {templateType} {meta} {activeId} {activeParentBreadcrumbs} />
+        <svelte:self
+          {...spoolItem}
+          {templateType}
+          {meta}
+          {activeId}
+          {activeParentBreadcrumbs}
+          {activeContext}
+        />
       {/each}
     {/if}
   </div>

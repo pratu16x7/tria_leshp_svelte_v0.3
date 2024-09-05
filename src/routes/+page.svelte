@@ -62,7 +62,7 @@ OKAYYYYY:
     - [ ] sample comment buttons
   -->
   <!-- <FunctionPreview bind:program {cursor} /> -->
-  <Demo1 program={program2} demoType="minimap" />
+  <Demo1 program={program1} demoType="minimap" />
   <p class="box-caption">Add comments to tell a story.</p>
 
   <!-- TODO:
@@ -79,7 +79,7 @@ OKAYYYYY:
 
   -->
 
-  <Demo1 program={program2} demoType="minimap" />
+  <Demo1 program={program1} demoType="minimap" />
   <p class="box-caption">Bird's eye view of the full storyboard.</p>
 
   <!--  Try an edge case preset. -->
