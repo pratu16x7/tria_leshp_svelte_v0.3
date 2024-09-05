@@ -10,6 +10,9 @@
   export let program: string;
   export let cursor: { start: number; end: number };
   export let debounceState = false;
+  export let syntaxErrorState = false;
+  export let syntaxErrorsMessages = [];
+  syntaxErrorsMessages = syntaxErrorsMessages;
   let editorView: EditorView;
   let startState: EditorState;
   let editorContainer: HTMLElement;
@@ -25,10 +28,7 @@
   const debouncedProgramUpdate = (new_value) => {
     clearTimeout(timer);
     timer = setTimeout(() => {
-      previousProgram = program;
-      program = new_value;
-
-      let messages = eslint.verify(new_value, {
+      syntaxErrorsMessages = eslint.verify(new_value, {
         env: {
           es6: true,
           browser: true
@@ -37,8 +37,18 @@
           semi: 2
         }
       });
-      console.log('heheh got you, you errors: ', messages);
 
+      console.log('heheh got you, you errors?: ', syntaxErrorsMessages);
+
+      if (syntaxErrorsMessages.length > 0) {
+        syntaxErrorState = true;
+        console.log('Here?', syntaxErrorState);
+      } else {
+        syntaxErrorState = false;
+        console.log('No Here!!!', syntaxErrorState);
+        previousProgram = program;
+        program = new_value;
+      }
       debounceState = false;
     }, 500);
   };

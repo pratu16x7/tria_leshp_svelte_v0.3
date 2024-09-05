@@ -1,18 +1,21 @@
-<script lang="ts">
-  import { programs } from '../data/programs/sample_program.js';
+<!-- Using this for multiple demos will demonstrate how fliexible your own code is -->
+<!-- But making different demo components will demo how lovely you story is -->
+<!-- Let's just make a wrapper around this for now to try get best of both -->
+<!-- The solution will have to be some kind of middle gorund anyway, -->
+<!-- we want the keybinding and all, but also want the customization -->
 
+<script lang="ts">
   import FunctionPreview from '../lib/components/FunctionPreview.svelte';
   import SpoolItem from '../lib/components/SpoolItem.svelte';
   import { getAST, unspoolExecute } from '../lib/utils/ast';
 
-  // Example algorithm family and program
-  const sampleFamily1 = 'test_programs';
-  const sampleProgram1 = 'array_1';
-
-  let program: string;
+  export let program: string;
+  export let demoType: string = 'just-anim';
   let debounceState = false;
+  let syntaxErrorState = false; // WIP
+  let programSupportState = false; // WIP
 
-  program = programs[sampleFamily1][sampleProgram1]['text'];
+  let origProgram = program;
 
   // WIP: Barricade, error handling, don't navigate beyond upper and lower indexes
   $: index = 0;
@@ -61,7 +64,7 @@
 
 <svelte:window on:keydown={onKeyDown} />
 
-<div class="box flex">
+<div class="box flex" class:large-box={demoType === 'minimap'}>
   <!-- TODO:
 - [x] Dump all
 - [x] more style: only program should show, fix horizontal size
@@ -150,17 +153,36 @@ You have to start making a component of this now btw
 - [ ] bound check for the index
 
   -->
-
-  <FunctionPreview bind:program {cursor} bind:debounceState />
-  <SpoolItem
-    {...justtheone}
-    activeId={_id}
-    activeParentBreadcrumbs={parentBreadcrumbs}
-    templateType="animation"
-    {meta}
-  />
+  {#if demoType !== 'minimap'}
+    <FunctionPreview bind:program {cursor} bind:debounceState bind:syntaxErrorState />
+    <SpoolItem
+      {...justtheone}
+      activeId={_id}
+      activeParentBreadcrumbs={parentBreadcrumbs}
+      templateType="animation"
+      {meta}
+    />
+  {:else}
+    <div>
+      <FunctionPreview bind:program {cursor} bind:debounceState bind:syntaxErrorState />
+      <SpoolItem
+        {...justtheone}
+        activeId={_id}
+        activeParentBreadcrumbs={parentBreadcrumbs}
+        templateType="animation"
+        {meta}
+      />
+    </div>
+    <SpoolItem
+      {...justtheone}
+      activeId={_id}
+      activeParentBreadcrumbs={parentBreadcrumbs}
+      templateType="tree-minimap"
+      {meta}
+    />
+  {/if}
 </div>
-<p>{debounceState}, {program}</p>
+<p>{debounceState}, {syntaxErrorState}, {program}</p>
 
 <style lang="scss">
   .box {

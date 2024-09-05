@@ -1,10 +1,7 @@
 <script lang="ts">
-  import { programs } from '../data/programs/sample_program.js';
-
   import Demo1 from '../lib/Demo1.svelte';
-  import SpoolItem from '../lib/components/SpoolItem.svelte';
-  import { getAST, unspoolExecute } from '../lib/utils/ast';
   import Graph from '../lib/components/Graph.svelte';
+  import { programs } from '../data/programs/sample_program.js';
   import jsonData from '../data/islands/test_problems.canvas?raw';
 
   let canvasData = JSON.parse(jsonData);
@@ -13,57 +10,13 @@
   const sampleFamily1 = 'test_programs';
   const sampleProgram1 = 'array_1';
 
-  export let program1: string;
-  let debounceState1 = false;
+  export let program1, program2, program3: string;
 
   program1 = programs[sampleFamily1][sampleProgram1]['text'];
-
-  // WIP: Barricade, error handling, don't navigate beyond upper and lower indexes
-  $: index = 0;
-
-  $: ast = getAST(program1);
-  $: [justtheone, nodeEvalList] = unspoolExecute(ast, program1);
-  $: currSpoolItem = nodeEvalList[index];
-  $: ({ _id, cursor, parentBreadcrumbs } = currSpoolItem);
-
-  // TODO: Big WIP
-  let meta = {
-    l: {
-      pointer_1: 'j'
-    },
-    s: {
-      pointer_1: 'j'
-    }
-    // type: symbol array/string or numeric problem?
-    // on second thoughr, just assume symbol array is a string
-
-    // substring? -> assume yes is symbol array/string and two pointers?
-    // 1 substring and 1 value At? -> mayve let this be default
-    // two substrings?
-  };
-
-  $: astNode = ast.body;
-  $: currentAstNodeItem = astNode[index] || '';
-
-  function onKeyDown(e) {
-    switch (e.keyCode) {
-      case 38: // up
-        index -= 1;
-        break;
-      case 40: // down
-        index += 1;
-        break;
-      case 37: // left
-        index -= 1;
-        break;
-      case 39: // right
-        index += 1;
-        break;
-    }
-  }
+  program2 = programs[sampleFamily1]['while_loop']['text'];
+  program3 = programs[sampleFamily1]['else']['text'];
 </script>
 
-<svelte:window on:keydown={onKeyDown} />
 <main class="story">
   <h1>Trialgo</h1>
 
@@ -71,15 +24,14 @@
   <p class="subtitle">Visualize tiny programs as you write them.</p>
   <!-- <p class="subtitle">Visualize tiny programs as they run.</p> -->
 
-  <Demo1 />
+  <Demo1 program={program1} />
   <p class="box-caption">
     Use arrow keys to move up and down the program. Edit and replay.
     <!-- Use arrow keys to move up and down the program. <a href="/">Edit</a> and replay. -->
     <a href="/test_programs/array_1">Sample Array Program</a>
   </p>
 
-  <div class="box flex">
-    <!-- TODO:
+  <!-- TODO:
 
 
 OKAYYYYY:
@@ -109,19 +61,11 @@ OKAYYYYY:
     - [ ] test, debug
     - [ ] sample comment buttons
   -->
-    <!-- <FunctionPreview bind:program {cursor} /> -->
-    <SpoolItem
-      {...justtheone}
-      activeId={_id}
-      activeParentBreadcrumbs={parentBreadcrumbs}
-      templateType="animation"
-      {meta}
-    />
-  </div>
+  <!-- <FunctionPreview bind:program {cursor} /> -->
+  <Demo1 program={program2} />
   <p class="box-caption">Add comments to tell a story.</p>
 
-  <div class="box large-box flex">
-    <!-- TODO:
+  <!-- TODO:
     - [ ] minimap fix heights
       - [ ] _
       - [ ] _
@@ -134,24 +78,8 @@ OKAYYYYY:
     - [ ] _
 
   -->
-    <div>
-      <!-- <FunctionPreview bind:program {cursor} /> -->
-      <SpoolItem
-        {...justtheone}
-        activeId={_id}
-        activeParentBreadcrumbs={parentBreadcrumbs}
-        templateType="animation"
-        {meta}
-      />
-    </div>
-    <SpoolItem
-      {...justtheone}
-      activeId={_id}
-      activeParentBreadcrumbs={parentBreadcrumbs}
-      templateType="tree-minimap"
-      {meta}
-    />
-  </div>
+
+  <Demo1 program={program2} demoType="minimap" />
   <p class="box-caption">Bird's eye view of the full storyboard.</p>
 
   <!--  Try an edge case preset. -->
