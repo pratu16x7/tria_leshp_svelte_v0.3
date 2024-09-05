@@ -176,7 +176,7 @@ You have to start making a component of this now btw
     />
   {/if}
 </div>
-<p>{debounceState}, {syntaxErrorState}, {JSON.stringify(syntaxErrorsMessages)}, {program}</p>
+<p>{debounceState}, {syntaxErrorState}, {JSON.stringify(syntaxErrorsMessages)}</p>
 
 <style lang="scss">
   .box {
@@ -184,7 +184,7 @@ You have to start making a component of this now btw
     border-radius: 8px;
     padding: 20px;
     margin-bottom: 20px;
-    height: 300px;
+    height: 400px;
   }
 
   .medium-box {

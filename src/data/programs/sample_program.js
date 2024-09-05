@@ -94,13 +94,13 @@ let s = "2t3o11g2s"; // pointers need to be declared first as of now
 const digits = "0123456789";
 
 while (j < s.length) {
-    if (!digits.includes(s[j])) {
-        // Convert the substring from i to j into a number and repeat the character s[j]
-        const num = parseInt(s.substring(i, j));
-        res += s[j].repeat(num);
-        i = j + 1; // Move the start pointer past the current character
-    }
-    j++;
+  if (!digits.includes(s[j])) {
+    // Convert the substring from i to j into a number and repeat the character s[j]
+    const num = parseInt(s.substring(i, j));
+    res += s[j].repeat(num);
+    i = j + 1; // Move the start pointer past the current character
+  }
+  j++;
 }`
     },
 

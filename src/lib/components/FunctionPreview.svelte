@@ -122,8 +122,8 @@
 
 <style lang="scss">
   .editor {
-    width: 300px;
-    font-size: 1.1rem;
+    width: 400px;
+    // font-size: 1rem;
     height: 100%;
   }
 </style>
