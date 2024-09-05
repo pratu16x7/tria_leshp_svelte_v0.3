@@ -12,8 +12,13 @@
   export let program: string;
   export let demoType: string = 'just-anim';
   let debounceState = false;
-  let syntaxErrorState = false; // WIP
+  let syntaxErrorState;
   let programSupportState = false; // WIP
+
+  let syntaxErrorsMessages = [];
+  syntaxErrorsMessages = syntaxErrorsMessages;
+
+  $: syntaxErrorState = syntaxErrorsMessages.length > 0 ? true : false;
 
   let origProgram = program;
 
@@ -100,8 +105,7 @@
 
 You have to start making a component of this now btw
 - [x] take out this first one, and change program -> program
-- [ ] _
-- [ ] _
+- [x] 3 demos using it
 
 
     - 2. syntax wrong state, program invalid:
@@ -109,13 +113,11 @@ You have to start making a component of this now btw
           - [x] Tried, Okay you can't: https://discuss.codemirror.net/t/best-way-to-check-if-a-syntax-tree-contains-errors/7441
           - [x] put in a linter for showing errors in the editor
           - [x] put in another linter to touch the errors
-            - [ ] pass them over to parent to use
+            - [x] pass them over to parent to use
             - [ ] disable the animation using this passed bound error
-      - [ ] second, what is the error? No need to bubble up just show below program itself and link for mor einfor
-        - [ ] and show something in the program pane to indicate error using codemirror's diagnostic. Thank god for codemirror.
-          - [ ] _
-          - [ ] _
-            - [ ] lvl2: detailed erorr messages using external linter:
+      - econd, what is the error? No need to bubble up just show below program itself and link for mor einfor
+        - and show something in the program pane to indicate error using codemirror's diagnostic. Thank god for codemirror.
+          - [x] lvl2: detailed erorr messages using external linter ... DONE using external linter!
               - https://discuss.codemirror.net/t/codemirror-6-customize-linter/8211, https://discuss.codemirror.net/t/handling-error-states/2551/9
 
     - [ ] 3. not supported/guardrail state,
@@ -154,7 +156,7 @@ You have to start making a component of this now btw
 
   -->
   {#if demoType !== 'minimap'}
-    <FunctionPreview bind:program {cursor} bind:debounceState bind:syntaxErrorState />
+    <FunctionPreview bind:program {cursor} bind:debounceState bind:syntaxErrorsMessages />
     <SpoolItem
       {...justtheone}
       activeId={_id}
@@ -164,7 +166,7 @@ You have to start making a component of this now btw
     />
   {:else}
     <div>
-      <FunctionPreview bind:program {cursor} bind:debounceState bind:syntaxErrorState />
+      <FunctionPreview bind:program {cursor} bind:debounceState bind:syntaxErrorsMessages />
       <SpoolItem
         {...justtheone}
         activeId={_id}
@@ -182,7 +184,7 @@ You have to start making a component of this now btw
     />
   {/if}
 </div>
-<p>{debounceState}, {syntaxErrorState}, {program}</p>
+<p>{debounceState}, {syntaxErrorState}, {JSON.stringify(syntaxErrorsMessages)}, {program}</p>
 
 <style lang="scss">
   .box {

@@ -10,7 +10,7 @@
   export let program: string;
   export let cursor: { start: number; end: number };
   export let debounceState = false;
-  export let syntaxErrorState = false;
+  let syntaxErrorState = false;
   export let syntaxErrorsMessages = [];
   syntaxErrorsMessages = syntaxErrorsMessages;
   let editorView: EditorView;
