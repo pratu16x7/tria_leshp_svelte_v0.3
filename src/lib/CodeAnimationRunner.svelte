@@ -3,6 +3,7 @@
   import SpoolItem from '../lib/components/SpoolItem.svelte';
   import TreeNodeVertical from './components/players/TreeNodeVertical.svelte';
   import treeData from '../data/sample_tree_ds.json';
+  import { meta } from '../data/sample_meta_2';
   import { getAST, unspoolExecute } from '../lib/utils/ast';
 
   export let program: string;
@@ -14,22 +15,6 @@
   $: [justtheone, nodeEvalList] = unspoolExecute(ast, program);
   $: currSpoolItem = nodeEvalList[index];
   $: ({ _id, cursor, parentBreadcrumbs } = currSpoolItem);
-
-  // TODO: Big WIP
-  let meta = {
-    l: {
-      pointer_1: 'j'
-    },
-    s: {
-      pointer_1: 'j'
-    }
-    // type: symbol array/string or numeric problem?
-    // on second thoughr, just assume symbol array is a string
-
-    // substring? -> assume yes is symbol array/string and two pointers?
-    // 1 substring and 1 value At? -> mayve let this be default
-    // two substrings?
-  };
 
   $: astNode = ast.body;
   $: currentAstNodeItem = astNode[index] || '';
