@@ -109,15 +109,23 @@ You have to start making a component of this now btw
 	work on 3, 4 point later, much of the main framework in place likely
 
 - [ ] HARD fix animation
-	- [ ] meta work
-      - [ ] multiple pointers work
-      - [ ] substring work
-    - [ ] make it absolutely positioned
-    - [ ] _
-    - [ ] rm headings, better loop representation
+	- [x] meta work atleast with hardcoded pointers
+	- [x] single instance of animation
+	- [x] okay multiple instances of animation but pass the current active context to make data flow in them
+	- [x] the whole root to leaf path shows animation, just show it at active node
+    - [ ] The animation in just one place, hmm ...
+    - [ ] okay, let's first rm the headings here
+    - [ ] let's limit/fix parent and animation's height
+    - [ ] let make the every level between these two behave for atleast 3 layers.
+	- [ ] _
+    - [ ] _ make it absolutely positioned?
+    - [ ] better loop representation
     - [ ] juudge the number of loops
     - [ ] ...list more edge cases to test later
     - [ ] list more
+      - [ ] multiple pointers work
+      - [ ] substring work
+	  - [ ] meta generated automatically (rm hardcode)
       - [ ] more player components
 - [ ] select a program: maybe uncompress
 
