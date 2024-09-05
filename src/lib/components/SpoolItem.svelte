@@ -1,6 +1,7 @@
 <script>
   import State from './State.svelte';
 
+  // Broadcasted to every child
   export let activeId;
   export let activeParentBreadcrumbs;
 
@@ -35,7 +36,8 @@
     class:test={testAndBlock.block.children.length > 0}
   >
     <p class="tiny">{JSON.stringify(parentBreadcrumbs)} : {nodeType}: {cursor.programPart}</p>
-    <State {context} {meta} />
+
+    <!-- This should only be one instance across the entire tree-->
 
     <!--  -->
     {#each children as spoolItem, i}

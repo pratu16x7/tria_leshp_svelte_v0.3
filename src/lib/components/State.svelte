@@ -12,7 +12,6 @@
   {#each Object.entries(context) as [player, playerState]}
     <!-- actually the safest way to check type here based on actual value -->
     {@const playerType = toType(playerState['value'])}
-    <!-- {@const pointers = meta[player]['pointers']} -->
     <!-- {#if playerType === 'number' && !pointers.includes(player)} -->
 
     <div class="margin">
@@ -24,13 +23,15 @@
           active={playerState['isPlaying']}
         />
       {:else if playerType === 'array' || playerType === 'string'}
-        <!-- {@const pointer_1 = meta[player]['pointer_1']} -->
+        <!-- {console.log('==========pointers', player, meta)} -->
+        {@const pointers = meta.pointersForLists[player]}
+        {@const pointer_1 = pointers[0]}
         <PlayerArray
           name={player}
           array={playerState['value']}
           active={playerState['isPlaying']}
-          pointerName={'j'}
-          pointerValue={0}
+          pointerName={pointer_1}
+          pointerValue={context[pointer_1]['value']}
         />
       {:else}
         <p>{player}, {playerState['value']}</p>

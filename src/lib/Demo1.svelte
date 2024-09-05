@@ -8,6 +8,8 @@
   import FunctionPreview from '../lib/components/FunctionPreview.svelte';
   import SpoolItem from '../lib/components/SpoolItem.svelte';
   import { getAST, unspoolExecute } from '../lib/utils/ast';
+  import State from './components/State.svelte';
+  import { meta } from '../data/sample_meta_2';
 
   export let program: string;
   export let demoType: string = 'just-anim';
@@ -28,23 +30,7 @@
   $: ast = getAST(program);
   $: [justtheone, nodeEvalList] = unspoolExecute(ast, program);
   $: currSpoolItem = nodeEvalList[index];
-  $: ({ _id, cursor, parentBreadcrumbs } = currSpoolItem);
-
-  // TODO: Big WIP
-  let meta = {
-    l: {
-      pointer_1: 'j'
-    },
-    s: {
-      pointer_1: 'j'
-    }
-    // type: symbol array/string or numeric problem?
-    // on second thoughr, just assume symbol array is a string
-
-    // substring? -> assume yes is symbol array/string and two pointers?
-    // 1 substring and 1 value At? -> mayve let this be default
-    // two substrings?
-  };
+  $: ({ _id, cursor, context, parentBreadcrumbs } = currSpoolItem);
 
   $: astNode = ast.body;
   $: currentAstNodeItem = astNode[index] || '';
@@ -157,13 +143,17 @@ You have to start making a component of this now btw
   -->
   {#if demoType !== 'minimap'}
     <FunctionPreview bind:program {cursor} bind:debounceState bind:syntaxErrorsMessages />
-    <SpoolItem
-      {...justtheone}
-      activeId={_id}
-      activeParentBreadcrumbs={parentBreadcrumbs}
-      templateType="animation"
-      {meta}
-    />
+
+    <div>
+      <State {context} {meta} />
+      <SpoolItem
+        {...justtheone}
+        activeId={_id}
+        activeParentBreadcrumbs={parentBreadcrumbs}
+        templateType="animation"
+        {meta}
+      />
+    </div>
   {:else}
     <div>
       <FunctionPreview bind:program {cursor} bind:debounceState bind:syntaxErrorsMessages />

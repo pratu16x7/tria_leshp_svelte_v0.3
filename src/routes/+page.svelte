@@ -62,7 +62,7 @@ OKAYYYYY:
     - [ ] sample comment buttons
   -->
   <!-- <FunctionPreview bind:program {cursor} /> -->
-  <Demo1 program={program2} />
+  <Demo1 program={program2} demoType="minimap" />
   <p class="box-caption">Add comments to tell a story.</p>
 
   <!-- TODO:
