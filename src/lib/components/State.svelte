@@ -24,9 +24,9 @@
           active={playerState['isPlaying']}
         />
       {:else if playerType === 'array' || playerType === 'string'}
-        <!-- {console.log('==========pointers', player, meta)} -->
         {@const pointers = meta.pointersForLists[player]}
         {@const pointer_1 = pointers[0]}
+        <!-- {console.log('==========pointers', pointers, pointer_1, meta)} -->
         <PlayerArray
           name={player}
           array={playerState['value']}

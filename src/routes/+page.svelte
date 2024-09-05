@@ -13,7 +13,7 @@
   export let program1, program2, program3: string;
 
   program1 = programs[sampleFamily1][sampleProgram1]['text'];
-  program2 = programs[sampleFamily1]['while_loop']['text'];
+  program2 = programs[sampleFamily1]['uncompress']['text'];
   program3 = programs[sampleFamily1]['else']['text'];
 </script>
 
@@ -24,7 +24,7 @@
   <p class="subtitle">Visualize tiny programs as you write them.</p>
   <!-- <p class="subtitle">Visualize tiny programs as they run.</p> -->
 
-  <Demo1 program={program1} />
+  <Demo1 program={program2} />
   <p class="box-caption">
     Use arrow keys to move up and down the program. Edit and replay.
     <!-- Use arrow keys to move up and down the program. <a href="/">Edit</a> and replay. -->

@@ -1,7 +1,9 @@
 export const meta = {
   pointersForLists: {
     l: ['j'],
-    s: ['j']
+    s: ['j'],
+    res: ['j'],
+    digits: ['j']
   }
 
   // type: symbol array/string or numeric problem?

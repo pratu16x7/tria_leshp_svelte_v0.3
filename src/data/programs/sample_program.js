@@ -87,10 +87,10 @@ console.log("foo");`
     },
 
     uncompress: {
-      text: `let s = "2t3o11g2s";
-let res = "";
-let i = 0;
+      text: `let i = 0;
 let j = 0;
+let res = "";
+let s = "2t3o11g2s"; // pointers need to be declared first as of now
 const digits = "0123456789";
 
 while (j < s.length) {
