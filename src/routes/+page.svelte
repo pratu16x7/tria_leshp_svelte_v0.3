@@ -218,4 +218,8 @@ OKAYYYYY:
   :global(.overflow) {
     overflow: scroll;
   }
+
+  :global(.hide) {
+    display: none;
+  }
 </style>

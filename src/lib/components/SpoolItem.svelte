@@ -44,7 +44,7 @@
     <p class="tiny">{JSON.stringify(parentBreadcrumbs)} : {nodeType}: {cursor.programPart}</p>
 
     <!-- This should only be one instance across the entire tree-->
-    <State context={activeContext} {meta} />
+    <State context={activeContext} {meta} hide={_id !== activeId} />
     <!--  -->
     {#each children as spoolItem, i}
       <svelte:self
@@ -330,10 +330,6 @@
 
   .anchor {
     position: relative;
-  }
-
-  .hide {
-    display: none;
   }
 
   .absolute {

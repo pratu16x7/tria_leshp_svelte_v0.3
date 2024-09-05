@@ -6,9 +6,10 @@
   export let context;
   export let meta;
   export let scaleDown = false;
+  export let hide = false;
 </script>
 
-<div class="template" class:scale-down={scaleDown}>
+<div class="template" class:scale-down={scaleDown} class:hide>
   {#each Object.entries(context) as [player, playerState]}
     <!-- actually the safest way to check type here based on actual value -->
     {@const playerType = toType(playerState['value'])}
