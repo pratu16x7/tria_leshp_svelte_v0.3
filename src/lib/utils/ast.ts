@@ -176,6 +176,9 @@ export function unspoolExecute(ast, program) {
         let whileBlock;
         let whileTestRes = true;
 
+        // and the king ...
+        let counter = 0;
+
         // of course, a literal while loop
         while (whileTestRes) {
           whileTestItem = evaluate(node.test, execLevel, parentBreadcrumbs);
@@ -185,9 +188,13 @@ export function unspoolExecute(ast, program) {
 
             loopAndBlocks.testAndBlocks.push({
               test: whileTestItem,
+              index: counter,
               block: whileBlock // Antipattern for AST: pass over of responsibility to the test node
             });
           } // TODO: Add the last failed test as well
+          counter++;
+          // TODO: CHECK IF LIMIT REACHED, WHAT WE SUPPORT ARE A MAX OF maybe 50 LOOPS
+          // HARD BREAK IF EXCEEDED, ELSE INFINITE LOOP WILL HAPPEN
         }
 
         break;

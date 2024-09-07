@@ -1,5 +1,6 @@
 <script>
   import Page from '../../routes/+page.svelte';
+  import Progress from './Progress.svelte';
   import State from './State.svelte';
 
   // Broadcasted to every child
@@ -19,9 +20,11 @@
     test: {},
     block: { children: [] }
   };
+
   export let loopAndBlocks = {
-    testAndBlocks: []
+    testAndBlocks: [] // loopAndBlocks.testAndBlocks is the only usage so far as only one key
   };
+
   export let children = [];
 
   export let meta;
@@ -30,6 +33,18 @@
   $: if (!activeContext) {
     activeContext = context;
   }
+
+  //
+
+  $: loopCompletedSteps = 0;
+  let setLoopCompletedSteps = (i) => {
+    console.log('======', loopCompletedSteps, '------------', i);
+    console.log('................', _id, activeId);
+    loopCompletedSteps = i;
+    // loopCompletedSteps++;
+  };
+
+  // $: console.log('++++++', loopCompletedSteps);
 </script>
 
 <!-- Furled: same as spool, hiding anything other than parents. Hence, no need of active node -->
@@ -41,6 +56,16 @@
     class:loop={loopAndBlocks.testAndBlocks.length > 0}
     class:test={testAndBlock.block.children.length > 0}
   >
+    <!-- TODO: only show in loop -->
+
+    {#if _id === activeId}
+      <Progress
+        completedSteps={loopCompletedSteps + 1}
+        totalSteps={loopAndBlocks.testAndBlocks.length}
+        color="#ff8f00"
+      />
+    {/if}
+
     <!-- <p class="tiny">{JSON.stringify(parentBreadcrumbs)} : {nodeType}: {cursor.programPart}</p> -->
 
     <!-- This should only be one instance across the entire tree-->
@@ -64,7 +89,11 @@
       {#each loopAndBlocks.testAndBlocks as testAndBlock, i}
         <!-- <h3>Loop {i + 1} test</h3> -->
         <!-- make test part colored instead ... -->
-        <!--Actually ... this is the MODE ... so make it the defining heading of the while node -->
+        <!--Actually ... this is the MODE ... denoted by YELLOW for now ... no need to make it the defining heading of the while node -->
+        <!-- we can show the progress tho -->
+        <!-- Oh, I have rendered all 9 blocks, but you just see 1 coz, only 1 does not have the hide tag. Had nothing to do with i. Can't use i. -->
+        {_id === activeId && setLoopCompletedSteps(testAndBlock.index)}
+
         <svelte:self
           {...testAndBlock.test}
           {templateType}
