@@ -1,12 +1,13 @@
 <script>
   export let totalSteps = 100;
   export let completedSteps = 0;
+  export let color = '#ff526f'; /* Intense Pink */
 
   $: progressPercentage = (completedSteps / totalSteps) * 100;
 </script>
 
 <div class="progress-bar">
-  <div class="progress" style="width: {progressPercentage}%"></div>
+  <div class="progress" style="width: {progressPercentage}%; background-color: {color};"></div>
 </div>
 
 <style>
@@ -19,7 +20,6 @@
 
   .progress {
     height: 100%;
-    background-color: #ff526f; /* Pink */
     transition: width 0.3s ease-in-out;
   }
 </style>
