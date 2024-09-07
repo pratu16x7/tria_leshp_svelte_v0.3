@@ -117,12 +117,14 @@ You have to start making a component of this now btw
     - [x] okay, let's first rm the headings here  ... woah that alone makes such a difference!
     - [ ] let's limit/fix parent and animation's height.
 		- [x] Okay recursive makes this a problem too ... what else can we try ...
-		- [ ] how to set height for only program? maybe conditional class based on level?
+		- [x] how to set height for only program? maybe conditional class based on level?
+		- [ ] let's do this, let's just have a
     - [ ] let make the every level between these two behave for atleast 3 layers.
 	- [ ] _
     - [ ] _ make it absolutely positioned?
-    - [ ] better loop representation
-    - [ ] juudge the number of loops
+    - [ ] better loop representation: multiple CARDS; instead of progress bar in parent while node
+		- [ ] juudge the number of loops
+		- [ ] show cards until that point
     - [ ] ...list more edge cases to test later
     - [ ] list more
       - [ ] multiple pointers work

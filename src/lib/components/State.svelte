@@ -47,12 +47,19 @@ pointerValue={context[pointer_1]['value']} -->
 
 <style lang="scss">
   .state-box {
-    /* height: 200px; */
+    // height: 400px;
+    // background-color: aqua;
   }
 
+  // :global(.animation) {
+  //   position: relative;
+  //   .state-box {
+  //     position: absolute;
+  //   }
+  // }
   /* TODO: shorten width instead, this does not reduce the width of container */
   .scale-down {
-    /* transform: scale(0.5); */
+    // transform: scale(0.5);
   }
 
   .margin {

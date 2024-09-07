@@ -35,7 +35,7 @@
 <!-- Furled: same as spool, hiding anything other than parents. Hence, no need of active node -->
 {#if templateType === 'animation'}
   <div
-    class="border default-node expand {templateType} {`level-${parentBreadcrumbs.length}`}"
+    class="border default-node expand {templateType} {`level-${parentBreadcrumbs.length - 1}`}"
     class:hide={templateType === 'animation' && !activeParentBreadcrumbs.includes(_id)}
     class:active={templateType === 'tree' && _id === activeId}
     class:loop={loopAndBlocks.testAndBlocks.length > 0}
@@ -44,7 +44,7 @@
     <!-- <p class="tiny">{JSON.stringify(parentBreadcrumbs)} : {nodeType}: {cursor.programPart}</p> -->
 
     <!-- This should only be one instance across the entire tree-->
-    <State context={activeContext} {meta} hide={_id !== activeId} />
+    <State context={activeContext} {meta} hide={_id !== activeId} scaleDown={true} />
     <!--  -->
     {#each children as spoolItem, i}
       <svelte:self
@@ -64,6 +64,7 @@
       {#each loopAndBlocks.testAndBlocks as testAndBlock, i}
         <!-- <h3>Loop {i + 1} test</h3> -->
         <!-- make test part colored instead ... -->
+        <!--Actually ... this is the MODE ... so make it the defining heading of the while node -->
         <svelte:self
           {...testAndBlock.test}
           {templateType}
@@ -115,7 +116,7 @@
 {:else if templateType === 'tree'}
   <div class="node-container">
     <div
-      class="fixed-width border default-node {templateType}"
+      class="fixed-width border indent default-node {templateType}"
       class:hide={templateType === 'animation' && !activeParentBreadcrumbs.includes(_id)}
       class:active={templateType === 'tree' && _id === activeId}
       class:loop={loopAndBlocks.testAndBlocks.length > 0}
@@ -177,7 +178,7 @@
 {:else if templateType === 'tree-minimap'}
   <div class="node-container {templateType}">
     <div
-      class="fixed-width border default-node"
+      class="fixed-width border indent default-node"
       class:hide={templateType === 'animation' && !activeParentBreadcrumbs.includes(_id)}
       class:active={templateType !== 'animation' && _id === activeId}
       class:loop={loopAndBlocks.testAndBlocks.length > 0}
@@ -232,7 +233,7 @@
   <!-- Unfurled: same as animation, but not hiding ANY nodes, parents or not. Fully unfurled, Hence needs active node indicator -->
 {:else if templateType === 'spool'}
   <div
-    class="border default-node {templateType}"
+    class="border indent default-node {templateType}"
     class:hide={templateType === 'animation' && !activeParentBreadcrumbs.includes(_id)}
     class:active={templateType === 'spool' && _id === activeId}
     class:loop={loopAndBlocks.testAndBlocks.length > 0}
@@ -311,26 +312,46 @@
   .border {
     border: 1px solid lightgrey;
     border-radius: 8px;
+  }
+
+  .animation {
+    &.level-1 {
+      margin-top: 48px;
+      margin-left: 48px;
+    }
+
+    &.level-2 {
+      margin-top: 48px;
+      margin-left: 48px;
+    }
+
+    &.level-3 {
+      margin-top: 48px;
+      margin-left: 48px;
+    }
+  }
+
+  .indent {
     margin: 1em;
     margin-left: 3em;
   }
 
-  .level-1 {
+  .level-0 {
     width: 500px;
     height: 400px;
   }
 
-  .level-2 {
+  .level-1 {
     width: 450px;
     height: 350px;
   }
 
-  .level-3 {
+  .level-2 {
     width: 400px;
     height: 300px;
   }
 
-  .level-4 {
+  .level-3 {
     width: 350px;
     height: 250px;
   }
