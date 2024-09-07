@@ -45,16 +45,16 @@
         if (index > 0) {
           index -= 1;
         } else {
-          // play a sound or smthn
+          // play a sound or smthn. TODO: doesn't play when user hasn't interacted otherwise
           audio.play();
         }
         break;
       case 39: // right
       case 40: // down
-        if (index < spoolSize) {
+        if (index < spoolSize - 1) {
           index += 1;
         } else {
-          // play a sound or smthn
+          // play a sound or smthn. TODO: doesn't play when user hasn't interacted otherwise
           audio.play();
         }
         break;
