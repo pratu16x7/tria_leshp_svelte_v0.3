@@ -8,7 +8,7 @@
   import FunctionPreview from '../lib/components/FunctionPreview.svelte';
   import SpoolItem from '../lib/components/SpoolItem.svelte';
   import { getAST, unspoolExecute } from '../lib/utils/ast';
-  import State from './components/State.svelte';
+  import Progress from './components/Progress.svelte';
   import { meta } from '../data/sample_meta_2';
 
   export let program: string;
@@ -32,28 +32,38 @@
   $: currSpoolItem = nodeEvalList[index];
   $: ({ _id, cursor, context, parentBreadcrumbs } = currSpoolItem);
 
+  $: spoolSize = nodeEvalList.length;
+
   $: astNode = ast.body;
   $: currentAstNodeItem = astNode[index] || '';
 
+  let audio;
   function onKeyDown(e) {
     switch (e.keyCode) {
-      case 38: // up
-        index -= 1;
-        break;
-      case 40: // down
-        index += 1;
-        break;
       case 37: // left
-        index -= 1;
+      case 38: // up
+        if (index > 0) {
+          index -= 1;
+        } else {
+          // play a sound or smthn
+          audio.play();
+        }
         break;
       case 39: // right
-        index += 1;
+      case 40: // down
+        if (index < spoolSize) {
+          index += 1;
+        } else {
+          // play a sound or smthn
+          audio.play();
+        }
         break;
     }
   }
 </script>
 
 <svelte:window on:keydown={onKeyDown} />
+<audio src="https://cdn.freesound.org/previews/371/371274_1196472-lq.mp3" bind:this={audio}></audio>
 
 <div class="box flex" class:large-box={demoType === 'minimap'}>
   <!-- TODO:
@@ -165,6 +175,7 @@ You have to start making a component of this now btw
         templateType="animation"
         {meta}
       ></SpoolItem>
+      <Progress completedSteps={index + 1} totalSteps={spoolSize} />
     </div>
   {:else}
     <div>
@@ -186,6 +197,7 @@ You have to start making a component of this now btw
       templateType="tree-minimap"
       {meta}
     />
+    <Progress completedSteps={index + 1} totalSteps={spoolSize} />
   {/if}
 </div>
 <p>{debounceState}, {syntaxErrorState}, {JSON.stringify(syntaxErrorsMessages)}</p>
