@@ -8,12 +8,14 @@
 
   // Example algorithm family and program
   const sampleFamily1 = 'test_programs';
+  const sampleFamily2 = 'array_algorithms';
   const sampleProgram1 = 'array_1';
 
   export let program1, program2, program3: string;
 
   program1 = programs[sampleFamily1][sampleProgram1]['text'];
-  program2 = programs[sampleFamily1]['uncompress']['text'];
+  program2 = programs[sampleFamily2]['uncompress']['text'];
+  // program2 = programs[sampleFamily2]['uncompress_as_function']['text'];
   program3 = programs[sampleFamily1]['else']['text'];
 </script>
 
@@ -201,9 +203,9 @@ OKAYYYYY:
     height: 450px;
   }
 
-  .large-box {
-    height: 600px;
-  }
+  // .large-box {
+  //   height: 600px;
+  // }
 
   .box-caption {
     font-size: 0.8em;

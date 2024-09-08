@@ -86,24 +86,6 @@ console.log("foo");`
 }`
     },
 
-    uncompress: {
-      text: `let i = 0;
-let j = 0;
-let res = "";
-let s = "2t3o11g2s"; // pointers need to be declared first as of now
-const digits = "0123456789";
-
-while (j < s.length) {
-  if (!digits.includes(s[j])) {
-    // Convert the substring from i to j into a number and repeat the character s[j]
-    const num = parseInt(s.substring(i, j));
-    res += s[j].repeat(num);
-    i = j + 1; // Move the start pointer past the current character
-  }
-  j++;
-}`
-    },
-
     nested_if_else: {
       test: ``
     },
@@ -119,44 +101,30 @@ while (j < s.length) {
     // test uncompress raw code
     // test uncompress as function code
 
-    uncompress_test: {
-      text: `let s = "2t3o11g2s";
-let res = "";
-let i = 0;
-let j = 1;
-const digits = "0123456789";
-let num = parseInt(s.substring(i, j));
-// res += s[j].repeat(num);
-res += s[j];
-i = j + 1;
-j++;
-console.log("foo")`
-    },
     uncompress: {
-      text: `let s = "2t3o11g2s";
-let res = "";
-let i = 0;
+      text: `let i = 0;
 let j = 0;
+let res = "";
+let s = "2t3o11g2s"; // TODO: pointers need to be declared first as of now, meta not yet implemented
 const digits = "0123456789";
 
 while (j < s.length) {
-    if (!digits.includes(s[j])) {
-        // Convert the substring from i to j into a number and repeat the character s[j]
-        const num = parseInt(s.substring(i, j));
-        res += s[j].repeat(num);
-        i = j + 1; // Move the start pointer past the current character
-    }
-    j++;
-}
-return res;`
+  if (!digits.includes(s[j])) {
+    // Convert the substring from i to j into a number and repeat the character s[j]
+    const num = parseInt(s.substring(i, j));
+    res += s[j].repeat(num);
+    i = j + 1; // Move the start pointer past the current character
+  }
+  j++;
+}`
     },
 
     uncompress_as_function: {
       text: `function uncompress(s) {
-      let res = "";
-      let i = 0;
-      let j = 0;
-      const digits = "0123456789";
+        let i = 0;
+        let j = 0;
+        let res = "";
+        const digits = "0123456789";
 
       while (j < s.length) {
           if (!digits.includes(s[j])) {

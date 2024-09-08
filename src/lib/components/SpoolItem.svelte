@@ -9,7 +9,7 @@
   export let activeContext;
 
   export let _id;
-  export let execLevel;
+  // export let execLevel;
   export let parentBreadcrumbs;
 
   export let nodeType;
@@ -38,8 +38,8 @@
 
   $: loopCompletedSteps = 0;
   let setLoopCompletedSteps = (i) => {
-    console.log('======', loopCompletedSteps, '------------', i);
-    console.log('................', _id, activeId);
+    // console.log('======', loopCompletedSteps, '------------', i);
+    // console.log('................', _id, activeId);
     loopCompletedSteps = i;
     // loopCompletedSteps++;
   };

@@ -211,19 +211,19 @@ You have to start making a component of this now btw
     height: 400px;
   }
 
-  .medium-box {
-    height: 450px;
-  }
+  //   .medium-box {
+  //     height: 450px;
+  //   }
 
-  .large-box {
-    height: 600px;
-  }
+  //   .large-box {
+  //     height: 600px;
+  //   }
 
-  .box-caption {
-    font-size: 0.8em;
-    text-align: center;
-    margin-top: 10px;
-    // color: #7c7c7c;
-    margin-bottom: 5rem;
-  }
+  //   .box-caption {
+  //     font-size: 0.8em;
+  //     text-align: center;
+  //     margin-top: 10px;
+  //     // color: #7c7c7c;
+  //     margin-bottom: 5rem;
+  //   }
 </style>
