@@ -84,7 +84,7 @@ export const astNodeTypesMeta = {
   Program: { linearSpoolPush: 'before' }, // no need to add it to the spool or tree, it is the allfather for now
 
   // BlockStatement:  // OKAY NOW WE DO // Naa don't wanna give any attention to the block, unless necessary, only to its statements
-  BlockStatement: {}, // but we return the list of nodes, apart from that doesn't have meaning
+  BlockStatement: { contextUpdate: true }, // but we return the list of nodes, apart from that doesn't have meaning
 
   // VariableDeclaration: // Is a new player (var) added to the scope
   // LVL 0
@@ -116,6 +116,7 @@ export const astNodeTypesMeta = {
   // WhileStatement: // Similar to handling structure of the 'IfStatement' block
   WhileStatement: { linearSpoolPush: 'before' },
 
+  FunctionDeclaration: { linearSpoolPush: 'after', anim: true },
   CallExpression: { linearSpoolPush: 'before', returns: true },
 
   MemberExpression: { linearSpoolPush: 'after' }

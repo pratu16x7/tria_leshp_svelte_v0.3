@@ -26,7 +26,7 @@
   <p class="subtitle">Visualize tiny programs as you write them.</p>
   <!-- <p class="subtitle">Visualize tiny programs as they run.</p> -->
 
-  <Demo1 program={program2} />
+  <Demo1 program={program2} demoType="animation" />
   <p class="box-caption">
     Use arrow keys to move up and down the program. Edit and replay.
     <!-- Use arrow keys to move up and down the program. <a href="/">Edit</a> and replay. -->
@@ -66,8 +66,8 @@ OKAYYYYY:
     - [ ] test, debug
     - [ ] sample comment buttons
   -->
-  <!-- <Demo1 program={program1} demoType="minimap" />
-  <p class="box-caption">Add comments to tell a story.</p> -->
+  <Demo1 program={program2} demoType="tree-minimap" />
+  <p class="box-caption">Add comments to tell a story.</p>
 
   <!-- TODO:
     - [ ] minimap fix heights
@@ -203,9 +203,9 @@ OKAYYYYY:
     height: 450px;
   }
 
-  // .large-box {
-  //   height: 600px;
-  // }
+  .v-large-box {
+    height: 900px;
+  }
 
   .box-caption {
     font-size: 0.8em;

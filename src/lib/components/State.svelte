@@ -24,16 +24,10 @@
           active={playerState['isPlaying']}
         />
       {:else if playerType === 'array' || playerType === 'string'}
-        {@const pointers = meta.pointersForLists[player]}
-        {@const pointer_1 = pointers[0]}
+        <!-- {@const pointers = meta.pointersForLists[player]}
+        {@const pointer_1 = pointers[0]} -->
         <!-- {console.log('==========pointers', pointers, pointer_1, meta)} -->
-        <PlayerArray
-          name={player}
-          array={playerState['value']}
-          active={playerState['isPlaying']}
-          pointerName={pointer_1}
-          pointerValue={context[pointer_1]['value']}
-        />
+        <PlayerArray name={player} array={playerState['value']} active={playerState['isPlaying']} />
       {:else}
         <p>{player}, {playerState['value']}</p>
       {/if}
@@ -42,6 +36,8 @@
 </div>
 
 <!--
+          pointerName={pointer_1}
+          pointerValue={context[pointer_1]['value']}
 pointerName={'pointer_1'}
 pointerValue={context[pointer_1]['value']} -->
 

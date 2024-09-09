@@ -13,7 +13,10 @@ export function getAST(program: string) {
 }
 
 function clearPlayerPlayingState(context) {
+  // console.log('=======context', context);
+  // console.log('=======values', Object.values(context));
   Object.values(context).map((playerState) => {
+    // console.log('-------------------playerState', playerState);
     playerState['isPlaying'] = false;
   });
   return context;
@@ -28,9 +31,17 @@ const globalFn = {
 export function unspoolExecute(ast, program) {
   let linearSpoolNodes = [];
 
-  let prevContext;
+  let prevContext; // so that you don't have to pass it
+  // we just update it at the places context is explicitly changes. No reason though, could do it at end of all nodes, no change in behav
 
-  function evaluate(node, execLevel: number = -1, parentBreadcrumbs: string[] = []) {
+  let functionDefinitions = {};
+
+  function evaluate(
+    node,
+    execLevel: number = -1,
+    parentBreadcrumbs: string[] = [],
+    localContext = {}
+  ) {
     let _id = getRandomId();
     let nodeType = node.type;
     let cursor = {
@@ -41,13 +52,16 @@ export function unspoolExecute(ast, program) {
     execLevel += 1;
 
     // context is kept getting added to throughout (only works on objects not arrays), unlike execLevel which also has to decrease
-    let context = prevContext ? clearPlayerPlayingState(prevContext) : {}; // by reference, hence change reflect in object too
+    // let context = prevContext ? clearPlayerPlayingState(prevContext) : {}; // by reference, hence change reflect in object too
+    let context = { ...prevContext, ...localContext };
+
+    context = clearPlayerPlayingState(context);
     parentBreadcrumbs = structuredClone(parentBreadcrumbs);
 
     // if (nodeType !== 'Program') parentBreadcrumbs.push(_id);
     parentBreadcrumbs.push(_id);
 
-    let anim = astNodeTypesMeta[nodeType].anim ? true : false;
+    let anim = nodeType in astNodeTypesMeta && astNodeTypesMeta[nodeType].anim ? true : false;
     let _res;
 
     // TODO: interface
@@ -89,7 +103,16 @@ export function unspoolExecute(ast, program) {
         break;
 
       case 'ExpressionStatement':
-        _res = evaluate(node.expression, execLevel, parentBreadcrumbs)._res; // come in last like a good person (eg. VariableDeclaration)
+        let expBlock = evaluate(node.expression, execLevel, parentBreadcrumbs); // come in last like a good person (eg. VariableDeclaration)
+        // console.log('========CallExpression block', expBlock);
+        // HERE COME ALL THE ABANDONED CHILDREN
+        // The first: CallExpression
+        let expChildNode = node.expression;
+        if (expChildNode.type === 'CallExpression' && expBlock.children.length > 0) {
+          evalNode.children = [expBlock];
+        }
+
+        _res = expBlock._res;
         prevContext = structuredClone(context);
         break;
 
@@ -99,6 +122,8 @@ export function unspoolExecute(ast, program) {
 
       case 'Program':
       case 'BlockStatement':
+        prevContext = structuredClone(context); /// IMPORTANT
+        // console.log('========prevContext33333', prevContext);    /// you have the stuff
         evalNode.children = node.body.map((node) => evaluate(node, execLevel, parentBreadcrumbs));
         break;
 
@@ -184,6 +209,7 @@ export function unspoolExecute(ast, program) {
           whileTestItem = evaluate(node.test, execLevel, parentBreadcrumbs);
           whileTestRes = whileTestItem._res;
           if (whileTestRes) {
+            // node.body is so far always a block statement
             whileBlock = evaluate(node.body, execLevel, parentBreadcrumbs);
 
             loopAndBlocks.testAndBlocks.push({
@@ -199,16 +225,55 @@ export function unspoolExecute(ast, program) {
 
         break;
 
+      case 'FunctionDeclaration':
+        const funcName = node.id.name;
+        // do we need this or can we just store it in the context? Maybe either is okay? Let's see
+        functionDefinitions[funcName] = {
+          params: node.params.map((param) => param.name),
+          funcyBody: node.body, // node.body is so far always a block statement
+          contextAtTimeOfDeclaration: structuredClone(context)
+        };
+        break;
+
       case 'CallExpression':
+        const args = node.arguments.map(
+          (arg) => evaluate(arg, execLevel, parentBreadcrumbs, localContext)._res
+        );
+
         const callee = node.callee;
-        const args = node.arguments.map((arg) => evaluate(arg, execLevel, parentBreadcrumbs)._res);
 
         if (callee.type === 'Identifier') {
-          // Handle globalFn function calls
-          if (typeof globalFn[callee.name] === 'function') {
-            _res = globalFn[callee.name](...args);
+          const funcName = callee.name;
+
+          // Custom function call
+          if (functionDefinitions[funcName]) {
+            const funcyData = functionDefinitions[funcName];
+
+            const funcLocalContext = {};
+            funcyData.params.forEach((param, index) => {
+              funcLocalContext[param] = { value: args[index], isPlaying: true };
+            });
+
+            let totalcontext = {
+              ...funcyData.contextAtTimeOfDeclaration,
+              ...funcLocalContext
+            };
+
+            let funcyBlock = evaluate(
+              funcyData.funcyBody,
+              execLevel,
+              parentBreadcrumbs,
+              totalcontext
+            );
+
+            evalNode.children = [funcyBlock];
+            _res = funcyBlock._res;
+            //
+          } else if (typeof globalFn[funcName] === 'function') {
+            // Global function call
+            _res = globalFn[funcName](...args);
           } else {
-            throw new Error('Unsupported globalFn function: ' + callee.name);
+            throw new Error('Unsupported function: ' + funcName);
           }
         } else if (callee.type === 'MemberExpression') {
           // Handle method calls (existing code)
@@ -228,6 +293,12 @@ export function unspoolExecute(ast, program) {
         } else {
           throw new Error('Unsupported callee type: ' + callee.type);
         }
+        break;
+
+      case 'ReturnStatement':
+        _res = node.argument
+          ? evaluate(node.argument, execLevel, parentBreadcrumbs, localContext)._res
+          : undefined;
         break;
 
       case 'MemberExpression':

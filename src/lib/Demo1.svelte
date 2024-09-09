@@ -30,6 +30,8 @@
   $: ast = getAST(program);
   $: [justtheone, nodeEvalList] = unspoolExecute(ast, program);
   $: currSpoolItem = nodeEvalList[index];
+  //   $: console.log('==========justtheone', justtheone);
+  //   $: console.log('==========nodeEvalList', nodeEvalList);
   $: ({ _id, cursor, context, parentBreadcrumbs } = currSpoolItem);
 
   $: spoolSize = nodeEvalList.length;
@@ -163,7 +165,7 @@ You have to start making a component of this now btw
 - [ ] bound check for the index
 
   -->
-  {#if demoType !== 'minimap'}
+  {#if demoType === 'animation'}
     <FunctionPreview bind:program {cursor} bind:debounceState bind:syntaxErrorsMessages />
 
     <div>
@@ -177,7 +179,7 @@ You have to start making a component of this now btw
       ></SpoolItem>
       <Progress completedSteps={index + 1} totalSteps={spoolSize} />
     </div>
-  {:else}
+  {:else if demoType === 'tree-minimap'}
     <div>
       <FunctionPreview bind:program {cursor} bind:debounceState bind:syntaxErrorsMessages />
       <SpoolItem
@@ -195,6 +197,27 @@ You have to start making a component of this now btw
       activeParentBreadcrumbs={parentBreadcrumbs}
       activeContext={context}
       templateType="tree-minimap"
+      {meta}
+    />
+    <Progress completedSteps={index + 1} totalSteps={spoolSize} />
+  {:else if demoType === 'tree'}
+    <div>
+      <FunctionPreview bind:program {cursor} bind:debounceState bind:syntaxErrorsMessages />
+      <SpoolItem
+        {...justtheone}
+        activeId={_id}
+        activeParentBreadcrumbs={parentBreadcrumbs}
+        activeContext={context}
+        templateType="animation"
+        {meta}
+      />
+    </div>
+    <SpoolItem
+      {...justtheone}
+      activeId={_id}
+      activeParentBreadcrumbs={parentBreadcrumbs}
+      activeContext={context}
+      templateType="tree"
       {meta}
     />
     <Progress completedSteps={index + 1} totalSteps={spoolSize} />
