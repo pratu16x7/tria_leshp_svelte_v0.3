@@ -121,27 +121,28 @@ while (j < s.length) {
 
     uncompress_as_function: {
       text: `function uncompress(s) {
-        let i = 0;
-        let j = 0;
-        let res = "";
-        const digits = "0123456789";
+  let i = 0;
+  let j = 0;
+  let res = "";
+  const digits = "0123456789";
 
-      while (j < s.length) {
-          if (!digits.includes(s[j])) {
-              // Convert the substring from i to j into a number and repeat the character s[j]
-              const num = parseInt(s.substring(i, j));
-              res += s[j].repeat(num);
-              i = j + 1; // Move the start pointer past the current character
-          }
-          j++;
-      }
-
-      return res;
+  while (j < s.length) {
+    if (!digits.includes(s[j])) {
+      // Convert the substring from i to j into a number and repeat the character s[j]
+      const num = parseInt(s.substring(i, j));
+      res += s[j].repeat(num);
+      i = j + 1; // Move the start pointer past the current character
+    }
+    j++;
   }
 
-  // Example usage
-  const compressedString = "3a4b2c";
-  console.log(uncompress(compressedString));  // Outputs: aaabbbbcc`
+  return res;
+}
+
+// Example usage
+const compressedString = "3a4b2c";
+uncompress(compressedString);
+// const uncompressedString = uncompress(compressedString);  // Outputs: aaabbbbcc`
     }
   },
 
