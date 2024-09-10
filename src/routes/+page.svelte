@@ -37,21 +37,6 @@
 
 
 OKAYYYYY:
-- 1 array program
-  - [ ] _
-  - [ ] _
-- HARD Recursion
-  - [ ] _
-  - [ ] _
-- tree programs, implemement the DS then check if the map works
-  - [ ] _
-  - [ ] _
-- DP
-  - [ ] _
-  - [ ] _
-- [ ]
-
-
 
     - [ ] different program here
     - [ ] arrow keys should only work on box that is in viewport

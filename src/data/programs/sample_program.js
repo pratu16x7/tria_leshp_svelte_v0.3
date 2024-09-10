@@ -140,7 +140,8 @@ while (j < s.length) {
 }
 
 // Example usage
-const compressedString = "3a4b2c";
+// const compressedString = "3a4b2c";
+const compressedString = "2t3o11g2s";
 uncompress(compressedString);
 // const uncompressedString = uncompress(compressedString);  // Outputs: aaabbbbcc`
     }

@@ -55,6 +55,7 @@
     class:active={templateType === 'tree' && _id === activeId}
     class:loop={loopAndBlocks.testAndBlocks.length > 0}
     class:test={testAndBlock.block.children.length > 0}
+    class:block={children.length > 0}
   >
     <!-- TODO: only show in loop -->
 
@@ -222,7 +223,7 @@
       <!--  -->
       {#if loopAndBlocks.testAndBlocks.length}
         {#each loopAndBlocks.testAndBlocks as testAndBlock, i}
-          <p>Loop {i + 1} test</p>
+          <!-- <p>Loop {i + 1} test</p> -->
           <svelte:self
             {...testAndBlock.test}
             {templateType}
@@ -251,7 +252,7 @@
           {activeId}
           {activeParentBreadcrumbs}
         />
-        <p>Test</p>
+        <!-- <p>Test</p> -->
         {#each testAndBlock.block.children as spoolItem}
           <svelte:self {...spoolItem} {templateType} {meta} {activeId} {activeParentBreadcrumbs} />
         {/each}
@@ -388,15 +389,19 @@
   .tree-minimap {
     // LVL2: exact ratio scale down for it to be accurate when using to scroll bigger map
     .fixed-width {
-      width: 50px;
-      height: 20px;
+      width: 25px;
+      height: 5px;
     }
     .border {
-      margin: 0.5em;
+      margin: 0em;
     }
 
     p {
       font-size: 0.5em;
+    }
+
+    &.node-container {
+      margin-left: 10px;
     }
   }
 
@@ -418,6 +423,10 @@
   }
   .loop {
     background-color: lightgoldenrodyellow;
+  }
+
+  .block {
+    background-color: rgb(250, 213, 255);
   }
 
   .active {
