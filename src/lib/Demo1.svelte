@@ -67,7 +67,7 @@
 <svelte:window on:keydown={onKeyDown} />
 <audio src="https://cdn.freesound.org/previews/371/371274_1196472-lq.mp3" bind:this={audio}></audio>
 
-<div class="box flex" class:large-box={demoType === 'minimap'}>
+<div class="box flex" class:large-box={demoType === 'tree-minimap'}>
   <!-- TODO:
 - [x] Dump all
 - [x] more style: only program should show, fix horizontal size
@@ -190,6 +190,7 @@ You have to start making a component of this now btw
         templateType="animation"
         {meta}
       />
+      <Progress completedSteps={index + 1} totalSteps={spoolSize} />
     </div>
     <SpoolItem
       {...justtheone}
@@ -199,7 +200,6 @@ You have to start making a component of this now btw
       templateType="tree-minimap"
       {meta}
     />
-    <Progress completedSteps={index + 1} totalSteps={spoolSize} />
   {:else if demoType === 'tree'}
     <div>
       <FunctionPreview bind:program {cursor} bind:debounceState bind:syntaxErrorsMessages />
@@ -238,9 +238,9 @@ You have to start making a component of this now btw
   //     height: 450px;
   //   }
 
-  //   .large-box {
-  //     height: 600px;
-  //   }
+  .large-box {
+    height: 600px;
+  }
 
   //   .box-caption {
   //     font-size: 0.8em;

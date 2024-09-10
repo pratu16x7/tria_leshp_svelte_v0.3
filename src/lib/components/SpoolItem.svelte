@@ -344,6 +344,8 @@
     border-radius: 8px;
   }
 
+  // $margin: 20px;   can't get it to work to use it
+
   .animation {
     &.level-1 {
       margin-top: 48px;
@@ -390,7 +392,7 @@
     // LVL2: exact ratio scale down for it to be accurate when using to scroll bigger map
     .fixed-width {
       width: 25px;
-      height: 5px;
+      height: 3px;
     }
     .border {
       margin: 0em;
