@@ -9,7 +9,6 @@
   import SpoolItem from '../lib/components/SpoolItem.svelte';
   import { getAST, unspoolExecute } from '../lib/utils/ast';
   import Progress from './components/Progress.svelte';
-  import { meta } from '../data/sample_meta_2';
 
   export let program: string;
   export let demoType: string = 'just-anim';
@@ -22,6 +21,9 @@
 
   $: syntaxErrorState = syntaxErrorsMessages.length > 0 ? true : false;
 
+  let preRunMeta = {};
+  preRunMeta = preRunMeta;
+
   let origProgram = program;
 
   // WIP: Barricade, error handling, don't navigate beyond upper and lower indexes
@@ -29,6 +31,7 @@
 
   $: ast = getAST(program);
   $: [justtheone, nodeEvalList] = unspoolExecute(ast, program);
+  let postRunMeta = {};
   $: currSpoolItem = nodeEvalList[index];
   //   $: console.log('==========justtheone', justtheone);
   //   $: console.log('==========nodeEvalList', nodeEvalList);
@@ -38,6 +41,8 @@
 
   $: astNode = ast.body;
   $: currentAstNodeItem = astNode[index] || '';
+
+  $: meta = { ...preRunMeta, ...postRunMeta };
 
   let audio;
   function onKeyDown(e) {
@@ -166,7 +171,13 @@ You have to start making a component of this now btw
 
   -->
   {#if demoType === 'animation'}
-    <FunctionPreview bind:program {cursor} bind:debounceState bind:syntaxErrorsMessages />
+    <FunctionPreview
+      bind:program
+      {cursor}
+      bind:debounceState
+      bind:syntaxErrorsMessages
+      bind:preRunMeta
+    />
 
     <div>
       <SpoolItem
@@ -181,7 +192,13 @@ You have to start making a component of this now btw
     </div>
   {:else if demoType === 'tree-minimap'}
     <div>
-      <FunctionPreview bind:program {cursor} bind:debounceState bind:syntaxErrorsMessages />
+      <FunctionPreview
+        bind:program
+        {cursor}
+        bind:debounceState
+        bind:syntaxErrorsMessages
+        bind:preRunMeta
+      />
       <SpoolItem
         {...justtheone}
         activeId={_id}
@@ -202,7 +219,13 @@ You have to start making a component of this now btw
     />
   {:else if demoType === 'tree'}
     <div>
-      <FunctionPreview bind:program {cursor} bind:debounceState bind:syntaxErrorsMessages />
+      <FunctionPreview
+        bind:program
+        {cursor}
+        bind:debounceState
+        bind:syntaxErrorsMessages
+        bind:preRunMeta
+      />
       <SpoolItem
         {...justtheone}
         activeId={_id}

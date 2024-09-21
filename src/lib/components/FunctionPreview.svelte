@@ -7,12 +7,14 @@
   import { linter, lintGutter } from '@codemirror/lint';
   import Linter from 'eslint4b-prebuilt';
 
+  import { getSyntaxErrors, getPreRunMeta } from '../utils/program-preprocessor';
+
   export let program: string;
   export let cursor: { start: number; end: number };
   export let debounceState = false;
-  let syntaxErrorState = false;
   export let syntaxErrorsMessages = [];
   syntaxErrorsMessages = syntaxErrorsMessages;
+  export let preRunMeta = {};
   let editorView: EditorView;
   let startState: EditorState;
   let editorContainer: HTMLElement;
@@ -25,31 +27,21 @@
   const eslint = new Linter();
 
   let timer;
-  const debouncedProgramUpdate = (new_value) => {
+  const debouncedProgramUpdate = (new_program_value) => {
     clearTimeout(timer);
     timer = setTimeout(() => {
-      syntaxErrorsMessages = eslint.verify(new_value, {
-        env: {
-          es6: true,
-          browser: true
-        },
-        rules: {
-          semi: 2
-        }
-      });
-
-      console.log('heheh got you, you errors?: ', syntaxErrorsMessages);
-
-      if (syntaxErrorsMessages.length > 0) {
-        syntaxErrorState = true;
-        console.log('Here?', syntaxErrorState);
-      } else {
-        syntaxErrorState = false;
-        console.log('No Here!!!', syntaxErrorState);
-        previousProgram = program;
-        program = new_value;
-      }
       debounceState = false;
+      syntaxErrorsMessages = getSyntaxErrors(eslint, new_program_value);
+
+      if (!syntaxErrorsMessages.length) {
+        previousProgram = program;
+        program = new_program_value;
+
+        // Cool I accept your program as logically, but now I need to check it against what I support.
+        // both without running it and running it
+
+        preRunMeta = getPreRunMeta(new_program_value);
+      }
     }, 500);
   };
 

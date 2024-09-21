@@ -23,6 +23,24 @@
 // _
 
 import { astNodeTypes, binaryOperatorMap, assignmentOperatorMap } from './what-we-support';
+import { meta } from '../../data/sample_meta_2';
+
+export function getPreRunMeta(program: string) {
+  let preRunMeta = meta;
+  return preRunMeta;
+}
+
+export function getSyntaxErrors(eslint, program: string) {
+  return eslint.verify(program, {
+    env: {
+      es6: true,
+      browser: true
+    },
+    rules: {
+      semi: 2
+    }
+  });
+}
 
 export function getMetaFromLastContextInSpool(context) {}
 
