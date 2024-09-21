@@ -4,7 +4,8 @@ import {
   binaryOperatorMap,
   assignmentOperatorMap,
   updateOperatorMap,
-  astNodeTypesMeta
+  astNodeTypesMeta,
+  LOOP_LIMIT
 } from './what-we-support';
 
 export function getAST(program: string) {
@@ -220,8 +221,14 @@ export function unspoolExecute(ast, program) {
             });
           } // TODO: Add the last failed test as well
           counter++;
-          // TODO: CHECK IF LIMIT REACHED, WHAT WE SUPPORT ARE A MAX OF maybe 50 LOOPS
-          // HARD BREAK IF EXCEEDED, ELSE INFINITE LOOP WILL HAPPEN
+
+          if (counter > LOOP_LIMIT) {
+            postRunMeta.errors.push({
+              message: `Loop at char ${cursor.start} exceeded max limit. Sorry, I have only supported a loop limit of ${LOOP_LIMIT} for now. Link: __`,
+              cursor: cursor
+            });
+            break; // This is also safeguard for infinite loops
+          }
         }
 
         break;

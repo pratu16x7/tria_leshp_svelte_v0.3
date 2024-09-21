@@ -159,7 +159,7 @@ export const updateOperatorMap = {
 export const functionsSupported = {};
 
 // TODO: use
-export const loopLimit = 20;
+export const LOOP_LIMIT = 20;
 
 // TODO: use
 export const arraySizeLimit = 20;
