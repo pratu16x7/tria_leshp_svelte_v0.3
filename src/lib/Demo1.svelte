@@ -44,26 +44,16 @@
 
   $: meta = { ...preRunMeta, ...postRunMeta };
 
-  let audio;
+  let audio; // TODO: doesn't play when user hasn't interacted otherwise
   function onKeyDown(e) {
     switch (e.keyCode) {
       case 37: // left
       case 38: // up
-        if (index > 0) {
-          index -= 1;
-        } else {
-          // play a sound or smthn. TODO: doesn't play when user hasn't interacted otherwise
-          audio.play();
-        }
+        index > 0 ? (index -= 1) : audio.play();
         break;
       case 39: // right
       case 40: // down
-        if (index < spoolSize - 1) {
-          index += 1;
-        } else {
-          // play a sound or smthn. TODO: doesn't play when user hasn't interacted otherwise
-          audio.play();
-        }
+        index < spoolSize - 1 ? (index += 1) : audio.play();
         break;
     }
   }
