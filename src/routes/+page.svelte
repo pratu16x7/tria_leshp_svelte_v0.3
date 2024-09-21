@@ -14,8 +14,8 @@
   export let program1, program2, program3: string;
 
   program1 = programs[sampleFamily1][sampleProgram1]['text'];
-  // program2 = programs[sampleFamily2]['uncompress']['text'];
-  program2 = programs[sampleFamily2]['uncompress_as_function']['text'];
+  program2 = programs[sampleFamily2]['uncompress']['text'];
+  // program2 = programs[sampleFamily2]['uncompress_as_function']['text'];
   program3 = programs[sampleFamily1]['else']['text'];
 </script>
 

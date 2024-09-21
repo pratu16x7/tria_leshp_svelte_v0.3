@@ -1,5 +1,5 @@
 <!-- TODO list
-- [ ] empty state symbol
+- [x] empty state symbol
 - [ ] length (hideable)
 - [ ] indexes (hideable)
 - [ ] 1 pointer support
@@ -7,7 +7,6 @@
 - [ ] substring support (color, block ... whatever)
 - [ ] ...
 -->
-
 <script lang="ts">
   import { fade } from 'svelte/transition';
   import { tweened } from 'svelte/motion';
@@ -20,23 +19,41 @@
   export let pointerName = 'i';
   export let pointerValue;
 
+  export let fontSize = 24;
+
+  $: width = (fontSize * 2) / 3;
+  $: quoteOffset = width;
+
   const pointerPosition = tweened(0, {
     duration: 500,
     easing: cubicOut
   });
-  $: pointerPosition.set(pointerValue * 32);
+  $: pointerPosition.set(pointerValue * (fontSize + 2));
 </script>
 
 <div class="container" style="--opacity: {active ? '1' : '0.2'}">
   <span class="var-name">{name}</span>
   <div class="array-box">
+    <div class="symbol" style="width: {width}px; height: {fontSize}px; font-size: {fontSize}px;">
+      {'❝'}
+    </div>
     {#each array as element}
-      <div class="element-box" in:fade={{ duration: 300 }} out:fade={{ duration: 300 }}>
+      <div
+        class="symbol"
+        style="width: {width}px; height: {fontSize}px; font-size: {fontSize}px;"
+        in:fade={{ duration: 300 }}
+        out:fade={{ duration: 300 }}
+      >
         {element}
       </div>
     {/each}
-    <div class="pointer" style="left: {$pointerPosition}px"></div>
-    <span class="label" style="left: {$pointerPosition + 15}px">{pointerName}</span>
+    <div class="symbol" style="width: {width}px; height: {fontSize}px; font-size: {fontSize}px;">
+      {'”'}
+    </div>
+    <div class="pointer" style="left: {quoteOffset - 3 + $pointerPosition}px"></div>
+    <span class="label" style="left: {quoteOffset + $pointerPosition + fontSize / 2}px"
+      >{pointerName}</span
+    >
   </div>
 </div>
 
@@ -51,21 +68,13 @@
     display: flex;
     margin-left: 8px; /* Space between name and array */
   }
-  .element-box {
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: yellow;
-    border: 2px solid darkgoldenrod;
-    color: black;
+  .symbol {
+    color: rgb(53, 53, 53);
   }
   .var-name {
     font-size: 14px;
     color: black;
   }
-
   .pointer {
     position: absolute;
     bottom: 100%;
