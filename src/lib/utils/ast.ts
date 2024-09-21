@@ -30,6 +30,7 @@ const globalFn = {
 
 export function unspoolExecute(ast, program) {
   let linearSpoolNodes = [];
+  let postRunMeta = { meta: {}, errors: [] };
 
   let prevContext; // so that you don't have to pass it
   // we just update it at the places context is explicitly changes. No reason though, could do it at end of all nodes, no change in behav
@@ -323,6 +324,6 @@ export function unspoolExecute(ast, program) {
 
   let justtheone = evaluate(ast);
 
-  return [justtheone, linearSpoolNodes];
+  return [justtheone, linearSpoolNodes, postRunMeta];
   // return [justtheone];
 }

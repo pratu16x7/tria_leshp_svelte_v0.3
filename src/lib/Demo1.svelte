@@ -24,14 +24,19 @@
   let preRunMeta = {};
   preRunMeta = preRunMeta;
 
+  let postRunMeta = { meta: {}, errors: [] };
+  postRunMeta = postRunMeta;
+
   let origProgram = program;
 
   // WIP: Barricade, error handling, don't navigate beyond upper and lower indexes
   $: index = 0;
 
   $: ast = getAST(program);
-  $: [justtheone, nodeEvalList] = unspoolExecute(ast, program);
-  let postRunMeta = {};
+  $: [justtheone, nodeEvalList, postRunMeta] = unspoolExecute(ast, program);
+
+  $: programSupportState = postRunMeta.errors.length > 0 ? true : false;
+
   $: currSpoolItem = nodeEvalList[index];
   //   $: console.log('==========justtheone', justtheone);
   //   $: console.log('==========nodeEvalList', nodeEvalList);
@@ -236,7 +241,11 @@ You have to start making a component of this now btw
     <Progress completedSteps={index + 1} totalSteps={spoolSize} />
   {/if}
 </div>
-<p>{debounceState}, {syntaxErrorState}, {JSON.stringify(syntaxErrorsMessages)}</p>
+<p>
+  {debounceState}, {syntaxErrorState}, {programSupportState}, {JSON.stringify(
+    syntaxErrorsMessages
+  )}, {JSON.stringify(postRunMeta.errors)}
+</p>
 
 <style lang="scss">
   .box {
