@@ -26,7 +26,8 @@ import { astNodeTypes, binaryOperatorMap, assignmentOperatorMap } from './what-w
 import { meta } from '../../data/sample_meta_2';
 
 export function getPreRunMeta(program: string) {
-  let preRunMeta = meta;
+  // let preRunMeta = meta;
+  let preRunMeta = {};
   return preRunMeta;
 }
 

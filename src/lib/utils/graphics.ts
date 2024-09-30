@@ -13,7 +13,7 @@ export function getGraphic(algorithmFamily = sampleFamily, programName = sampleP
   program = programs[algorithmFamily]?.[programName]?.text || 'Program not found';
 
   let ast = getAST(program);
-  let [justtheone, nodeEvalList] = unspoolExecute(ast, program);
+  let [justtheone, nodeEvalList, postRunMeta] = unspoolExecute(ast, program);
 
-  return [nodeEvalList[nodeEvalList.length - 1].context, meta];
+  return [nodeEvalList[nodeEvalList.length - 1].context, postRunMeta.meta];
 }

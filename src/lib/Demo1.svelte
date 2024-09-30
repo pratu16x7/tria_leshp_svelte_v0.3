@@ -54,7 +54,7 @@
   $: astNode = ast.body;
   $: currentAstNodeItem = astNode[index] || '';
 
-  $: meta = { ...preRunMeta, ...postRunMeta };
+  $: meta = { ...preRunMeta, ...postRunMeta.meta };
 
   let audio; // TODO: doesn't play when user hasn't interacted otherwise
   function onKeyDown(e) {

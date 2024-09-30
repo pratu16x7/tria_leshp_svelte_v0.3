@@ -12,9 +12,8 @@
 <div class="state-box" class:scale-down={scaleDown} class:hide>
   {#each Object.entries(context) as [player, playerState]}
     <!-- actually the safest way to check type here based on actual value -->
-    {@const playerType = toType(playerState['value'])}
-    <!-- {#if playerType === 'number' && !pointers.includes(player)} -->
-
+    <!-- {@const playerType = toType(playerState['value'])} -->
+    {@const playerType = meta['players'][player]['type']}
     <div class="margin">
       {#if playerType === 'number'}
         <PlayerNumeric
