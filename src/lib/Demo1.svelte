@@ -24,7 +24,14 @@
   let preRunMeta = {};
   preRunMeta = preRunMeta;
 
-  let postRunMeta = { meta: {}, errors: [] };
+  let postRunMeta = {
+    meta: {
+      players: {},
+      arrays: [],
+      pointers: []
+    },
+    errors: []
+  };
   postRunMeta = postRunMeta;
 
   let origProgram = program;

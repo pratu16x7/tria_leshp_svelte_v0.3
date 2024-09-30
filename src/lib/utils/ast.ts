@@ -1,5 +1,5 @@
 import { parse } from 'acorn';
-import { getRandomId } from './_index';
+import { getRandomId, toType } from './_index';
 import {
   binaryOperatorMap,
   assignmentOperatorMap,
@@ -31,7 +31,14 @@ const globalFn = {
 
 export function unspoolExecute(ast, program) {
   let linearSpoolNodes = [];
-  let postRunMeta = { meta: {}, errors: [] };
+  let postRunMeta = {
+    meta: {
+      players: {},
+      arrays: [],
+      pointers: []
+    },
+    errors: []
+  };
 
   let prevContext; // so that you don't have to pass it
   // we just update it at the places context is explicitly changes. No reason though, could do it at end of all nodes, no change in behav
@@ -94,6 +101,8 @@ export function unspoolExecute(ast, program) {
 
     let varName;
 
+    // console.log('cursor', cursor.programPart, node) // push, call expression
+
     switch (nodeType) {
       case 'Literal':
         _res = node.value;
@@ -109,10 +118,11 @@ export function unspoolExecute(ast, program) {
         // console.log('========CallExpression block', expBlock);
         // HERE COME ALL THE ABANDONED CHILDREN
         // The first: CallExpression
-        let expChildNode = node.expression;
+        let expChildNode = node.expression; // can be CallExpression, MemberExpression, ArrayExpression
         if (expChildNode.type === 'CallExpression' && expBlock.children.length > 0) {
           evalNode.children = [expBlock];
         }
+        // console.log('cursor', cursor.programPart, node.expression) // node.expression -> push, console.log -> ...type: callexpression, ...callee.type: memberexpression
 
         _res = expBlock._res;
         prevContext = structuredClone(context);
@@ -132,10 +142,18 @@ export function unspoolExecute(ast, program) {
       case 'VariableDeclaration':
         node.declarations.map((declaration) => {
           varName = declaration.id.name;
+          let newPlayerValue = evaluate(declaration.init, execLevel, parentBreadcrumbs)._res;
+          let newPlayerType = toType(newPlayerValue);
           context[varName] = {
-            value: evaluate(declaration.init, execLevel, parentBreadcrumbs)._res,
+            value: newPlayerValue,
             isPlaying: true // persists, working
           };
+          postRunMeta.meta.players[varName] = {
+            type: newPlayerType
+          };
+          if (newPlayerType === 'array') {
+            postRunMeta.meta.arrays.push(varName);
+          }
         });
         prevContext = structuredClone(context);
         break;
@@ -243,7 +261,7 @@ export function unspoolExecute(ast, program) {
         };
         break;
 
-      case 'CallExpression':
+      case 'CallExpression': // ALL functions: named (identifiers), global, properties, all of em
         const args = node.arguments.map(
           (arg) => evaluate(arg, execLevel, parentBreadcrumbs, localContext)._res
         );
@@ -284,6 +302,9 @@ export function unspoolExecute(ast, program) {
             throw new Error('Unsupported function: ' + funcName);
           }
         } else if (callee.type === 'MemberExpression') {
+          // Properties, but also functions
+          // s.push, s.substring, console.log -> callee.type: member expression
+
           // Handle method calls (existing code)
           if (callee.object.name === 'console' && callee.property.name === 'log') {
             break;
@@ -309,7 +330,7 @@ export function unspoolExecute(ast, program) {
           : undefined;
         break;
 
-      case 'MemberExpression':
+      case 'MemberExpression': // Properties, not functions | s[j], s.length -> member expression
         const object = evaluate(node.object, execLevel, parentBreadcrumbs)._res;
         const property = node.computed
           ? evaluate(node.property, execLevel, parentBreadcrumbs)._res

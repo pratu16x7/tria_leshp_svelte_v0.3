@@ -156,9 +156,11 @@ export const updateOperatorMap = {
 };
 
 // TODO: use
-export const functionsSupported = {};
+export const varTypes = ['number', 'string', 'array'];
 
 // TODO: use
+export const functionsSupported = {};
+
 export const LOOP_LIMIT = 20;
 
 // TODO: use
@@ -172,3 +174,53 @@ export const callOrRecDepthLimit = 7;
 
 // TODO: use
 export const codeLinesLimit = 20;
+
+// console.log('cursor', cursor.programPart, node.expression) // push(), s.substring(i, j), console.log -> type: callexpression, callee.type: memberexpression
+// console.log('cursor', cursor.programPart, node.type) // s[j], s.length -> member expression
+
+let memberExpNodeArrayLengthProps = {
+  // s.length
+  type: 'MemberExpression',
+  start: 178,
+  end: 186,
+  object: { type: 'Identifier', start: 178, end: 179, name: 's' }, // Node
+  property: { type: 'Identifier', start: 180, end: 186, name: 'length' }, // Node
+  computed: false,
+  optional: false
+};
+
+let memberExpNodeArrayIndexProps = {
+  // s[j] ... Ofcourse for JS [] and . are one and the same
+  type: 'MemberExpression',
+  start: 363,
+  end: 367,
+  object: { type: 'Identifier', start: 363, end: 364, name: 's' }, // Node
+  property: { type: 'Identifier', start: 365, end: 366, name: 'j' }, // Node
+  computed: true,
+  optional: false
+};
+
+// call s.substring(i, j) Node {
+//   type: 'CallExpression',
+//   start: 332,
+//   end: 349,
+//   callee: Node {
+//     type: 'MemberExpression',
+//     start: 332,
+//     end: 343,
+//     object: Node { type: 'Identifier', start: 332, end: 333, name: 's' },
+//     property: Node {
+//       type: 'Identifier',
+//       start: 334,
+//       end: 343,
+//       name: 'substring'
+//     },
+//     computed: false,
+//     optional: false
+//   },
+//   arguments: [
+//     Node { type: 'Identifier', start: 344, end: 345, name: 'i' },
+//     Node { type: 'Identifier', start: 347, end: 348, name: 'j' }
+//   ],
+//   optional: false
+// }
