@@ -311,7 +311,8 @@ export function unspoolExecute(ast, program) {
             break;
           }
 
-          // deduce and store pointers
+          // deduce and store pointers:
+          // TODO: LVL2: doesn't work if callee or args themselves are expressions
           if (
             callee.object.type === 'Identifier' && // can be another memberexpression node
             ['array', 'string'].includes(postRunMeta.meta.players[node.callee.object.name].type)
@@ -348,11 +349,27 @@ export function unspoolExecute(ast, program) {
         break;
 
       case 'MemberExpression': // Properties, not functions | s[j], s.length -> member expression
-        const object = evaluate(node.object, execLevel, parentBreadcrumbs)._res;
+        const objectValue = evaluate(node.object, execLevel, parentBreadcrumbs)._res;
+
+        // deduce and store pointers:
+        // TODO: LVL2: doesn't work if callee or args themselves are expressions
+        if (
+          node.object.type === 'Identifier' &&
+          ['array', 'string'].includes(postRunMeta.meta.players[node.object.name].type)
+        ) {
+          if (
+            node.property.type === 'Identifier' &&
+            Object.keys(postRunMeta.meta.players).includes(node.property.name)
+          ) {
+            postRunMeta.meta.pointers.add(node.property.name);
+            postRunMeta.meta.players[node.object.name].pointers.add(node.property.name);
+          }
+        }
+
         const property = node.computed
           ? evaluate(node.property, execLevel, parentBreadcrumbs)._res
           : node.property.name;
-        _res = object[property];
+        _res = objectValue[property];
         break;
 
       default:
