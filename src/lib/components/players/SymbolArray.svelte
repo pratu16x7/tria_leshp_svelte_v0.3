@@ -16,8 +16,8 @@
   export let name = ''; // Variable name
   export let array: Number[] | string; // Array of numbers
   export let active = true; // Active state control
-  export let pointerName = 'i';
-  export let pointerValue;
+  export let pointerNames;
+  export let pointerValues = [0];
 
   export let fontSize = 24;
 
@@ -28,7 +28,8 @@
     duration: 500,
     easing: cubicOut
   });
-  $: pointerPosition.set(pointerValue * (fontSize + 2));
+
+  $: pointerPosition.set(pointerValues[0] * (fontSize + 2));
 </script>
 
 <div class="container" style="--opacity: {active ? '1' : '0.2'}">
@@ -47,13 +48,15 @@
         {element}
       </div>
     {/each}
-    <div class="symbol" style="width: {width}px; height: {fontSize}px; font-size: {fontSize}px;">
-      {'”'}
-    </div>
-    <div class="pointer" style="left: {quoteOffset - 3 + $pointerPosition}px"></div>
-    <span class="label" style="left: {quoteOffset + $pointerPosition + fontSize / 2}px"
-      >{pointerName}</span
-    >
+    {#if pointerNames.length > 0}
+      <div class="symbol" style="width: {width}px; height: {fontSize}px; font-size: {fontSize}px;">
+        {'”'}
+      </div>
+      <div class="pointer" style="left: {quoteOffset - 3 + $pointerPosition}px"></div>
+      <span class="label" style="left: {quoteOffset + $pointerPosition + fontSize / 2}px"
+        >{pointerNames[0]}</span
+      >
+    {/if}
   </div>
 </div>
 

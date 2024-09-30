@@ -13,32 +13,33 @@
   {#each Object.entries(context) as [player, playerState]}
     <!-- actually the safest way to check type here based on actual value -->
     <!-- {@const playerType = toType(playerState['value'])} -->
-    {@const playerType = meta['players'][player]['type']}
-    <div class="margin">
-      {#if playerType === 'number'}
-        <PlayerNumeric
-          name={player}
-          number={playerState['value']}
-          color="green"
-          active={playerState['isPlaying']}
-        />
-      {:else if playerType === 'array' || playerType === 'string'}
-        <!-- {@const pointers = meta.pointersForLists[player]}
-        {@const pointer_1 = pointers[0]} -->
-        <!-- {console.log('==========pointers', pointers, pointer_1, meta)} -->
-        <PlayerArray name={player} array={playerState['value']} active={playerState['isPlaying']} />
-      {:else}
-        <p>{player}, {playerState['value']}</p>
-      {/if}
-    </div>
+    {@const playerType = meta.players[player].type}
+    {#if ![...meta.pointers].includes(player)}
+      <div class="margin">
+        {#if playerType === 'number'}
+          <PlayerNumeric
+            name={player}
+            number={playerState['value']}
+            color="green"
+            active={playerState['isPlaying']}
+          />
+        {:else if playerType === 'array' || playerType === 'string'}
+          <PlayerArray
+            name={player}
+            array={playerState['value']}
+            active={playerState['isPlaying']}
+            pointerNames={[...meta.players[player].pointers]}
+            pointerValues={[...meta.players[player].pointers].map(
+              (pointerPlayer) => context[pointerPlayer]['value']
+            )}
+          />
+        {:else}
+          <p>{player}, {playerState['value']}</p>
+        {/if}
+      </div>
+    {/if}
   {/each}
 </div>
-
-<!--
-          pointerName={pointer_1}
-          pointerValue={context[pointer_1]['value']}
-pointerName={'pointer_1'}
-pointerValue={context[pointer_1]['value']} -->
 
 <style lang="scss">
   .state-box {
