@@ -111,8 +111,8 @@ const digits = "0123456789";
 while (j < s.length) {
   if (!digits.includes(s[j])) {
     // Convert the substring from i to j into a number and repeat the character s[j]
-    // const num = parseInt(s.substring(i, j));
-    const num = 9;
+    const num = parseInt(s.substring(i, j));
+    // const num = 9;
     res += s[j].repeat(num);
     i = j + 1; // Move the start pointer past the current character
   }

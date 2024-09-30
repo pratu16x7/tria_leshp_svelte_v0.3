@@ -158,6 +158,8 @@ export const updateOperatorMap = {
 // TODO: use
 export const varTypes = ['number', 'string', 'array'];
 
+export const LIST_DATATYPES = ['array', 'string'];
+
 // TODO: use
 export const functionsSupported = {};
 

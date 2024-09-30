@@ -5,7 +5,8 @@ import {
   assignmentOperatorMap,
   updateOperatorMap,
   astNodeTypesMeta,
-  LOOP_LIMIT
+  LOOP_LIMIT,
+  LIST_DATATYPES
 } from './what-we-support';
 
 export function getAST(program: string) {
@@ -21,6 +22,24 @@ function clearPlayerPlayingState(context) {
     playerState['isPlaying'] = false;
   });
   return context;
+}
+
+function deduceAndStorePointers(_parentObj, _memberObjs, _postRunMetaObj) {
+  // TODO: LVL2: doesn't work if callee or args themselves are expressions
+  if (
+    _parentObj.type === 'Identifier' &&
+    LIST_DATATYPES.includes(_postRunMetaObj.players[_parentObj.name].type)
+  ) {
+    _memberObjs.map((_memberObj) => {
+      if (
+        _memberObj.type === 'Identifier' &&
+        Object.keys(_postRunMetaObj.players).includes(_memberObj.name)
+      ) {
+        _postRunMetaObj.pointers.add(_memberObj.name);
+        _postRunMetaObj.players[_parentObj.name].pointers.add(_memberObj.name);
+      }
+    });
+  }
 }
 
 const globalFn = {
@@ -151,7 +170,7 @@ export function unspoolExecute(ast, program) {
           postRunMeta.meta.players[varName] = {
             type: newPlayerType
           };
-          if (['array', 'string'].includes(newPlayerType)) {
+          if (LIST_DATATYPES.includes(newPlayerType)) {
             postRunMeta.meta.arrays.push(varName);
             postRunMeta.meta.players[varName].pointers = new Set();
           }
@@ -311,22 +330,7 @@ export function unspoolExecute(ast, program) {
             break;
           }
 
-          // deduce and store pointers:
-          // TODO: LVL2: doesn't work if callee or args themselves are expressions
-          if (
-            callee.object.type === 'Identifier' && // can be another memberexpression node
-            ['array', 'string'].includes(postRunMeta.meta.players[node.callee.object.name].type)
-          ) {
-            node.arguments.map((argNode) => {
-              if (
-                argNode.type === 'Identifier' &&
-                Object.keys(postRunMeta.meta.players).includes(argNode.name)
-              ) {
-                postRunMeta.meta.pointers.add(argNode.name);
-                postRunMeta.meta.players[callee.object.name].pointers.add(argNode.name);
-              }
-            });
-          }
+          deduceAndStorePointers(callee.object, node.arguments, postRunMeta.meta);
 
           const evalalala = evaluate(callee.object, execLevel, parentBreadcrumbs);
           const object = evalalala._res;
@@ -351,20 +355,7 @@ export function unspoolExecute(ast, program) {
       case 'MemberExpression': // Properties, not functions | s[j], s.length -> member expression
         const objectValue = evaluate(node.object, execLevel, parentBreadcrumbs)._res;
 
-        // deduce and store pointers:
-        // TODO: LVL2: doesn't work if callee or args themselves are expressions
-        if (
-          node.object.type === 'Identifier' &&
-          ['array', 'string'].includes(postRunMeta.meta.players[node.object.name].type)
-        ) {
-          if (
-            node.property.type === 'Identifier' &&
-            Object.keys(postRunMeta.meta.players).includes(node.property.name)
-          ) {
-            postRunMeta.meta.pointers.add(node.property.name);
-            postRunMeta.meta.players[node.object.name].pointers.add(node.property.name);
-          }
-        }
+        deduceAndStorePointers(node.object, [node.property], postRunMeta.meta);
 
         const property = node.computed
           ? evaluate(node.property, execLevel, parentBreadcrumbs)._res
