@@ -35,7 +35,7 @@ export function unspoolExecute(ast, program) {
     meta: {
       players: {},
       arrays: [],
-      pointers: []
+      pointers: new Set()
     },
     errors: []
   };
@@ -151,8 +151,9 @@ export function unspoolExecute(ast, program) {
           postRunMeta.meta.players[varName] = {
             type: newPlayerType
           };
-          if (newPlayerType === 'array') {
+          if (['array', 'string'].includes(newPlayerType)) {
             postRunMeta.meta.arrays.push(varName);
+            postRunMeta.meta.players[varName].pointers = new Set();
           }
         });
         prevContext = structuredClone(context);
@@ -308,6 +309,22 @@ export function unspoolExecute(ast, program) {
           // Handle method calls (existing code)
           if (callee.object.name === 'console' && callee.property.name === 'log') {
             break;
+          }
+
+          // deduce and store pointers
+          if (
+            callee.object.type === 'Identifier' && // can be another memberexpression node
+            ['array', 'string'].includes(postRunMeta.meta.players[node.callee.object.name].type)
+          ) {
+            node.arguments.map((argNode) => {
+              if (
+                argNode.type === 'Identifier' &&
+                Object.keys(postRunMeta.meta.players).includes(argNode.name)
+              ) {
+                postRunMeta.meta.pointers.add(argNode.name);
+                postRunMeta.meta.players[callee.object.name].pointers.add(argNode.name);
+              }
+            });
           }
 
           const evalalala = evaluate(callee.object, execLevel, parentBreadcrumbs);
